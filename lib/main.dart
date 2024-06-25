@@ -20,8 +20,7 @@ class OrphanCareApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) =>
-          AuthProvider(), // Provide an instance of AuthProvider
+      create: (context) => AuthProvider(),
       child: MaterialApp(
         title: "Orphan Care",
         theme: ThemeData(primarySwatch: Colors.blue),
