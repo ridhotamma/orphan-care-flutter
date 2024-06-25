@@ -18,11 +18,11 @@ class HomeScreen extends StatelessWidget {
             children: [
               const WelcomeBanner(profileName: "Bima Arviandi"),
               const SizedBox(
-                height: 20.0,
+                height: 12.0,
               ),
               const HomeAnalytics(),
               const SizedBox(
-                height: 20.0,
+                height: 12.0,
               ),
               HomeList(onItemSelected: (selectedItem) {})
             ],

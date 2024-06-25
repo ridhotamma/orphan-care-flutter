@@ -1,4 +1,3 @@
-// home_analytics.dart
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 
@@ -7,28 +6,36 @@ class HomeAnalytics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      crossAxisSpacing: 8.0,
-      mainAxisSpacing: 8.0,
+    return Column(
       children: [
-        _buildAnalyticsCard(
-          icon: Icons.child_care,
-          title: "Jumlah Anak Asuh",
-          count: 10,
+        Row(
+          children: [
+            _buildAnalyticsCard(
+              icon: Icons.child_care,
+              title: "Jumlah Anak",
+              count: 10,
+            ),
+            _buildAnalyticsCard(
+              icon: Icons.supervised_user_circle,
+              title: "Jumlah Pengasuh",
+              count: 5,
+            )
+          ],
         ),
-        _buildAnalyticsCard(
-          icon: Icons.supervised_user_circle,
-          title: "Jumlah Pengasuh",
-          count: 5,
-        ),
-        _buildAnalyticsCard(
-          icon: Icons.bed,
-          title: "Jumlah Kamar",
-          count: 15,
-        ),
+        Row(
+          children: [
+            _buildAnalyticsCard(
+              icon: Icons.hotel,
+              title: "Jumlah Kamar",
+              count: 5,
+            ),
+            _buildAnalyticsCard(
+              icon: Icons.inventory_2_outlined,
+              title: "Jumlah Inventori",
+              count: 5,
+            ),
+          ],
+        )
       ],
     );
   }
@@ -38,38 +45,45 @@ class HomeAnalytics extends StatelessWidget {
     required String title,
     required int count,
   }) {
-    return Card(
-      color: AppStyleConfig.secondaryColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 40.0,
-            color: Colors.white, // Change the color as per your theme
+    return Expanded(
+      child: Card(
+        color: AppStyleConfig.primaryBackgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+          side: const BorderSide(
+              color: Colors.grey, width: 1.0), // Add solid border
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 40.0,
+                color: Colors.black,
+              ),
+              const SizedBox(height: 10.0),
+              Text(
+                title,
+                style: const TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10.0),
+              Text(
+                count.toString(),
+                style: const TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 10.0),
-          Text(
-            title,
-            style: const TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 10.0),
-          Text(
-            count.toString(),
-            style: const TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white, // Change the color as per your theme
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

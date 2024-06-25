@@ -27,6 +27,12 @@ class HomeList extends StatelessWidget {
         'icon': Icons.hotel,
         'color': AppStyleConfig.secondaryColor
       },
+      {
+        'title': 'Data Inventori',
+        'subtitle': 'Kelola data kamar',
+        'icon': Icons.inventory_2_outlined,
+        'color': AppStyleConfig.secondaryColor
+      },
     ];
 
     return ListView.builder(
