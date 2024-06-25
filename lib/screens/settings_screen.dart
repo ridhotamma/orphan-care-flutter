@@ -64,6 +64,8 @@ class SettingsScreen extends StatelessWidget {
     return _buildListItem(
       leadingIcon: Icons.logout,
       title: 'Logout',
+      textColor: AppStyleConfig.errorColor,
+      iconColor: AppStyleConfig.errorColor,
       onTap: () {
         _showLogoutBottomSheet(context);
       },
@@ -76,6 +78,7 @@ class SettingsScreen extends StatelessWidget {
     Widget? trailingWidget,
     Function()? onTap,
     Color? textColor,
+    Color? iconColor = Colors.black,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -85,7 +88,7 @@ class SettingsScreen extends StatelessWidget {
       ),
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
-        leading: Icon(leadingIcon, color: AppStyleConfig.primaryColor),
+        leading: Icon(leadingIcon, color: iconColor),
         title: Text(
           title,
           style: TextStyle(

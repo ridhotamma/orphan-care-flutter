@@ -5,6 +5,8 @@ import 'package:frontend_flutter/screens/main_screen.dart';
 import 'package:frontend_flutter/screens/home_screen.dart';
 import 'package:frontend_flutter/screens/document_screen.dart';
 import 'package:frontend_flutter/screens/settings_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:frontend_flutter/providers/auth_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,17 +19,21 @@ class OrphanCareApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Orphan Care",
-      theme: ThemeData(primarySwatch: Colors.blue),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const LoginScreen(),
-        '/main': (context) => const MainScreen(),
-        '/home': (context) => const HomeScreen(),
-        '/documents': (context) => const DocumentScreen(),
-        '/settings': (context) => const SettingsScreen(),
-      },
+    return ChangeNotifierProvider(
+      create: (context) =>
+          AuthProvider(), // Provide an instance of AuthProvider
+      child: MaterialApp(
+        title: "Orphan Care",
+        theme: ThemeData(primarySwatch: Colors.blue),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const LoginScreen(),
+          '/main': (context) => const MainScreen(),
+          '/home': (context) => const HomeScreen(),
+          '/documents': (context) => const DocumentScreen(),
+          '/settings': (context) => const SettingsScreen(),
+        },
+      ),
     );
   }
 }
