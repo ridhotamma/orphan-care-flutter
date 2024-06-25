@@ -10,24 +10,28 @@ class HomeList extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> listItems = [
       {
+        'id': 1,
         'title': 'Data Anak Asuh',
         'subtitle': 'Kelola data profil anak asuh',
         'icon': Icons.child_care,
         'color': AppStyleConfig.secondaryColor
       },
       {
+        'id': 2,
         'title': 'Data Pengasuh',
         'subtitle': 'Kelola data profil pengasuh',
         'icon': Icons.supervised_user_circle,
         'color': AppStyleConfig.secondaryColor
       },
       {
+        'id': 3,
         'title': 'Data Kamar',
         'subtitle': 'Kelola data kamar',
         'icon': Icons.hotel,
         'color': AppStyleConfig.secondaryColor
       },
       {
+        'id': 4,
         'title': 'Data Inventori',
         'subtitle': 'Kelola data kamar',
         'icon': Icons.inventory_2_outlined,

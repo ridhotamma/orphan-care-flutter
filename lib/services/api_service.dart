@@ -1,9 +1,10 @@
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../config/app_api_config.dart';
+
+import 'package:http/http.dart' as http;
+import 'package:frontend_flutter/config/app_api_config.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import '../providers/auth_provider.dart';
+import 'package:frontend_flutter/providers/auth_provider.dart';
 
 class ApiService {
   final BuildContext context;
