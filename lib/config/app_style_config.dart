@@ -6,11 +6,11 @@ class AppStyleConfig {
   static const String secondaryFontFamily = 'Roboto';
 
   // Colors
-  static const Color primaryColor = Color.fromARGB(255, 47, 104, 188);
-  static const Color secondaryColor = Color(0xFFFF6F61);
-  static const Color accentColor = Color(0xFF36B37E);
+  static const Color primaryColor = Color(0xFF071952);
+  static const Color secondaryColor = Color(0xFF088395);
+  static const Color accentColor = Color(0xFF37B7C3);
   static const Color errorColor = Color(0xFFFF5630);
-  static const Color primaryBackgroundColor = Color(0xFFF4F5F7);
+  static const Color primaryBackgroundColor = Color(0xFFEBF4F6);
   static const Color secondaryBackgroundColor = Color(0xFFFFFFFF);
 
   // Text Colors
@@ -96,7 +96,7 @@ class AppStyleConfig {
   static TextStyle headlineTextStyle = const TextStyle(
     fontFamily: primaryFontFamily,
     fontSize: 24,
-    fontWeight: FontWeight.normal,
+    fontWeight: FontWeight.bold,
     color: primaryTextColor,
   );
 

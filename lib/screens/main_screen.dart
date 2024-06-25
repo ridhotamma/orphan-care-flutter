@@ -46,33 +46,35 @@ class MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyleConfig.primaryBackgroundColor,
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: _onPageChanged,
-        children: _screens,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: AppStyleConfig.primaryColor,
-        currentIndex: _currentIndex,
-        onTap: _onTabTapped,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white.withOpacity(0.6),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.document_scanner),
-            label: 'Documents',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppStyleConfig.primaryBackgroundColor,
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          children: _screens,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: AppStyleConfig.primaryColor,
+          currentIndex: _currentIndex,
+          onTap: _onTabTapped,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white.withOpacity(0.6),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.edit_document),
+              label: 'Documents',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
+        ),
       ),
     );
   }
