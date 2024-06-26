@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/models/user_model.dart';
+import 'package:frontend_flutter/services/user_service.dart';
 import 'package:frontend_flutter/widgets/home/home_analytics.dart';
 import 'package:frontend_flutter/widgets/home/home_list.dart';
 import 'package:frontend_flutter/widgets/home/welcome_banner.dart';
@@ -15,11 +17,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<AnalyticData> _analyticsData;
+  late Future<CurrentUser> _currentUser;
 
   @override
   void initState() {
     super.initState();
     _analyticsData = AnalyticsService(context).fetchHomePageAnalytics();
+    _currentUser = UserService(context).fetchCurrentUser();
   }
 
   @override
@@ -31,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const WelcomeBanner(profileName: "Bima Arviandi"),
+              WelcomeBannerWidget(currentUserFuture: _currentUser),
               const SizedBox(height: 12.0),
               AnalyticsDataWidget(analyticsDataFuture: _analyticsData),
               const SizedBox(height: 12.0),
@@ -45,6 +49,30 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class WelcomeBannerWidget extends StatelessWidget {
+  final Future<CurrentUser> currentUserFuture;
+
+  const WelcomeBannerWidget({super.key, required this.currentUserFuture});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<CurrentUser>(
+      future: currentUserFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (snapshot.hasData) {
+          return WelcomeBanner(currentUser: snapshot.data!);
+        } else {
+          return const Center(child: Text('No data available'));
+        }
+      },
     );
   }
 }

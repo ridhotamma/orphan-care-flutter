@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/models/user_model.dart';
 
 class WelcomeBanner extends StatelessWidget {
-  final String profileName;
+  final CurrentUser currentUser;
 
-  const WelcomeBanner({super.key, required this.profileName});
+  const WelcomeBanner({super.key, required this.currentUser});
 
   @override
   Widget build(BuildContext context) {
+    String profileName = currentUser.username;
+
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 200.0,
@@ -26,7 +29,7 @@ class WelcomeBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hello',
+                    'Halo',
                     textAlign: TextAlign.left,
                     style: AppStyleConfig.headlineTextStyle.copyWith(
                       fontWeight: FontWeight.bold,

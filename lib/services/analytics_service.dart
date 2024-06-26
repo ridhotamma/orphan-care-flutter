@@ -6,13 +6,13 @@ import 'package:frontend_flutter/services/api_service.dart';
 import 'package:http/http.dart' as http;
 
 class AnalyticsService {
-  final ApiService apiService;
+  final ApiService _apiService;
 
-  AnalyticsService(BuildContext context) : apiService = ApiService(context);
+  AnalyticsService(BuildContext context) : _apiService = ApiService(context);
 
   Future<AnalyticData> fetchHomePageAnalytics() async {
     final http.Response response =
-        await apiService.get('/admin/analytics/homepage');
+        await _apiService.get('/admin/analytics/homepage');
     final Map<String, dynamic> data = jsonDecode(response.body);
     return AnalyticData.fromJson(data);
   }
