@@ -9,13 +9,13 @@ import 'package:frontend_flutter/screens/main_screen.dart';
 import 'package:frontend_flutter/screens/home_screen.dart';
 import 'package:frontend_flutter/screens/document_screen.dart';
 import 'package:frontend_flutter/screens/settings_screen.dart';
-import 'package:frontend_flutter/services/api_service.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+  await AuthProvider().initPreferences();
   runApp(const OrphanCareApp());
 }
 
@@ -24,8 +24,6 @@ class OrphanCareApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ApiService apiService = ApiService(context);
-
     return ChangeNotifierProvider(
       create: (context) => AuthProvider(),
       child: MaterialApp(
@@ -33,8 +31,8 @@ class OrphanCareApp extends StatelessWidget {
         theme: ThemeData(primarySwatch: Colors.blue),
         initialRoute: '/',
         routes: {
-          '/': (context) => LoginScreen(apiService: apiService),
-          '/main': (context) => MainScreen(apiService: apiService),
+          '/': (context) => const LoginScreen(),
+          '/main': (context) => const MainScreen(),
           '/home': (context) => const HomeScreen(),
           '/home/orphan_details': (context) => const OrphanDetails(),
           '/home/guardian_details': (context) => const GuardianDetails(),

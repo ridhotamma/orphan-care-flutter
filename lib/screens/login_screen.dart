@@ -9,9 +9,7 @@ import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
-  final ApiService apiService;
-
-  const LoginScreen({super.key, required this.apiService});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -32,14 +30,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void onLoginPress() async {
+    ApiService apiService = ApiService(context);
+
     if (!_isButtonDisabled) {
       LoginRequest loginRequest = LoginRequest(
           username: _emailEditingController.text,
           password: _passwordEditingController.text);
 
       Map<String, dynamic> requestBody = loginRequest.toJson();
-      Response response =
-          await widget.apiService.post('/auth/login', requestBody);
+      Response response = await apiService.post('/auth/login', requestBody);
       if (response.statusCode == 200) {
         String? jwtToken = jsonDecode(response.body)['jwt'];
         onLoginSuccess(jwtToken);
@@ -50,7 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void onLoginSuccess(String? jwtToken) {
-    Provider.of<AuthProvider>(context, listen: false).setToken(jwtToken);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.setToken(jwtToken);
     Navigator.pushReplacementNamed(context, '/main');
   }
 

@@ -5,11 +5,7 @@ class AuthProvider with ChangeNotifier {
   String? _token;
   late SharedPreferences _prefs;
 
-  AuthProvider() {
-    _initPreferences();
-  }
-
-  Future<void> _initPreferences() async {
+  Future<void> initPreferences() async {
     _prefs = await SharedPreferences.getInstance();
     _token = _prefs.getString('token');
   }

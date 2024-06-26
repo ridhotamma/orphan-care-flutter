@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
-import 'package:frontend_flutter/services/api_service.dart';
 import 'home_screen.dart';
 import 'document_screen.dart';
 import 'settings_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  final ApiService apiService;
-
-  const MainScreen({super.key, required this.apiService});
+  const MainScreen({super.key});
 
   @override
   MainScreenState createState() => MainScreenState();
