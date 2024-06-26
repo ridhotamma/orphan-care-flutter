@@ -12,10 +12,9 @@ import 'package:frontend_flutter/screens/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
-  await AuthProvider().initPreferences();
   runApp(const OrphanCareApp());
 }
 
