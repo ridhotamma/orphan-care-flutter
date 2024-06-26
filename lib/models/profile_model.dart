@@ -1,3 +1,4 @@
+import 'package:frontend_flutter/models/address_model.dart';
 import 'package:frontend_flutter/models/bedroom_model.dart';
 
 class Profile {
@@ -8,9 +9,9 @@ class Profile {
   final String bio;
   final String? bedRoomId;
   final String fullName;
-  final Address address;
+  final Address? address;
   final String? guardian;
-  final BedRoom bedRoom;
+  final BedRoom? bedRoom;
   final String phoneNumber;
   final String gender;
 
@@ -22,11 +23,11 @@ class Profile {
     required this.bio,
     required this.bedRoomId,
     required this.fullName,
-    required this.address,
-    required this.guardian,
-    required this.bedRoom,
     required this.phoneNumber,
     required this.gender,
+    this.address,
+    this.guardian,
+    this.bedRoom,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
@@ -55,51 +56,11 @@ class Profile {
       'bio': bio,
       'bedRoomId': bedRoomId,
       'fullName': fullName,
-      'address': address.toJson(),
+      'address': address?.toJson(),
       'guardian': guardian,
-      'bedRoom': bedRoom.toJson(),
+      'bedRoom': bedRoom?.toJson(),
       'phoneNumber': phoneNumber,
       'gender': gender,
-    };
-  }
-}
-
-class Address {
-  final String street;
-  final String urbanVillage;
-  final String subdistrict;
-  final String city;
-  final String province;
-  final String postalCode;
-
-  Address({
-    required this.street,
-    required this.urbanVillage,
-    required this.subdistrict,
-    required this.city,
-    required this.province,
-    required this.postalCode,
-  });
-
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
-      street: json['street'],
-      urbanVillage: json['urbanVillage'],
-      subdistrict: json['subdistrict'],
-      city: json['city'],
-      province: json['province'],
-      postalCode: json['postalCode'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'street': street,
-      'urbanVillage': urbanVillage,
-      'subdistrict': subdistrict,
-      'city': city,
-      'province': province,
-      'postalCode': postalCode,
     };
   }
 }

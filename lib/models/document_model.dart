@@ -8,4 +8,6 @@ class Document {
     required this.type,
     required this.url,
   });
+
+  Map<String, dynamic> toJson() => {'name': name, 'type': type, 'url': url};
 }
