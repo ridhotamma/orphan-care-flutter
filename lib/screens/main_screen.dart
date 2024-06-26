@@ -8,11 +8,12 @@ class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
   @override
-  MainScreenState createState() => MainScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> {
+class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+
   final PageController _pageController = PageController();
 
   final List<Widget> _screens = [
@@ -36,6 +37,11 @@ class MainScreenState extends State<MainScreen> {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override

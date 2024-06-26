@@ -12,23 +12,29 @@ import 'package:frontend_flutter/screens/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
-  runApp(const OrphanCareApp());
+
+  final authProvider = AuthProvider();
+  await authProvider.initFuture;
+
+  runApp(OrphanCareApp(authProvider: authProvider));
 }
 
 class OrphanCareApp extends StatelessWidget {
-  const OrphanCareApp({super.key});
+  final AuthProvider authProvider;
+
+  const OrphanCareApp({super.key, required this.authProvider});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
+    return ChangeNotifierProvider<AuthProvider>.value(
+      value: authProvider,
       child: MaterialApp(
         title: "Orphan Care",
         theme: ThemeData(primarySwatch: Colors.blue),
-        initialRoute: '/',
+        initialRoute: authProvider.token?.isNotEmpty == true ? '/main' : '/',
         routes: {
           '/': (context) => const LoginScreen(),
           '/main': (context) => const MainScreen(),

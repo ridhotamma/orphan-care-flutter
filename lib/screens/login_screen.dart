@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/models/auth_model.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
@@ -16,41 +15,66 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailEditingController = TextEditingController();
-  final TextEditingController _passwordEditingController =
-      TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _isButtonDisabled = true;
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_validateInput);
+    _passwordController.addListener(_validateInput);
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   void _validateInput() {
     setState(() {
-      _isButtonDisabled = _emailEditingController.text.isEmpty ||
-          _passwordEditingController.text.isEmpty;
+      _isButtonDisabled =
+          _emailController.text.isEmpty || _passwordController.text.isEmpty;
     });
   }
 
-  void onLoginPress() async {
+  Future<void> onLoginPress() async {
+    if (_isButtonDisabled || _isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
     ApiService apiService = ApiService(context);
+    LoginRequest loginRequest = LoginRequest(
+      username: _emailController.text,
+      password: _passwordController.text,
+    );
 
-    if (!_isButtonDisabled) {
-      LoginRequest loginRequest = LoginRequest(
-          username: _emailEditingController.text,
-          password: _passwordEditingController.text);
-
-      Map<String, dynamic> requestBody = loginRequest.toJson();
-      Response response = await apiService.post('/auth/login', requestBody);
+    try {
+      Response response =
+          await apiService.post('/auth/login', loginRequest.toJson());
       if (response.statusCode == 200) {
         String? jwtToken = jsonDecode(response.body)['jwt'];
         onLoginSuccess(jwtToken);
       } else {
         onLoginFailed(jsonDecode(response.body)['message']);
       }
+    } catch (e) {
+      onLoginFailed('Failed to connect');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   void onLoginSuccess(String? jwtToken) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    authProvider.setToken(jwtToken);
+    Provider.of<AuthProvider>(context, listen: false).setToken(jwtToken);
     Navigator.pushReplacementNamed(context, '/main');
   }
 
@@ -74,21 +98,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _emailEditingController.addListener(_validateInput);
-    _passwordEditingController.addListener(_validateInput);
-  }
-
-  @override
-  void dispose() {
-    _emailEditingController.dispose();
-    _passwordEditingController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    String currentYear = DateTime.now().year.toString();
+
     return Scaffold(
       backgroundColor: AppStyleConfig.primaryBackgroundColor,
       body: SafeArea(
@@ -103,17 +115,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(
-                      height: 40,
-                    ),
+                    const SizedBox(height: 40),
                     Image.asset(
                       "images/logo.png",
                       width: 120,
                       height: 120,
                     ),
-                    const SizedBox(
-                      height: 40,
-                    ),
+                    const SizedBox(height: 40),
                     Text(
                       'Login',
                       style: AppStyleConfig.headlineTextStyle,
@@ -121,14 +129,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
-                      controller: _emailEditingController,
+                      controller: _emailController,
                       decoration: AppStyleConfig.inputDecoration.copyWith(
                         hintText: 'Email',
                       ),
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
-                      controller: _passwordEditingController,
+                      controller: _passwordController,
                       decoration: AppStyleConfig.inputDecoration.copyWith(
                         hintText: 'Password',
                         suffixIcon: IconButton(
@@ -137,25 +145,29 @@ class _LoginScreenState extends State<LoginScreen> {
                               _isPasswordVisible = !_isPasswordVisible;
                             });
                           },
-                          icon: Icon(_isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off),
+                          icon: Icon(
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
                         ),
                       ),
                       obscureText: !_isPasswordVisible,
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      style: _isButtonDisabled
+                      style: _isButtonDisabled || _isLoading
                           ? AppStyleConfig.disabledButtonStyle
                           : AppStyleConfig.secondaryButtonStyle,
-                      onPressed: onLoginPress,
-                      child: Text(
-                        'Login',
-                        style: AppStyleConfig.primaryTextStyle.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
+                      onPressed: _isLoading ? null : onLoginPress,
+                      child: _isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                              'Login',
+                              style: AppStyleConfig.primaryTextStyle.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
                     ),
                   ],
                 ),
@@ -164,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: Text(
-                'Build Number: v1.0.0',
+                '© $currentYear PSAA Annajah',
                 style: AppStyleConfig.primaryTextStyle,
                 textAlign: TextAlign.center,
               ),

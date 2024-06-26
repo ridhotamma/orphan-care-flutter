@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/models/analytic_model.dart';
 
 class HomeAnalytics extends StatelessWidget {
-  const HomeAnalytics({super.key});
+  final AnalyticData data;
+
+  const HomeAnalytics({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -13,12 +16,12 @@ class HomeAnalytics extends StatelessWidget {
             _buildAnalyticsCard(
               icon: Icons.child_care,
               title: "Jumlah Anak",
-              count: 10,
+              count: data.userCount,
             ),
             _buildAnalyticsCard(
               icon: Icons.supervised_user_circle,
               title: "Jumlah Pengasuh",
-              count: 5,
+              count: data.adminCount,
             )
           ],
         ),
@@ -27,12 +30,12 @@ class HomeAnalytics extends StatelessWidget {
             _buildAnalyticsCard(
               icon: Icons.hotel,
               title: "Jumlah Kamar",
-              count: 5,
+              count: data.bedRoomCount,
             ),
             _buildAnalyticsCard(
               icon: Icons.inventory_2_outlined,
               title: "Jumlah Inventori",
-              count: 5,
+              count: data.inventoryCount,
             ),
           ],
         )
