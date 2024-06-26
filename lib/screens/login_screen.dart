@@ -1,8 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import '../config/app_style_config.dart';
+import 'package:frontend_flutter/models/auth_model.dart';
+import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/providers/auth_provider.dart';
+import 'package:frontend_flutter/services/api_service.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final ApiService apiService;
+
+  const LoginScreen({super.key, required this.apiService});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -22,10 +31,46 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void onLoginPress() {
+  void onLoginPress() async {
     if (!_isButtonDisabled) {
-      Navigator.pushReplacementNamed(context, '/main');
+      LoginRequest loginRequest = LoginRequest(
+          username: _emailEditingController.text,
+          password: _passwordEditingController.text);
+
+      Map<String, dynamic> requestBody = loginRequest.toJson();
+      Response response =
+          await widget.apiService.post('/auth/login', requestBody);
+      if (response.statusCode == 200) {
+        String? jwtToken = jsonDecode(response.body)['jwt'];
+        onLoginSuccess(jwtToken);
+      } else {
+        onLoginFailed(jsonDecode(response.body)['message']);
+      }
     }
+  }
+
+  void onLoginSuccess(String? jwtToken) {
+    Provider.of<AuthProvider>(context, listen: false).setToken(jwtToken);
+    Navigator.pushReplacementNamed(context, '/main');
+  }
+
+  void onLoginFailed(String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppStyleConfig.errorColor,
+        content: Text(
+          errorMessage,
+          style: const TextStyle(color: Colors.white),
+        ),
+        duration: const Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
   }
 
   @override

@@ -24,7 +24,10 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 12.0,
               ),
-              HomeList(onItemSelected: (selectedItem) {})
+              HomeList(onItemSelected: (selectedItem) {
+                String routeName = selectedItem['routeName'];
+                Navigator.pushNamed(context, routeName);
+              })
             ],
           ),
         ),
