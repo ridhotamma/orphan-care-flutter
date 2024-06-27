@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 
 class CareTakerDetails extends StatelessWidget {
-  static const String routeName = '/home/guardian_details';
+  static const String routeName = '/home/caretaker_details';
 
   const CareTakerDetails({super.key});
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
 import 'dart:convert';
 
 class LocalizationProvider with ChangeNotifier {
@@ -13,17 +13,12 @@ class LocalizationProvider with ChangeNotifier {
   }
 
   Future<void> _initPreferences() async {
-    try {
-      _prefs = await SharedPreferences.getInstance();
-      String? localeCode = _prefs.getString('locale');
-      if (localeCode != null) {
-        _locale = Locale(localeCode);
-      }
-    } catch (e) {
-      throw Exception(e.toString());
-    } finally {
-      notifyListeners();
+    _prefs = await SharedPreferences.getInstance();
+    String? localeCode = _prefs.getString('locale');
+    if (localeCode != null) {
+      _locale = Locale(localeCode);
     }
+    notifyListeners();
   }
 
   Future<void> get initFuture => _initFuture;
@@ -69,7 +64,8 @@ class AppLocalizations {
 
   Future<bool> load() async {
     try {
-      String jsonString = await rootBundle.loadString('assets/lang/id.json');
+      String jsonString = await rootBundle
+          .loadString('assets/lang/${locale.languageCode}.json');
       Map<String, dynamic> jsonMap = jsonDecode(jsonString);
       _localizedStrings = jsonMap.map((key, value) {
         return MapEntry(key, value.toString());
