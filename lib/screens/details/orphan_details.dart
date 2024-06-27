@@ -19,55 +19,64 @@ class OrphanDetailsState extends State<OrphanDetails> {
       'name': 'John Doe',
       'age': 12,
       'bedroom': 'Bedroom A',
-      'profilePicture': 'https://robohash.org/1.jpg',
+      'profilePicture':
+          'https://image.cnbcfm.com/api/v1/image/107203114-1677872178166-GettyImages-1382525205.jpg?v=1677940236',
     },
     {
       'name': 'Jane Smith',
       'age': 10,
       'bedroom': 'Bedroom B',
-      'profilePicture': 'https://robohash.org/10.jpg',
+      'profilePicture':
+          'https://image.cnbcfm.com/api/v1/image/107203114-1677872178166-GettyImages-1382525205.jpg?v=1677940236',
     },
     {
       'name': 'Jane Smith',
       'age': 10,
       'bedroom': 'Bedroom B',
-      'profilePicture': 'https://robohash.org/10.jpg',
+      'profilePicture':
+          'https://image.cnbcfm.com/api/v1/image/107203114-1677872178166-GettyImages-1382525205.jpg?v=1677940236',
     },
     {
       'name': 'Jane Smith',
       'age': 10,
       'bedroom': 'Bedroom B',
-      'profilePicture': 'https://robohash.org/10.jpg',
+      'profilePicture':
+          'https://image.cnbcfm.com/api/v1/image/107203114-1677872178166-GettyImages-1382525205.jpg?v=1677940236',
     },
     {
       'name': 'Jane Smith',
       'age': 10,
       'bedroom': 'Bedroom B',
-      'profilePicture': 'https://robohash.org/10.jpg',
+      'profilePicture':
+          'https://image.cnbcfm.com/api/v1/image/107203114-1677872178166-GettyImages-1382525205.jpg?v=1677940236',
     },
     {
       'name': 'Jane Smith',
       'age': 10,
       'bedroom': 'Bedroom B',
-      'profilePicture': 'https://robohash.org/10.jpg',
+      'profilePicture':
+          'https://image.cnbcfm.com/api/v1/image/107203114-1677872178166-GettyImages-1382525205.jpg?v=1677940236',
     },
     {
       'name': 'Jane Smith',
       'age': 10,
       'bedroom': 'Bedroom B',
-      'profilePicture': 'https://robohash.org/10.jpg',
+      'profilePicture':
+          'https://image.cnbcfm.com/api/v1/image/107203114-1677872178166-GettyImages-1382525205.jpg?v=1677940236',
     },
     {
       'name': 'Jane Smith',
       'age': 10,
       'bedroom': 'Bedroom B',
-      'profilePicture': 'https://robohash.org/10.jpg',
+      'profilePicture':
+          'https://image.cnbcfm.com/api/v1/image/107203114-1677872178166-GettyImages-1382525205.jpg?v=1677940236',
     },
     {
       'name': 'Jane Smith',
       'age': 10,
       'bedroom': 'Bedroom B',
-      'profilePicture': 'https://robohash.org/10.jpg',
+      'profilePicture':
+          'https://image.cnbcfm.com/api/v1/image/107203114-1677872178166-GettyImages-1382525205.jpg?v=1677940236',
     },
   ];
 
@@ -145,7 +154,7 @@ class OrphanDetailsState extends State<OrphanDetails> {
               children: [
                 Container(
                   width: double.infinity,
-                  height: 100.0,
+                  height: 80.0,
                   decoration: BoxDecoration(
                     color: AppStyleConfig.accentColor,
                     borderRadius: BorderRadius.circular(10.0),
@@ -165,8 +174,7 @@ class OrphanDetailsState extends State<OrphanDetails> {
                 ),
               ],
             ),
-            const SizedBox(
-                height: 50.0), // Height to account for the CircleAvatar
+            const SizedBox(height: 50.0),
             const Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -174,7 +182,7 @@ class OrphanDetailsState extends State<OrphanDetails> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Ridho Tamma',
+                    'Jane Smith',
                     style:
                         TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                   ),
@@ -190,28 +198,27 @@ class OrphanDetailsState extends State<OrphanDetails> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Laki-laki',
+                      'Female',
                       style: TextStyle(fontSize: 14.0, color: Colors.white),
                     ),
                     SizedBox(
                       width: 5.0,
                     ),
                     Icon(
-                      Icons.male_outlined,
+                      Icons.female_outlined,
                       color: Colors.white,
                       size: 18,
                     )
                   ],
                 ),
-                backgroundColor:
-                    Colors.blueGrey, // Optional: Set background color
+                backgroundColor: Colors.blueGrey,
                 padding: EdgeInsets.symmetric(horizontal: 1.0),
               ),
             ),
             const SizedBox(height: 8.0),
             const Center(
               child: Text(
-                'Umar bin Khattab',
+                'Ummu Kultsum',
                 style: TextStyle(fontSize: 14.0),
               ),
             ),
