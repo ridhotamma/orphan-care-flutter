@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 
 class OrphanDetails extends StatefulWidget {
@@ -11,40 +12,68 @@ class OrphanDetails extends StatefulWidget {
 }
 
 class OrphanDetailsState extends State<OrphanDetails> {
-  List<Orphan> orphans = [
-    Orphan(
-      name: 'John Doe',
-      bedroomName: 'Room 101',
-      gender: Gender.male,
-      avatarUrl: 'https://robohash.org/1.jpg',
-    ),
-    Orphan(
-      name: 'Jane Doe',
-      bedroomName: 'Room 102',
-      gender: Gender.female,
-      avatarUrl: 'https://robohash.org/1.jpg',
-    ),
-  ];
-
-  List<Orphan> filteredOrphans = [];
-
   TextEditingController searchController = TextEditingController();
+
+  final List<Map<String, dynamic>> orphans = [
+    {
+      'name': 'John Doe',
+      'age': 12,
+      'bedroom': 'Bedroom A',
+      'profilePicture': 'https://robohash.org/1.jpg',
+    },
+    {
+      'name': 'Jane Smith',
+      'age': 10,
+      'bedroom': 'Bedroom B',
+      'profilePicture': 'https://robohash.org/10.jpg',
+    },
+    {
+      'name': 'Jane Smith',
+      'age': 10,
+      'bedroom': 'Bedroom B',
+      'profilePicture': 'https://robohash.org/10.jpg',
+    },
+    {
+      'name': 'Jane Smith',
+      'age': 10,
+      'bedroom': 'Bedroom B',
+      'profilePicture': 'https://robohash.org/10.jpg',
+    },
+    {
+      'name': 'Jane Smith',
+      'age': 10,
+      'bedroom': 'Bedroom B',
+      'profilePicture': 'https://robohash.org/10.jpg',
+    },
+    {
+      'name': 'Jane Smith',
+      'age': 10,
+      'bedroom': 'Bedroom B',
+      'profilePicture': 'https://robohash.org/10.jpg',
+    },
+    {
+      'name': 'Jane Smith',
+      'age': 10,
+      'bedroom': 'Bedroom B',
+      'profilePicture': 'https://robohash.org/10.jpg',
+    },
+    {
+      'name': 'Jane Smith',
+      'age': 10,
+      'bedroom': 'Bedroom B',
+      'profilePicture': 'https://robohash.org/10.jpg',
+    },
+    {
+      'name': 'Jane Smith',
+      'age': 10,
+      'bedroom': 'Bedroom B',
+      'profilePicture': 'https://robohash.org/10.jpg',
+    },
+  ];
 
   @override
   void initState() {
-    filteredOrphans = orphans;
     super.initState();
-  }
-
-  void filterOrphans(String query) {
-    List<Orphan> filteredList = orphans.where((orphan) {
-      return orphan.name.toLowerCase().contains(query.toLowerCase()) ||
-          orphan.bedroomName.toLowerCase().contains(query.toLowerCase());
-    }).toList();
-
-    setState(() {
-      filteredOrphans = filteredList;
-    });
   }
 
   @override
@@ -66,47 +95,18 @@ class OrphanDetailsState extends State<OrphanDetails> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: searchController,
-              onChanged: filterOrphans,
+              onChanged: (string) {},
               decoration: AppStyleConfig.inputDecoration.copyWith(
                 hintText: 'Search',
                 suffixIcon: const Icon(Icons.search),
               ),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredOrphans.length,
-              itemBuilder: (context, index) {
-                final orphan = filteredOrphans[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 16.0),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(orphan.avatarUrl),
-                      radius: 30,
-                      backgroundColor: AppStyleConfig.primaryBackgroundColor,
-                    ),
-                    tileColor: Colors.white,
-                    title: Text(orphan.name),
-                    subtitle: Text(orphan.bedroomName),
-                    trailing: Icon(
-                      orphan.gender == Gender.male ? Icons.male : Icons.female,
-                      color: orphan.gender == Gender.male
-                          ? Colors.blue
-                          : Colors.pink,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          Expanded(child: _buildOrphanMasonryGridView()),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed handler here
-        },
+        onPressed: () {},
         backgroundColor: AppStyleConfig.secondaryColor,
         foregroundColor: Colors.white,
         shape: const CircleBorder(),
@@ -114,24 +114,111 @@ class OrphanDetailsState extends State<OrphanDetails> {
       ),
     );
   }
-}
 
-class Orphan {
-  final String name;
-  final String bedroomName;
-  final Gender gender;
-  final String avatarUrl;
+  Widget _buildOrphanMasonryGridView() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: MasonryGridView.count(
+        crossAxisCount: 2,
+        crossAxisSpacing: 8.0,
+        mainAxisSpacing: 8.0,
+        itemCount: orphans.length,
+        itemBuilder: (context, index) {
+          final orphan = orphans[index];
+          return _buildOrphanGridItem(orphan);
+        },
+      ),
+    );
+  }
 
-  Orphan({
-    required this.name,
-    required this.bedroomName,
-    required this.gender,
-    required this.avatarUrl,
-  });
-}
-
-// Enum for Gender
-enum Gender {
-  male,
-  female,
+  Widget _buildOrphanGridItem(Map<String, dynamic> orphan) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 4.0,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 100.0,
+                  decoration: BoxDecoration(
+                    color: AppStyleConfig.accentColor,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                Positioned(
+                  bottom: -40.0,
+                  left: 0,
+                  right: 0,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: CircleAvatar(
+                      radius: 40.0,
+                      backgroundImage: NetworkImage(orphan['profilePicture']),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+                height: 50.0), // Height to account for the CircleAvatar
+            const Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Ridho Tamma',
+                    style:
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            const Center(
+              child: Chip(
+                label: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Laki-laki',
+                      style: TextStyle(fontSize: 14.0, color: Colors.white),
+                    ),
+                    SizedBox(
+                      width: 5.0,
+                    ),
+                    Icon(
+                      Icons.male_outlined,
+                      color: Colors.white,
+                      size: 18,
+                    )
+                  ],
+                ),
+                backgroundColor:
+                    Colors.blueGrey, // Optional: Set background color
+                padding: EdgeInsets.symmetric(horizontal: 1.0),
+              ),
+            ),
+            const SizedBox(height: 8.0),
+            const Center(
+              child: Text(
+                'Umar bin Khattab',
+                style: TextStyle(fontSize: 14.0),
+              ),
+            ),
+            const SizedBox(height: 8.0),
+          ],
+        ),
+      ),
+    );
+  }
 }
