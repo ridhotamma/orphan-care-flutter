@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/models/analytic_model.dart';
+import 'package:frontend_flutter/providers/localization_provider.dart';
 
 class HomeAnalytics extends StatelessWidget {
   final AnalyticData data;
@@ -9,18 +10,20 @@ class HomeAnalytics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var localization = AppLocalizations.of(context);
+
     return Column(
       children: [
         Row(
           children: [
             _buildAnalyticsCard(
               icon: Icons.child_care,
-              title: "Jumlah Anak",
+              title: localization.translate("number_of_children"),
               count: data.userCount,
             ),
             _buildAnalyticsCard(
               icon: Icons.supervised_user_circle,
-              title: "Jumlah Pengasuh",
+              title: localization.translate("number_of_caregivers"),
               count: data.adminCount,
             )
           ],
@@ -29,12 +32,12 @@ class HomeAnalytics extends StatelessWidget {
           children: [
             _buildAnalyticsCard(
               icon: Icons.hotel,
-              title: "Jumlah Kamar",
+              title: localization.translate("number_of_rooms"),
               count: data.bedRoomCount,
             ),
             _buildAnalyticsCard(
               icon: Icons.inventory_2_outlined,
-              title: "Jumlah Inventori",
+              title: localization.translate("number_of_inventories"),
               count: data.inventoryCount,
             ),
           ],

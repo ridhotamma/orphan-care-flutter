@@ -35,12 +35,12 @@ flutter:
   uses-material-design: true
 
   assets:
-    - images/welcome.png
-    - images/logo.png
+    - assets/images/welcome.png
+    - assets/images/logo.png
 
 flutter_native_splash:
   color: "#EBF4F6"
-  image: images/logo.png
+  image: assets/images/logo.png
   android: true
   ios: true 
   web: true
@@ -48,7 +48,7 @@ flutter_native_splash:
 flutter_icons:
   android: true
   ios: true
-  image_path: images/logo.png
+  image_path: assets/images/logo.png
 
 flutter_app_name:
   name: "Orphancare"

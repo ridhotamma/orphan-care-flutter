@@ -2,30 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
+import 'package:frontend_flutter/providers/localization_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var localization = AppLocalizations.of(context);
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(localization),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _buildLanguageListItem(),
-          _buildAboutAppListItem(context),
-          _buildLogoutListItem(context),
+          _buildLanguageListItem(context, localization),
+          _buildAboutAppListItem(context, localization),
+          _buildLogoutListItem(context, localization),
         ],
       ),
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(AppLocalizations localization) {
     return AppBar(
-      title: const Text(
-        'Settings',
-        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+      title: Text(
+        localization.translate('settings'),
+        style:
+            const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
       ),
       centerTitle: true,
       backgroundColor: AppStyleConfig.secondaryColor,
@@ -33,39 +36,51 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLanguageListItem() {
+  Widget _buildLanguageListItem(
+      BuildContext context, AppLocalizations localization) {
+    final languages = {
+      'id': 'Indonesian',
+      'en': 'English',
+    };
+
     return _buildListItem(
       leadingIcon: Icons.language,
-      title: 'Language',
+      title: localization.translate('language'),
       trailingWidget: DropdownButton<String>(
-        value: 'English',
-        onChanged: (value) {},
-        items: ['English', 'Spanish']
-            .map<DropdownMenuItem<String>>((String value) {
+        value: Provider.of<LocalizationProvider>(context).locale.languageCode,
+        onChanged: (value) {
+          if (value != null) {
+            Provider.of<LocalizationProvider>(context, listen: false)
+                .setLocale(Locale(value));
+          }
+        },
+        items: languages.entries.map<DropdownMenuItem<String>>((entry) {
           return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
+            value: entry.key,
+            child: Text(entry.value),
           );
         }).toList(),
       ),
     );
   }
 
-  Widget _buildAboutAppListItem(BuildContext context) {
+  Widget _buildAboutAppListItem(
+      BuildContext context, AppLocalizations localization) {
     return _buildListItem(
       leadingIcon: Icons.info_outline,
-      title: 'About App',
+      title: localization.translate('about_app'),
       onTap: () {},
     );
   }
 
-  Widget _buildLogoutListItem(BuildContext context) {
+  Widget _buildLogoutListItem(
+      BuildContext context, AppLocalizations localization) {
     return _buildListItem(
       leadingIcon: Icons.logout,
-      title: 'Logout',
+      title: localization.translate('logout'),
       textColor: AppStyleConfig.errorColor,
       iconColor: AppStyleConfig.errorColor,
-      onTap: () => _showLogoutBottomSheet(context),
+      onTap: () => _showLogoutBottomSheet(context, localization),
     );
   }
 
@@ -99,26 +114,28 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showLogoutBottomSheet(BuildContext context) {
+  void _showLogoutBottomSheet(
+      BuildContext context, AppLocalizations localization) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) =>
-          _buildLogoutBottomSheetContent(context),
+          _buildLogoutBottomSheetContent(context, localization),
     );
   }
 
-  Widget _buildLogoutBottomSheetContent(BuildContext context) {
+  Widget _buildLogoutBottomSheetContent(
+      BuildContext context, AppLocalizations localization) {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          const ListTile(
+          ListTile(
             title: Text(
-              'Confirm Logout',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              localization.translate('confirm_logout'),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            subtitle: Text('Are you sure you want to logout?'),
+            subtitle: Text(localization.translate('confirm_logout_message')),
           ),
           const SizedBox(height: 16),
           Row(
@@ -126,7 +143,7 @@ class SettingsScreen extends StatelessWidget {
             children: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
+                child: Text(localization.translate('cancel')),
               ),
               TextButton(
                 onPressed: () {
@@ -135,9 +152,9 @@ class SettingsScreen extends StatelessWidget {
                   Navigator.pushNamedAndRemoveUntil(
                       context, '/', (route) => false);
                 },
-                child: const Text(
-                  'Logout',
-                  style: TextStyle(color: AppStyleConfig.errorColor),
+                child: Text(
+                  localization.translate('logout'),
+                  style: const TextStyle(color: AppStyleConfig.errorColor),
                 ),
               ),
             ],

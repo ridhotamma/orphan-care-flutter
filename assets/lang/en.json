@@ -1,0 +1,16 @@
+{
+  "login": "Login",
+  "home": "Home",
+  "documents": "Documents",
+  "settings": "Settings",
+  "language": "Language",
+  "about_app": "About app",
+  "logout": "Logout",
+  "confirm_logout": "Confirm Logout",
+  "confirm_logout_message": "Are you sure you want to logout?",
+  "cancel": "Cancel",
+  "number_of_children": "Number of Children",
+  "number_of_caregivers": "Number of Caregivers",
+  "number_of_rooms": "Number of Rooms",
+  "number_of_inventories": "Number of Inventories"
+}

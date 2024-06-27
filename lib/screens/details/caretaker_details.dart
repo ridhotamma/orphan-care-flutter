@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 
-class GuardianDetails extends StatelessWidget {
+class CareTakerDetails extends StatelessWidget {
   static const String routeName = '/home/guardian_details';
 
-  const GuardianDetails({super.key});
+  const CareTakerDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class GuardianDetails extends StatelessWidget {
         centerTitle: true,
       ),
       body: const Center(
-        child: Text("Guardian Details"),
+        child: Text("Caretaker Details"),
       ),
     );
   }

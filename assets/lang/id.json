@@ -1,0 +1,16 @@
+{
+  "login": "Masuk",
+  "home": "Beranda",
+  "documents": "Dokumen",
+  "settings": "Pengaturan",
+  "language": "Bahasa",
+  "about_app": "Tentang Aplikasi",
+  "logout": "Keluar",
+  "confirm_logout": "Konfirmasi Keluar",
+  "confirm_logout_message": "Apakah Anda yakin ingin keluar?",
+  "cancel": "Batal",
+  "number_of_children": "Jumlah Anak",
+  "number_of_caregivers": "Jumlah Pengasuh",
+  "number_of_rooms": "Jumlah Kamar",
+  "number_of_inventories": "Jumlah Inventori"
+}

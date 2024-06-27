@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/screens/details/bedroom_details.dart';
-import 'package:frontend_flutter/screens/details/guardian_details.dart';
+import 'package:frontend_flutter/screens/details/caretaker_details.dart';
 import 'package:frontend_flutter/screens/details/inventory_details.dart';
 import 'package:frontend_flutter/screens/details/orphan_details.dart';
 
@@ -45,7 +45,7 @@ class HomeList extends StatelessWidget {
         subtitle: 'Kelola data profil pengasuh',
         icon: Icons.supervised_user_circle,
         color: AppStyleConfig.secondaryColor,
-        route: GuardianDetails.routeName,
+        route: CareTakerDetails.routeName,
       ),
       ListItem(
         id: 3,

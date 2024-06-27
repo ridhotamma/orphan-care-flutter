@@ -62,7 +62,7 @@ class WelcomeBanner extends StatelessWidget {
               height: 160,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('images/welcome.png'),
+                  image: AssetImage('assets/images/welcome.png'),
                   fit: BoxFit.cover,
                 ),
               ),
