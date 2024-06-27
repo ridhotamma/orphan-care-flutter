@@ -7,6 +7,8 @@ import 'package:frontend_flutter/widgets/home/welcome_banner.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/models/analytic_model.dart';
 import 'package:frontend_flutter/services/analytics_service.dart';
+import 'package:frontend_flutter/widgets/skeleton/home_analytics_skeleton.dart';
+import 'package:frontend_flutter/widgets/skeleton/welcome_banner_skeleton.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,30 +24,43 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _analyticsData = AnalyticsService(context).fetchHomePageAnalytics();
-    _currentUser = UserService(context).fetchCurrentUser();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    setState(() {
+      _analyticsData = AnalyticsService(context).fetchHomePageAnalytics();
+      _currentUser = UserService(context).fetchCurrentUser();
+    });
+  }
+
+  Future<void> _refreshData() async {
+    await _loadData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppStyleConfig.secondaryBackgroundColor,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              WelcomeBannerWidget(currentUserFuture: _currentUser),
-              const SizedBox(height: 12.0),
-              AnalyticsDataWidget(analyticsDataFuture: _analyticsData),
-              const SizedBox(height: 12.0),
-              HomeList(
-                onItemSelected: (selectedItem) {
-                  String routeName = selectedItem['routeName'];
-                  Navigator.pushNamed(context, routeName);
-                },
-              ),
-            ],
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                WelcomeBannerWidget(currentUserFuture: _currentUser),
+                const SizedBox(height: 12.0),
+                AnalyticsDataWidget(analyticsDataFuture: _analyticsData),
+                const SizedBox(height: 12.0),
+                HomeList(
+                  onItemSelected: (selectedItem) {
+                    String routeName = selectedItem['routeName'];
+                    Navigator.pushNamed(context, routeName);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -64,7 +79,7 @@ class WelcomeBannerWidget extends StatelessWidget {
       future: currentUserFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const SkeletonWelcomeBanner();
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
@@ -88,7 +103,7 @@ class AnalyticsDataWidget extends StatelessWidget {
       future: analyticsDataFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const SkeletonHomeAnalytics();
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:frontend_flutter/config/app_api_config.dart';
 import 'package:provider/provider.dart';
@@ -11,9 +10,8 @@ class ApiService {
 
   ApiService(this.context);
 
-  Uri _buildUri(String endpoint) {
-    return Uri.parse('${AppApiConfig.baseUrl}$endpoint');
-  }
+  Uri _buildUri(String endpoint) =>
+      Uri.parse('${AppApiConfig.baseUrl}$endpoint');
 
   Future<String?> _getToken() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -21,76 +19,58 @@ class ApiService {
   }
 
   Future<http.Response> _handleResponse(http.Response response) async {
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return response;
-    } else if (response.statusCode == 401) {
+    if (response.statusCode == 401) {
       Provider.of<AuthProvider>(context, listen: false).clearToken();
       _redirectToLogin();
-      return response;
-    } else {
-      return response;
     }
+    return response;
   }
 
   void _redirectToLogin() {
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
 
-  Future<http.Response> get(String endpoint) async {
+  Future<http.Response> _sendRequest(String method, String endpoint,
+      {Map<String, dynamic>? body}) async {
     final uri = _buildUri(endpoint);
     final token = await _getToken();
-
-    Map<String, String>? headers = {'Content-Type': 'application/json'};
+    final headers = <String, String>{'Content-Type': 'application/json'};
 
     if (token != null) {
-      headers = AppApiConfig.getHeaders(token);
+      headers.addAll(AppApiConfig.getHeaders(token));
     }
 
-    final response = await http.get(uri, headers: headers);
+    http.Response response;
+    switch (method) {
+      case 'GET':
+        response = await http.get(uri, headers: headers);
+        break;
+      case 'POST':
+        response =
+            await http.post(uri, headers: headers, body: json.encode(body));
+        break;
+      case 'PUT':
+        response =
+            await http.put(uri, headers: headers, body: json.encode(body));
+        break;
+      case 'DELETE':
+        response = await http.delete(uri, headers: headers);
+        break;
+      default:
+        throw UnsupportedError('Unsupported HTTP method: $method');
+    }
+
     return await _handleResponse(response);
   }
 
-  Future<http.Response> post(String endpoint, Map<String, dynamic> body) async {
-    final uri = _buildUri(endpoint);
-    final token = await _getToken();
+  Future<http.Response> get(String endpoint) => _sendRequest('GET', endpoint);
 
-    Map<String, String>? headers = {'Content-Type': 'application/json'};
+  Future<http.Response> post(String endpoint, Map<String, dynamic> body) =>
+      _sendRequest('POST', endpoint, body: body);
 
-    if (token != null) {
-      headers = AppApiConfig.getHeaders(token);
-    }
+  Future<http.Response> put(String endpoint, Map<String, dynamic> body) =>
+      _sendRequest('PUT', endpoint, body: body);
 
-    final response =
-        await http.post(uri, headers: headers, body: json.encode(body));
-    return await _handleResponse(response);
-  }
-
-  Future<http.Response> put(String endpoint, Map<String, dynamic> body) async {
-    final uri = _buildUri(endpoint);
-    final token = await _getToken();
-
-    Map<String, String>? headers = {'Content-Type': 'application/json'};
-
-    if (token != null) {
-      headers = AppApiConfig.getHeaders(token);
-    }
-
-    final response =
-        await http.put(uri, headers: headers, body: json.encode(body));
-    return await _handleResponse(response);
-  }
-
-  Future<http.Response> delete(String endpoint) async {
-    final uri = _buildUri(endpoint);
-    final token = await _getToken();
-
-    Map<String, String>? headers = {'Content-Type': 'application/json'};
-
-    if (token != null) {
-      headers = AppApiConfig.getHeaders(token);
-    }
-
-    final response = await http.delete(uri, headers: headers);
-    return await _handleResponse(response);
-  }
+  Future<http.Response> delete(String endpoint) =>
+      _sendRequest('DELETE', endpoint);
 }

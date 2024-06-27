@@ -37,6 +37,7 @@ class DocumentScreenState extends State<DocumentScreen> {
         ),
         centerTitle: true,
         backgroundColor: AppStyleConfig.secondaryColor,
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: documents.isEmpty

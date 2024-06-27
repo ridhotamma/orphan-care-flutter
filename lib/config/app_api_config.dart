@@ -1,5 +1,5 @@
 class AppApiConfig {
-  static const String _developmentBaseUrl = 'http://localhost:8080/api';
+  static const String _developmentBaseUrl = 'https://personwithai.my.id/api';
   static const String _stagingBaseUrl = 'https://personwithai.my.id/api';
   static const String _productionBaseUrl = 'https://production.example.com/api';
 

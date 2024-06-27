@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/providers/auth_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -27,6 +29,7 @@ class SettingsScreen extends StatelessWidget {
       ),
       centerTitle: true,
       backgroundColor: AppStyleConfig.secondaryColor,
+      automaticallyImplyLeading: false,
     );
   }
 
@@ -35,11 +38,9 @@ class SettingsScreen extends StatelessWidget {
       leadingIcon: Icons.language,
       title: 'Language',
       trailingWidget: DropdownButton<String>(
-        value: 'English', // Replace with actual logic
-        onChanged: (value) {
-          // Implement logic to change language
-        },
-        items: ['English', 'Spanish'] // Replace with your languages
+        value: 'English',
+        onChanged: (value) {},
+        items: ['English', 'Spanish']
             .map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value,
@@ -54,9 +55,7 @@ class SettingsScreen extends StatelessWidget {
     return _buildListItem(
       leadingIcon: Icons.info_outline,
       title: 'About App',
-      onTap: () {
-        // Implement logic to navigate to about screen or show dialog
-      },
+      onTap: () {},
     );
   }
 
@@ -66,9 +65,7 @@ class SettingsScreen extends StatelessWidget {
       title: 'Logout',
       textColor: AppStyleConfig.errorColor,
       iconColor: AppStyleConfig.errorColor,
-      onTap: () {
-        _showLogoutBottomSheet(context);
-      },
+      onTap: () => _showLogoutBottomSheet(context),
     );
   }
 
@@ -82,9 +79,9 @@ class SettingsScreen extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[200], // Background color
-        border: Border.all(color: Colors.grey), // Border color
-        borderRadius: BorderRadius.circular(10), // Rounded corners
+        color: Colors.grey[200],
+        border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(10),
       ),
       margin: const EdgeInsets.symmetric(vertical: 8),
       child: ListTile(
@@ -92,7 +89,7 @@ class SettingsScreen extends StatelessWidget {
         title: Text(
           title,
           style: TextStyle(
-            color: textColor ?? Colors.black, // Default text color
+            color: textColor ?? Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -105,9 +102,8 @@ class SettingsScreen extends StatelessWidget {
   void _showLogoutBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return _buildLogoutBottomSheetContent(context);
-      },
+      builder: (BuildContext context) =>
+          _buildLogoutBottomSheetContent(context),
     );
   }
 
@@ -129,16 +125,15 @@ class SettingsScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Close the bottom sheet
-                },
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () {
-                  // Implement logout action, e.g., clear user session
-                  Navigator.of(context).pop(); // Close the bottom sheet
-                  // Navigate to login screen or initial screen
+                  Provider.of<AuthProvider>(context, listen: false)
+                      .clearToken();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, '/', (route) => false);
                 },
                 child: const Text(
                   'Logout',

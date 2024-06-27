@@ -58,7 +58,7 @@ class CurrentUser {
   final String username;
   final List<String> roles;
   final bool active;
-  final Profile profile;
+  final Map<String, dynamic> profile;
 
   CurrentUser({
     required this.id,
@@ -76,7 +76,7 @@ class CurrentUser {
       username: json['username'],
       roles: List<String>.from(json['roles']),
       active: json['active'],
-      profile: Profile.fromJson(json['profile']),
+      profile: json['profile'],
     );
   }
 
@@ -87,7 +87,7 @@ class CurrentUser {
       'username': username,
       'roles': roles,
       'active': active,
-      'profile': profile.toJson(),
+      'profile': profile,
     };
   }
 }

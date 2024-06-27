@@ -1,30 +1,27 @@
-import 'package:frontend_flutter/models/address_model.dart';
-import 'package:frontend_flutter/models/bedroom_model.dart';
-
 class Profile {
   final String? profilePicture;
   final String? birthday;
   final String? joinDate;
   final String? leaveDate;
-  final String bio;
+  final String? bio;
   final String? bedRoomId;
-  final String fullName;
-  final Address? address;
-  final String? guardian;
-  final BedRoom? bedRoom;
-  final String phoneNumber;
-  final String gender;
+  final String? fullName;
+  final Map<String, dynamic>? address;
+  final Map<String, dynamic>? guardian;
+  final Map<String, dynamic>? bedRoom;
+  final String? phoneNumber;
+  final String? gender;
 
   Profile({
-    required this.profilePicture,
-    required this.birthday,
-    required this.joinDate,
-    required this.leaveDate,
-    required this.bio,
-    required this.bedRoomId,
-    required this.fullName,
-    required this.phoneNumber,
-    required this.gender,
+    this.profilePicture,
+    this.birthday,
+    this.joinDate,
+    this.leaveDate,
+    this.bio,
+    this.bedRoomId,
+    this.fullName,
+    this.phoneNumber,
+    this.gender,
     this.address,
     this.guardian,
     this.bedRoom,
@@ -32,18 +29,18 @@ class Profile {
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
-      profilePicture: json['profilePicture'],
-      birthday: json['birthday'],
-      joinDate: json['joinDate'],
-      leaveDate: json['leaveDate'],
-      bio: json['bio'],
-      bedRoomId: json['bedRoomId'],
-      fullName: json['fullName'],
-      address: Address.fromJson(json['address']),
+      profilePicture: json['profilePicture'] ?? '',
+      birthday: json['birthday'] ?? '',
+      joinDate: json['joinDate'] ?? '',
+      leaveDate: json['leaveDate'] ?? '',
+      bio: json['bio'] ?? '',
+      bedRoomId: json['bedRoomId'] ?? '',
+      fullName: json['fullName'] ?? '',
+      address: json['address'],
       guardian: json['guardian'],
-      bedRoom: BedRoom.fromJson(json['bedRoom']),
-      phoneNumber: json['phoneNumber'],
-      gender: json['gender'],
+      bedRoom: json['bedRoom'],
+      phoneNumber: json['phoneNumber'] ?? '',
+      gender: json['gender'] ?? '',
     );
   }
 
@@ -56,9 +53,9 @@ class Profile {
       'bio': bio,
       'bedRoomId': bedRoomId,
       'fullName': fullName,
-      'address': address?.toJson(),
+      'address': address,
       'guardian': guardian,
-      'bedRoom': bedRoom?.toJson(),
+      'bedRoom': bedRoom,
       'phoneNumber': phoneNumber,
       'gender': gender,
     };
