@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class LocalizationProvider with ChangeNotifier {
-  Locale _locale = const Locale('en');
+  Locale _locale = const Locale('id');
   late SharedPreferences _prefs;
   late Future<void> _initFuture;
 
@@ -13,12 +13,17 @@ class LocalizationProvider with ChangeNotifier {
   }
 
   Future<void> _initPreferences() async {
-    _prefs = await SharedPreferences.getInstance();
-    String? localeCode = _prefs.getString('locale');
-    if (localeCode != null) {
-      _locale = Locale(localeCode);
+    try {
+      _prefs = await SharedPreferences.getInstance();
+      String? localeCode = _prefs.getString('locale');
+      if (localeCode != null) {
+        _locale = Locale(localeCode);
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    } finally {
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   Future<void> get initFuture => _initFuture;
@@ -60,18 +65,19 @@ class AppLocalizations {
   static const LocalizationsDelegate<AppLocalizations> delegate =
       _AppLocalizationsDelegate();
 
-  late Map<String, String> _localizedStrings;
+  late Map<String, String> _localizedStrings = {};
 
   Future<bool> load() async {
-    String jsonString =
-        await rootBundle.loadString('lang/${locale.languageCode}.json');
-    Map<String, dynamic> jsonMap = json.decode(jsonString);
-
-    _localizedStrings = jsonMap.map((key, value) {
-      return MapEntry(key, value.toString());
-    });
-
-    return true;
+    try {
+      String jsonString = await rootBundle.loadString('assets/lang/id.json');
+      Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+      _localizedStrings = jsonMap.map((key, value) {
+        return MapEntry(key, value.toString());
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   String translate(String key) {

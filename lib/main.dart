@@ -28,9 +28,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
-        ChangeNotifierProvider<LocalizationProvider>(
-          create: (_) => LocalizationProvider(),
-        ),
+        ChangeNotifierProvider<LocalizationProvider>.value(
+            value: localizationProvider),
       ],
       child: const OrphanCareApp(),
     ),
