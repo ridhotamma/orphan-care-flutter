@@ -52,42 +52,48 @@ class HomeAnalytics extends StatelessWidget {
     required int count,
   }) {
     return Expanded(
-      child: Card(
-        color: AppStyleConfig.primaryBackgroundColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          side: const BorderSide(
-              color: Colors.grey, width: 1.0), // Add solid border
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 40.0,
-                color: Colors.black,
-              ),
-              const SizedBox(height: 10.0),
-              Text(
-                title,
-                style: const TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 10.0),
-              Text(
-                count.toString(),
-                style: const TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Card(
+          color: AppStyleConfig.primaryBackgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            side: const BorderSide(
+              color: Colors.grey,
+              width: 1.0,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 40.0,
                   color: Colors.black,
                 ),
-              ),
-            ],
+                const SizedBox(height: 10.0),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10.0),
+                Text(
+                  count.toString(),
+                  style: const TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
