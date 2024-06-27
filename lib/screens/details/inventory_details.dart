@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 
 class InventoryDetails extends StatelessWidget {
-  static const String routeName = '/home/inventory_details';
+  static const String routeName = '/main/home/inventory_details';
 
   const InventoryDetails({super.key});
 

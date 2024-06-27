@@ -58,13 +58,13 @@ class OrphanCareApp extends StatelessWidget {
       routes: {
         '/': (context) => const LoginScreen(),
         '/main': (context) => const MainScreen(),
-        '/home': (context) => const HomeScreen(),
-        '/home/orphan_details': (context) => const OrphanDetails(),
-        '/home/caretaker_details': (context) => const CareTakerDetails(),
-        '/home/bedroom_details': (context) => const BedroomDetails(),
-        '/home/inventory_details': (context) => const InventoryDetails(),
-        '/documents': (context) => const DocumentScreen(),
-        '/settings': (context) => const SettingsScreen(),
+        '/main/home': (context) => const HomeScreen(),
+        '/main/home/orphan_details': (context) => const OrphanDetails(),
+        '/main/home/caretaker_details': (context) => const CareTakerDetails(),
+        '/main/home/bedroom_details': (context) => const BedroomDetails(),
+        '/main/home/inventory_details': (context) => const InventoryDetails(),
+        '/main/documents': (context) => const DocumentScreen(),
+        '/main/settings': (context) => const SettingsScreen(),
       },
     );
   }

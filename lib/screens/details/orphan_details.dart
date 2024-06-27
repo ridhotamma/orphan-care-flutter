@@ -3,7 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 
 class OrphanDetails extends StatefulWidget {
-  static const String routeName = '/home/orphan_details';
+  static const String routeName = '/main/home/orphan_details';
 
   const OrphanDetails({super.key});
 
