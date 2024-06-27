@@ -3,6 +3,10 @@ import 'package:frontend_flutter/config/app_style_config.dart';
 import 'home_screen.dart';
 import 'document_screen.dart';
 import 'settings_screen.dart';
+import 'package:frontend_flutter/screens/details/bedroom_details.dart';
+import 'package:frontend_flutter/screens/details/caretaker_details.dart';
+import 'package:frontend_flutter/screens/details/inventory_details.dart';
+import 'package:frontend_flutter/screens/details/orphan_details.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -14,10 +18,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  final PageController _pageController = PageController();
-
   final List<Widget> _screens = [
-    const HomeScreen(),
+    const HomeScreenNavigator(),
     const DocumentScreen(),
     const SettingsScreen(),
   ];
@@ -26,28 +28,6 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _currentIndex = index;
     });
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  void _onPageChanged(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
   }
 
   @override
@@ -55,11 +35,7 @@ class _MainScreenState extends State<MainScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppStyleConfig.primaryBackgroundColor,
-        body: PageView(
-          controller: _pageController,
-          onPageChanged: _onPageChanged,
-          children: _screens,
-        ),
+        body: _screens[_currentIndex],
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: AppStyleConfig.primaryColor,
           currentIndex: _currentIndex,
@@ -82,6 +58,40 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class HomeScreenNavigator extends StatelessWidget {
+  const HomeScreenNavigator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+      initialRoute: '/main/home',
+      onGenerateRoute: (settings) {
+        WidgetBuilder builder;
+        switch (settings.name) {
+          case '/main/home':
+            builder = (BuildContext _) => const HomeScreen();
+            break;
+          case '/main/home/orphan_details':
+            builder = (BuildContext _) => const OrphanDetails();
+            break;
+          case '/main/home/caretaker_details':
+            builder = (BuildContext _) => const CareTakerDetails();
+            break;
+          case '/main/home/bedroom_details':
+            builder = (BuildContext _) => const BedroomDetails();
+            break;
+          case '/main/home/inventory_details':
+            builder = (BuildContext _) => const InventoryDetails();
+            break;
+          default:
+            builder = (BuildContext _) => const HomeScreen();
+        }
+        return MaterialPageRoute(builder: builder, settings: settings);
+      },
     );
   }
 }
