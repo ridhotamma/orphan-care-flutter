@@ -114,15 +114,24 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          TextButton(
-            onPressed: _onStepCancel,
-            style: AppStyleConfig.secondaryTextButtonStyle,
-            child: const Text('Back'),
+          SizedBox(
+            width: 100.0,
+            child: ElevatedButton(
+              onPressed: _onStepCancel,
+              style: AppStyleConfig.primaryTextButtonStyle,
+              child: Text(
+                _currentStep == 0 ? 'Cancel' : 'Back',
+              ),
+            ),
           ),
-          ElevatedButton(
-            onPressed: _onStepContinue,
-            style: AppStyleConfig.secondaryButtonStyle,
-            child: Text(_currentStep == _steps.length - 1 ? 'Submit' : 'Next'),
+          SizedBox(
+            width: 100.0,
+            child: ElevatedButton(
+              onPressed: _onStepContinue,
+              style: AppStyleConfig.secondaryButtonStyle,
+              child:
+                  Text(_currentStep == _steps.length - 1 ? 'Submit' : 'Next'),
+            ),
           ),
         ],
       ),

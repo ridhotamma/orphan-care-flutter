@@ -44,6 +44,15 @@ class AppStyleConfig {
     ),
   );
 
+  static ButtonStyle errorButtonStyle = ElevatedButton.styleFrom(
+    backgroundColor: errorColor,
+    foregroundColor: Colors.white,
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(4),
+    ),
+  );
+
   static ButtonStyle secondaryButtonStyle = ElevatedButton.styleFrom(
     backgroundColor: secondaryColor,
     foregroundColor: Colors.white,
