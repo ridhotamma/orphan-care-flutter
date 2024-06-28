@@ -47,7 +47,6 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     'Basic Information',
     'Profile and Address',
     'Document',
-    'Payment & Review',
   ];
 
   @override
@@ -130,8 +129,6 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                     return _buildProfileAndAddress();
                   case 'Document':
                     return _buildDocument();
-                  case 'Payment & Review':
-                    return _buildPaymentReview();
                   default:
                     return const SizedBox.shrink();
                 }
@@ -583,12 +580,6 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   Widget _buildDocument() {
     return const Center(
       child: Text('Document Form Placeholder'),
-    );
-  }
-
-  Widget _buildPaymentReview() {
-    return const Center(
-      child: Text('Payment & Review Form Placeholder'),
     );
   }
 }
