@@ -84,25 +84,28 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     return Container(
       color: Colors.grey[200],
       padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Text(
-            'Step ${_currentStep + 1} of ${_steps.length}',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(width: 10),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              CircularProgressIndicator(
-                value: (_currentStep + 1) / _steps.length,
-                backgroundColor: Colors.grey[300],
-                color: AppStyleConfig.secondaryColor,
-              ),
-            ],
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Step ${_currentStep + 1} of ${_steps.length}',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(width: 10),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                CircularProgressIndicator(
+                  value: (_currentStep + 1) / _steps.length,
+                  backgroundColor: Colors.grey[300],
+                  color: AppStyleConfig.secondaryColor,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
