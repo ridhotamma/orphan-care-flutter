@@ -1,6 +1,7 @@
 class Profile {
   final String? profilePicture;
   final String? birthday;
+  final String? birthPlace;
   final String? joinDate;
   final String? leaveDate;
   final String? bio;
@@ -15,6 +16,7 @@ class Profile {
   Profile({
     this.profilePicture,
     this.birthday,
+    this.birthPlace,
     this.joinDate,
     this.leaveDate,
     this.bio,
@@ -31,6 +33,7 @@ class Profile {
     return Profile(
       profilePicture: json['profilePicture'] ?? '',
       birthday: json['birthday'] ?? '',
+      birthPlace: json['birthPlace'] ?? '',
       joinDate: json['joinDate'] ?? '',
       leaveDate: json['leaveDate'] ?? '',
       bio: json['bio'] ?? '',
@@ -48,6 +51,7 @@ class Profile {
     return {
       'profilePicture': profilePicture,
       'birthday': birthday,
+      'birthPlace': birthPlace,
       'joinDate': joinDate,
       'leaveDate': leaveDate,
       'bio': bio,

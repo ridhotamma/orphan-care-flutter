@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 
 class BedroomList extends StatelessWidget {
-  static const String routeName = '/main/home/bedroom_details';
+  static const String routeName = '/main/home/bedroom_list';
 
   const BedroomList({super.key});
 

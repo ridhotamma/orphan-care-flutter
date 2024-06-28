@@ -62,6 +62,28 @@ class AppStyleConfig {
     ),
   );
 
+  static ButtonStyle primaryTextButtonStyle = TextButton.styleFrom(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(4),
+    ),
+    textStyle: const TextStyle(
+      fontFamily: primaryFontFamily,
+    ),
+  );
+
+  static ButtonStyle secondaryTextButtonStyle = TextButton.styleFrom(
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(4),
+      side: const BorderSide(color: accentColor),
+    ),
+    textStyle: const TextStyle(
+      fontFamily: secondaryFontFamily,
+      color: accentColor,
+    ),
+  );
+
   // Input Field Styles
   static InputDecoration inputDecoration = InputDecoration(
     filled: true,
