@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
@@ -11,7 +12,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var localization = AppLocalizations.of(context);
     return Scaffold(
-      appBar: _buildAppBar(localization),
+      appBar: CustomAppBar(title: localization.translate('settings')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -20,19 +21,6 @@ class SettingsScreen extends StatelessWidget {
           _buildLogoutListItem(context, localization),
         ],
       ),
-    );
-  }
-
-  AppBar _buildAppBar(AppLocalizations localization) {
-    return AppBar(
-      title: Text(
-        localization.translate('settings'),
-        style:
-            const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-      ),
-      centerTitle: true,
-      backgroundColor: AppStyleConfig.secondaryColor,
-      automaticallyImplyLeading: false,
     );
   }
 

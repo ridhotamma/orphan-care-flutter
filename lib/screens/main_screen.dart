@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/screens/form/orphan_create_form.dart';
 import 'home_screen.dart';
 import 'document_screen.dart';
 import 'settings_screen.dart';
-import 'package:frontend_flutter/screens/details/bedroom_details.dart';
-import 'package:frontend_flutter/screens/details/caretaker_details.dart';
-import 'package:frontend_flutter/screens/details/inventory_details.dart';
-import 'package:frontend_flutter/screens/details/orphan_details.dart';
+import 'package:frontend_flutter/screens/list/bedroom_list.dart';
+import 'package:frontend_flutter/screens/list/caretaker_list.dart';
+import 'package:frontend_flutter/screens/list/inventory_list.dart';
+import 'package:frontend_flutter/screens/list/orphan_list.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -76,16 +77,19 @@ class HomeScreenNavigator extends StatelessWidget {
             builder = (BuildContext _) => const HomeScreen();
             break;
           case '/main/home/orphan_details':
-            builder = (BuildContext _) => const OrphanDetails();
+            builder = (BuildContext _) => const OrphanList();
+            break;
+          case '/main/home/orphan_details/create':
+            builder = (BuildContext _) => const OrphanCreateForm();
             break;
           case '/main/home/caretaker_details':
-            builder = (BuildContext _) => const CareTakerDetails();
+            builder = (BuildContext _) => const CaretakerList();
             break;
           case '/main/home/bedroom_details':
-            builder = (BuildContext _) => const BedroomDetails();
+            builder = (BuildContext _) => const BedroomList();
             break;
           case '/main/home/inventory_details':
-            builder = (BuildContext _) => const InventoryDetails();
+            builder = (BuildContext _) => const InventoryList();
             break;
           default:
             builder = (BuildContext _) => const HomeScreen();

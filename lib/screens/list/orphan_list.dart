@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 
-class OrphanDetails extends StatefulWidget {
+class OrphanList extends StatefulWidget {
   static const String routeName = '/main/home/orphan_details';
 
-  const OrphanDetails({super.key});
+  const OrphanList({super.key});
 
   @override
-  OrphanDetailsState createState() => OrphanDetailsState();
+  OrphanListState createState() => OrphanListState();
 }
 
-class OrphanDetailsState extends State<OrphanDetails> {
+class OrphanListState extends State<OrphanList> {
   TextEditingController searchController = TextEditingController();
 
   final List<Map<String, dynamic>> orphans = [
@@ -115,7 +115,9 @@ class OrphanDetailsState extends State<OrphanDetails> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, '/main/home/orphan_details/create');
+        },
         backgroundColor: AppStyleConfig.secondaryColor,
         foregroundColor: Colors.white,
         shape: const CircleBorder(),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
-import 'package:frontend_flutter/screens/details/bedroom_details.dart';
-import 'package:frontend_flutter/screens/details/caretaker_details.dart';
-import 'package:frontend_flutter/screens/details/inventory_details.dart';
-import 'package:frontend_flutter/screens/details/orphan_details.dart';
+import 'package:frontend_flutter/screens/list/bedroom_list.dart';
+import 'package:frontend_flutter/screens/list/caretaker_list.dart';
+import 'package:frontend_flutter/screens/list/inventory_list.dart';
+import 'package:frontend_flutter/screens/list/orphan_list.dart';
 
 class ListItem {
   final int id;
@@ -37,7 +37,7 @@ class HomeList extends StatelessWidget {
         subtitle: 'Kelola data profil anak asuh',
         icon: Icons.child_care,
         color: AppStyleConfig.secondaryColor,
-        route: OrphanDetails.routeName,
+        route: OrphanList.routeName,
       ),
       ListItem(
         id: 2,
@@ -45,7 +45,7 @@ class HomeList extends StatelessWidget {
         subtitle: 'Kelola data profil pengasuh',
         icon: Icons.supervised_user_circle,
         color: AppStyleConfig.secondaryColor,
-        route: CareTakerDetails.routeName,
+        route: CaretakerList.routeName,
       ),
       ListItem(
         id: 3,
@@ -53,7 +53,7 @@ class HomeList extends StatelessWidget {
         subtitle: 'Kelola data kamar',
         icon: Icons.hotel,
         color: AppStyleConfig.secondaryColor,
-        route: BedroomDetails.routeName,
+        route: BedroomList.routeName,
       ),
       ListItem(
         id: 4,
@@ -61,7 +61,7 @@ class HomeList extends StatelessWidget {
         subtitle: 'Kelola data kamar',
         icon: Icons.inventory_2_outlined,
         color: AppStyleConfig.secondaryColor,
-        route: InventoryDetails.routeName,
+        route: InventoryList.routeName,
       )
     ];
 

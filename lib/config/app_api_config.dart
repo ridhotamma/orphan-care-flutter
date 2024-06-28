@@ -1,7 +1,9 @@
 class AppApiConfig {
-  static const String _developmentBaseUrl = 'https://personwithai.my.id/api';
-  static const String _stagingBaseUrl = 'https://personwithai.my.id/api';
-  static const String _productionBaseUrl = 'https://production.example.com/api';
+  static const String _developmentBaseUrl =
+      'https://personwithai.my.id/orphancare/api';
+  static const String _stagingBaseUrl =
+      'https://personwithai.my.id/orphancare/api';
+  static const String _productionBaseUrl = 'https://api.psaa-annajah.my.id/api';
 
   static const bool isProduction = bool.fromEnvironment('dart.vm.product');
   static const bool isStaging = bool.fromEnvironment('dart.vm.staging');
