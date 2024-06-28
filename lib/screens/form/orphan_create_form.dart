@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
+import 'package:intl/intl.dart';
 
 class OrphanCreateForm extends StatefulWidget {
   static const routeName = '/main/home/orphan_details/create';
@@ -37,6 +38,8 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   final _cityController = TextEditingController();
   final _provinceController = TextEditingController();
   final _postalCodeController = TextEditingController();
+
+  final DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
 
   int _currentStep = 0;
 
@@ -273,6 +276,20 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     );
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        _birthdayController.text = _dateFormat.format(picked);
+      });
+    }
+  }
+
   Widget _buildProfileAndAddress() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -307,6 +324,10 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                       return 'Please enter birthday';
                     }
                     return null;
+                  },
+                  readOnly: true,
+                  onTap: () {
+                    _selectDate(context);
                   },
                 ),
                 const SizedBox(height: 20.0),
