@@ -34,6 +34,7 @@ class OrphanCareApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     final localizationProvider = Provider.of<LocalizationProvider>(context);
 
     return MaterialApp(
@@ -47,7 +48,7 @@ class OrphanCareApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      initialRoute: '/',
+      initialRoute: authProvider.hasToken ? '/main' : '/',
       routes: {
         '/': (context) => const LoginScreen(),
         '/main': (context) => const MainScreen(),

@@ -20,6 +20,8 @@ class AuthProvider with ChangeNotifier {
 
   String? get token => _token;
 
+  bool get hasToken => _token != null;
+
   void setToken(String? token) {
     _token = token;
     _prefs.setString('token', token ?? '');

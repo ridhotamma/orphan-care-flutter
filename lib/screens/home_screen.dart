@@ -24,18 +24,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _analyticsData = AnalyticsService(context).fetchHomePageAnalytics();
+    _currentUser = UserService(context).fetchCurrentUser();
   }
 
-  Future<void> _loadData() async {
+  Future<void> _refreshData() async {
     setState(() {
       _analyticsData = AnalyticsService(context).fetchHomePageAnalytics();
       _currentUser = UserService(context).fetchCurrentUser();
     });
-  }
-
-  Future<void> _refreshData() async {
-    await _loadData();
   }
 
   @override
