@@ -4,6 +4,7 @@ import 'package:frontend_flutter/widgets/document/document_item.dart';
 import 'package:frontend_flutter/widgets/document/upload_card.dart';
 import 'package:frontend_flutter/models/document_model.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 
 class DocumentScreen extends StatefulWidget {
   const DocumentScreen({super.key});
@@ -13,33 +14,12 @@ class DocumentScreen extends StatefulWidget {
 }
 
 class DocumentScreenState extends State<DocumentScreen> {
-  final List<Document> documents = [
-    Document(
-        name: "Kartu Keluarga.pdf",
-        type: 'pdf',
-        url: 'https://example.com/example1.pdf'),
-    Document(
-        name: "Akta Kelahiran.pdf",
-        type: 'pdf',
-        url: 'https://example.com/example1.pdf'),
-    Document(
-        name: "Surat Tanah.png",
-        type: 'image',
-        url: 'https://example.com/example1.png'),
-  ];
+  final List<Document> documents = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Documents',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        centerTitle: true,
-        backgroundColor: AppStyleConfig.secondaryColor,
-        automaticallyImplyLeading: false,
-      ),
+      appBar: const CustomAppBar(title: 'Documents'),
       body: Center(
         child: documents.isEmpty
             ? _buildUploadSection(context)
@@ -56,11 +36,11 @@ class DocumentScreenState extends State<DocumentScreen> {
         const SizedBox(height: 20),
         const Text(
           'Upload your documents here',
-          style: TextStyle(fontSize: 20),
+          style: TextStyle(fontSize: 18),
         ),
         const SizedBox(height: 20),
         SizedBox(
-          width: MediaQuery.of(context).size.width / 2,
+          width: MediaQuery.of(context).size.width / 3,
           child: ElevatedButton(
             onPressed: _uploadDocument,
             style: AppStyleConfig.secondaryButtonStyle,

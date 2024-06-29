@@ -29,9 +29,10 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   final _joinDateController = TextEditingController();
   final _phoneNumberController = TextEditingController();
 
+  final _guardianFullNameController = TextEditingController();
   String? _selectedGender;
   String? _selectedBedRoom;
-  String? _selectedGuardian;
+  String? _selectedFamilyRelation;
 
   final _addressFormKey = GlobalKey<FormState>();
   final _streetController = TextEditingController();
@@ -63,6 +64,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     _birthPlaceController.dispose();
     _joinDateController.dispose();
     _phoneNumberController.dispose();
+    _guardianFullNameController.dispose();
     _streetController.dispose();
     _urbanVillageController.dispose();
     _subdistrictController.dispose();
@@ -270,7 +272,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                     r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$';
                 final regExp = RegExp(pattern);
                 if (!regExp.hasMatch(value)) {
-                  return 'Password must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number';
+                  return 'Password must uppercase letter, lowercase letter, number';
                 }
                 return null;
               },
@@ -402,22 +404,37 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   ],
                 ),
                 const SizedBox(height: 20.0),
+                _buildRequiredTextFormField(
+                  controller: _guardianFullNameController,
+                  hintText: 'Guardian Full Name',
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter guardian full name';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20.0),
                 _buildRequiredDropdownButtonFormField(
-                  value: _selectedGuardian,
-                  hintText: 'Guardian',
+                  value: _selectedFamilyRelation,
+                  hintText: 'Family Relation',
                   onChanged: (value) {
                     setState(() {
-                      _selectedGuardian = value;
+                      _selectedFamilyRelation = value;
                     });
                   },
                   items: const [
                     DropdownMenuItem(
-                      value: 'guardian-uuid-1',
-                      child: Text('Guardian 1'),
+                      value: 'guardian-type-uuid-1',
+                      child: Text('Ibu kandung'),
                     ),
                     DropdownMenuItem(
-                      value: 'guardian-uuid-2',
-                      child: Text('Guardian 2'),
+                      value: 'guardian-type-uuid-2',
+                      child: Text('Ayah Kandung'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'guardian-type-uuid-3',
+                      child: Text('Paman'),
                     ),
                   ],
                 ),
@@ -498,7 +515,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
           const Icon(Icons.cloud_upload, size: 100),
           const SizedBox(height: 20),
           const Text(
-            'Upload your documents here',
+            'Upload orphan documents here',
             style: TextStyle(fontSize: 20),
           ),
           const SizedBox(height: 20),

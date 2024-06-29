@@ -17,7 +17,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       this.backgroundColor = AppStyleConfig.secondaryColor,
       this.automaticallyImplyLeading = false,
       this.actions,
-      this.foregroundColor,
+      this.foregroundColor = Colors.white,
       this.bottom});
 
   @override
@@ -25,8 +25,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(
         title,
-        style:
-            const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        style: const TextStyle(
+            fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18.0),
       ),
       centerTitle: centerTitle,
       backgroundColor: backgroundColor,

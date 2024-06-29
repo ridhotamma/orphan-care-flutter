@@ -145,7 +145,7 @@ class OrphanDetails extends StatelessWidget {
 
   Widget _buildDetailList() {
     return ListView(
-      padding: const EdgeInsets.only(top: 12.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       children: [
