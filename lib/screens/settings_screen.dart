@@ -82,7 +82,7 @@ class SettingsScreen extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: AppStyleConfig.primaryBackgroundColor,
         border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(10),
       ),

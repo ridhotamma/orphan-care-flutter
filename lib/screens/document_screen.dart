@@ -3,6 +3,7 @@ import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/widgets/document/document_item.dart';
 import 'package:frontend_flutter/widgets/document/upload_card.dart';
 import 'package:frontend_flutter/models/document_model.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class DocumentScreen extends StatefulWidget {
   const DocumentScreen({super.key});
@@ -42,7 +43,7 @@ class DocumentScreenState extends State<DocumentScreen> {
       body: Center(
         child: documents.isEmpty
             ? _buildUploadSection(context)
-            : _buildDocumentsGrid(),
+            : _buildDocumentsMasonryGrid(),
       ),
     );
   }
@@ -80,15 +81,13 @@ class DocumentScreenState extends State<DocumentScreen> {
     });
   }
 
-  Widget _buildDocumentsGrid() {
+  Widget _buildDocumentsMasonryGrid() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-        ),
+      child: MasonryGridView.count(
+        crossAxisCount: 2,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
         itemCount: documents.length + 1,
         itemBuilder: (BuildContext context, int index) {
           if (index < documents.length) {

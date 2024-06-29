@@ -142,6 +142,9 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   }
 
   Widget _buildHorizontalStepper() {
+    double progressPercentage = (_currentStep + 1) / _steps.length;
+    String progressText = '${(progressPercentage * 100).toInt()}%';
+
     return Container(
       color: Colors.grey[200],
       padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -159,9 +162,13 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
               alignment: Alignment.center,
               children: [
                 CircularProgressIndicator(
-                  value: (_currentStep + 1) / _steps.length,
+                  value: progressPercentage,
                   backgroundColor: Colors.grey[300],
                   color: AppStyleConfig.secondaryColor,
+                ),
+                Text(
+                  progressText,
+                  style: const TextStyle(fontSize: 12),
                 ),
               ],
             ),
