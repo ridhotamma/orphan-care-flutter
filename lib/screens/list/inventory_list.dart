@@ -10,9 +10,9 @@ class InventoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Map<String, String>> bedrooms = [
-      {'name': 'Inventory 1', 'type': 'Type A'},
-      {'name': 'Inventory 2', 'type': 'Type B'},
-      {'name': 'Inventory 3', 'type': 'Type C'},
+      {'name': 'Inventory 1', 'type': 'Makanan'},
+      {'name': 'Inventory 2', 'type': 'Makanan'},
+      {'name': 'Inventory 3', 'type': 'Alat Tulis'},
     ];
 
     return Scaffold(
@@ -52,7 +52,34 @@ class InventoryList extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              subtitle: Text(bedroom['type']!),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Chip(
+                    label: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Icon(
+                          Icons.stacked_bar_chart,
+                          size: 20,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Jumlah: 10',
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ],
+                    ),
+                    backgroundColor: AppStyleConfig.accentColor,
+                    padding: EdgeInsets.symmetric(horizontal: 0),
+                  ),
+                  Text(bedroom['type']!)
+                ],
+              ),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
                 // Handle tap event

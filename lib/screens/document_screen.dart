@@ -19,6 +19,7 @@ class DocumentScreenState extends State<DocumentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: const CustomAppBar(title: 'Documents'),
       body: Center(
         child: documents.isEmpty

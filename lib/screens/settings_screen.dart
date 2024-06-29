@@ -12,6 +12,7 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var localization = AppLocalizations.of(context);
     return Scaffold(
+      backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: CustomAppBar(title: localization.translate('settings')),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -82,7 +83,7 @@ class SettingsScreen extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: AppStyleConfig.primaryBackgroundColor,
+        color: Colors.white,
         border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(10),
       ),

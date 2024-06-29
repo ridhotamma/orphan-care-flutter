@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_flutter/config/app_style_config.dart';
 
 class UploadCard extends StatelessWidget {
   const UploadCard({super.key});
@@ -7,7 +6,7 @@ class UploadCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppStyleConfig.primaryBackgroundColor,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
         side: const BorderSide(

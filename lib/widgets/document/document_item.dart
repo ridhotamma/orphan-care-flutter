@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/models/document_model.dart';
 
 class DocumentItem extends StatelessWidget {
@@ -13,7 +12,7 @@ class DocumentItem extends StatelessWidget {
         document.type == 'pdf' ? Icons.picture_as_pdf : Icons.image;
 
     return Card(
-      color: AppStyleConfig.primaryBackgroundColor,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
         side: const BorderSide(

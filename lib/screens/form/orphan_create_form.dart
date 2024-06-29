@@ -129,6 +129,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: const CustomAppBar(
         title: 'Create User Form',
         foregroundColor: Colors.white,
@@ -164,7 +165,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     double progressPercentage = (_currentStep + 1) / _steps.length;
 
     return Container(
-      color: Colors.grey[200],
+      color: Colors.white,
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Padding(
         padding: const EdgeInsets.only(left: 20.0, right: 20.0),
