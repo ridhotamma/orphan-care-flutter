@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/widgets/document/document_item.dart';
+import 'package:frontend_flutter/widgets/document/upload_card.dart';
+import 'package:frontend_flutter/models/document_model.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 import 'package:intl/intl.dart';
 
@@ -23,8 +27,6 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   final _birthdayController = TextEditingController();
   final _birthPlaceController = TextEditingController();
   final _joinDateController = TextEditingController();
-  final _leaveDateController = TextEditingController();
-  final _bioController = TextEditingController();
   final _phoneNumberController = TextEditingController();
 
   String? _selectedGender;
@@ -49,6 +51,8 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     'Document',
   ];
 
+  final List<Document> _documents = [];
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -58,8 +62,6 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     _birthdayController.dispose();
     _birthPlaceController.dispose();
     _joinDateController.dispose();
-    _leaveDateController.dispose();
-    _bioController.dispose();
     _phoneNumberController.dispose();
     _streetController.dispose();
     _urbanVillageController.dispose();
@@ -107,6 +109,21 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     }
   }
 
+  Future<void> _selectDate(
+      BuildContext context, TextEditingController controller) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        controller.text = _dateFormat.format(picked);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,7 +160,6 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
 
   Widget _buildHorizontalStepper() {
     double progressPercentage = (_currentStep + 1) / _steps.length;
-    String progressText = '${(progressPercentage * 100).toInt()}%';
 
     return Container(
       color: Colors.grey[200],
@@ -165,10 +181,6 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   value: progressPercentage,
                   backgroundColor: Colors.grey[300],
                   color: AppStyleConfig.secondaryColor,
-                ),
-                Text(
-                  progressText,
-                  style: const TextStyle(fontSize: 12),
                 ),
               ],
             ),
@@ -216,12 +228,9 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
         key: _formKey,
         child: ListView(
           children: [
-            TextFormField(
+            _buildRequiredTextFormField(
               controller: _emailController,
-              decoration: AppStyleConfig.inputDecoration.copyWith(
-                hintText: 'Email',
-              ),
-              keyboardType: TextInputType.emailAddress,
+              hintText: 'Email',
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your email';
@@ -234,14 +243,10 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                 return null;
               },
             ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            TextFormField(
+            const SizedBox(height: 20.0),
+            _buildRequiredTextFormField(
               controller: _usernameController,
-              decoration: AppStyleConfig.inputDecoration.copyWith(
-                hintText: 'Username',
-              ),
+              hintText: 'Username',
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter your username';
@@ -249,14 +254,10 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                 return null;
               },
             ),
-            const SizedBox(
-              height: 20.0,
-            ),
-            TextFormField(
+            const SizedBox(height: 20.0),
+            _buildRequiredTextFormField(
               controller: _passwordController,
-              decoration: AppStyleConfig.inputDecoration.copyWith(
-                hintText: 'Password',
-              ),
+              hintText: 'Password',
               obscureText: true,
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -280,20 +281,6 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
-      setState(() {
-        _birthdayController.text = _dateFormat.format(picked);
-      });
-    }
-  }
-
   Widget _buildProfileAndAddress() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -304,12 +291,10 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SectionTitle(title: 'Profile Information'),
-                TextFormField(
+                _buildSectionTitle('Profile Information'),
+                _buildRequiredTextFormField(
                   controller: _fullNameController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Full Name',
-                  ),
+                  hintText: 'Full Name',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter full name';
@@ -318,11 +303,9 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   },
                 ),
                 const SizedBox(height: 20.0),
-                TextFormField(
+                _buildRequiredTextFormField(
                   controller: _birthdayController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Birthday',
-                  ),
+                  hintText: 'Birthday',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter birthday';
@@ -331,15 +314,14 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   },
                   readOnly: true,
                   onTap: () {
-                    _selectDate(context);
+                    _selectDate(context, _birthdayController);
                   },
+                  suffixIcon: const Icon(Icons.calendar_today),
                 ),
                 const SizedBox(height: 20.0),
-                TextFormField(
+                _buildRequiredTextFormField(
                   controller: _birthPlaceController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Birth Place',
-                  ),
+                  hintText: 'Birth Place',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter birth place';
@@ -348,50 +330,25 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   },
                 ),
                 const SizedBox(height: 20.0),
-                TextFormField(
+                _buildRequiredTextFormField(
                   controller: _joinDateController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Join Date',
-                  ),
+                  hintText: 'Join Date',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter join date';
                     }
                     return null;
                   },
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
-                  controller: _leaveDateController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Leave Date',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter leave date';
-                    }
-                    return null;
+                  readOnly: true,
+                  onTap: () {
+                    _selectDate(context, _joinDateController);
                   },
+                  suffixIcon: const Icon(Icons.calendar_today),
                 ),
                 const SizedBox(height: 20.0),
-                TextFormField(
-                  controller: _bioController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Bio',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter bio';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20.0),
-                TextFormField(
+                _buildRequiredTextFormField(
                   controller: _phoneNumberController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Phone Number',
-                  ),
+                  hintText: 'Phone Number',
                   keyboardType: TextInputType.phone,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -401,21 +358,13 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   },
                 ),
                 const SizedBox(height: 20.0),
-                DropdownButtonFormField<String>(
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Gender',
-                  ),
+                _buildRequiredDropdownButtonFormField(
                   value: _selectedGender,
+                  hintText: 'Gender',
                   onChanged: (value) {
                     setState(() {
                       _selectedGender = value;
                     });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select gender';
-                    }
-                    return null;
                   },
                   items: const [
                     DropdownMenuItem(
@@ -433,21 +382,13 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   ],
                 ),
                 const SizedBox(height: 20.0),
-                DropdownButtonFormField<String>(
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Bed Room',
-                  ),
+                _buildRequiredDropdownButtonFormField(
                   value: _selectedBedRoom,
+                  hintText: 'Bed Room',
                   onChanged: (value) {
                     setState(() {
                       _selectedBedRoom = value;
                     });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select bed room';
-                    }
-                    return null;
                   },
                   items: const [
                     DropdownMenuItem(
@@ -461,21 +402,13 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   ],
                 ),
                 const SizedBox(height: 20.0),
-                DropdownButtonFormField<String>(
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Guardian',
-                  ),
+                _buildRequiredDropdownButtonFormField(
                   value: _selectedGuardian,
+                  hintText: 'Guardian',
                   onChanged: (value) {
                     setState(() {
                       _selectedGuardian = value;
                     });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select guardian';
-                    }
-                    return null;
                   },
                   items: const [
                     DropdownMenuItem(
@@ -492,89 +425,41 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
             ),
           ),
           const SizedBox(height: 20.0),
-          const SectionTitle(title: 'Address Information'),
+          _buildSectionTitle('Address Information'),
           Form(
             key: _addressFormKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextFormField(
+                _buildOptionalTextFormField(
                   controller: _streetController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Street',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter street';
-                    }
-                    return null;
-                  },
+                  hintText: 'Street',
                 ),
                 const SizedBox(height: 20.0),
-                TextFormField(
+                _buildOptionalTextFormField(
                   controller: _urbanVillageController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Urban Village',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter urban village';
-                    }
-                    return null;
-                  },
+                  hintText: 'Urban Village',
                 ),
                 const SizedBox(height: 20.0),
-                TextFormField(
+                _buildOptionalTextFormField(
                   controller: _subdistrictController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Subdistrict',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter subdistrict';
-                    }
-                    return null;
-                  },
+                  hintText: 'Subdistrict',
                 ),
                 const SizedBox(height: 20.0),
-                TextFormField(
+                _buildOptionalTextFormField(
                   controller: _cityController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'City',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter city';
-                    }
-                    return null;
-                  },
+                  hintText: 'City',
                 ),
                 const SizedBox(height: 20.0),
-                TextFormField(
+                _buildOptionalTextFormField(
                   controller: _provinceController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Province',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter province';
-                    }
-                    return null;
-                  },
+                  hintText: 'Province',
                 ),
                 const SizedBox(height: 20.0),
-                TextFormField(
+                _buildOptionalTextFormField(
                   controller: _postalCodeController,
-                  decoration: AppStyleConfig.inputDecoration.copyWith(
-                    hintText: 'Postal Code',
-                  ),
+                  hintText: 'Postal Code',
                   keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter postal code';
-                    }
-                    return null;
-                  },
                 ),
               ],
             ),
@@ -585,19 +470,130 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   }
 
   Widget _buildDocument() {
-    return const Center(
-      child: Text('Document Form Placeholder'),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: _documents.isEmpty
+          ? _buildUploadSection()
+          : MasonryGridView.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              itemCount: _documents.length + 1,
+              itemBuilder: (BuildContext context, int index) {
+                if (index < _documents.length) {
+                  return DocumentItem(document: _documents[index]);
+                } else {
+                  return const UploadCard();
+                }
+              },
+            ),
     );
   }
-}
 
-class SectionTitle extends StatelessWidget {
-  final String title;
+  Widget _buildUploadSection() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.cloud_upload, size: 100),
+          const SizedBox(height: 20),
+          const Text(
+            'Upload your documents here',
+            style: TextStyle(fontSize: 20),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: MediaQuery.of(context).size.width / 2,
+            child: ElevatedButton(
+              onPressed: _uploadDocument,
+              style: AppStyleConfig.secondaryButtonStyle,
+              child: const Text("Upload"),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-  const SectionTitle({required this.title, super.key});
+  void _uploadDocument() {
+    setState(() {
+      _documents.add(Document(
+        name: "example2.pdf",
+        type: 'pdf',
+        url: 'https://example.com/example2.pdf',
+      ));
+    });
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildRequiredTextFormField({
+    required TextEditingController controller,
+    required String hintText,
+    required FormFieldValidator<String>? validator,
+    bool readOnly = false,
+    VoidCallback? onTap,
+    TextInputType? keyboardType,
+    bool obscureText = false,
+    Widget? suffixIcon,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: AppStyleConfig.inputDecoration.copyWith(
+        hintText: hintText,
+        labelText: '$hintText *',
+        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+        suffixIcon: suffixIcon,
+      ),
+      validator: validator,
+      readOnly: readOnly,
+      onTap: onTap,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+    );
+  }
+
+  Widget _buildOptionalTextFormField({
+    required TextEditingController controller,
+    required String hintText,
+    TextInputType? keyboardType,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: AppStyleConfig.inputDecoration.copyWith(
+        hintText: hintText,
+        labelText: hintText,
+        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+      ),
+      keyboardType: keyboardType,
+    );
+  }
+
+  Widget _buildRequiredDropdownButtonFormField({
+    required String? value,
+    required String hintText,
+    required ValueChanged<String?> onChanged,
+    required List<DropdownMenuItem<String>> items,
+    FormFieldValidator<String>? validator,
+  }) {
+    return DropdownButtonFormField<String>(
+      decoration: AppStyleConfig.inputDecoration.copyWith(
+        hintText: hintText,
+        labelText: '$hintText *',
+        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+      ),
+      value: value,
+      onChanged: onChanged,
+      validator: validator ??
+          (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please select $hintText';
+            }
+            return null;
+          },
+      items: items,
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Text(

@@ -26,7 +26,7 @@ class DocumentItem extends StatelessWidget {
           // Implement onTap functionality for document item
         },
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -34,7 +34,10 @@ class DocumentItem extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 document.name,
+                textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
               ),
             ],
           ),

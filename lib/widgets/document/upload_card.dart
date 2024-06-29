@@ -20,7 +20,7 @@ class UploadCard extends StatelessWidget {
           // Implement onTap functionality for upload card
         },
         child: const Padding(
-          padding: EdgeInsets.all(10),
+          padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
