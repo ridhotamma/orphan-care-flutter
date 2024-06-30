@@ -6,6 +6,7 @@ import 'package:frontend_flutter/models/document_model.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 class OrphanCreateForm extends StatefulWidget {
   const OrphanCreateForm({super.key});
@@ -28,7 +29,6 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   final _phoneNumberController = TextEditingController();
 
   final _guardianFullNameController = TextEditingController();
-  String? _selectedGender;
   String? _selectedBedRoom;
   String? _selectedFamilyRelation;
 
@@ -51,6 +51,8 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   ];
 
   final List<Document> _documents = [];
+
+  final List<bool> _selectedGenderToggle = [true, false, false];
 
   @override
   void dispose() {
@@ -271,7 +273,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                     r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$';
                 final regExp = RegExp(pattern);
                 if (!regExp.hasMatch(value)) {
-                  return 'Password must uppercase letter, lowercase letter, number';
+                  return 'Password must include uppercase letter, lowercase letter, and number';
                 }
                 return null;
               },
@@ -347,39 +349,58 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   suffixIcon: const Icon(Icons.calendar_today),
                 ),
                 const SizedBox(height: 20.0),
-                _buildRequiredTextFormField(
+                IntlPhoneField(
                   controller: _phoneNumberController,
-                  hintText: 'Phone Number',
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter phone number';
-                    }
-                    return null;
+                  decoration: AppStyleConfig.inputDecoration.copyWith(
+                    hintText: 'Phone Number',
+                    labelText: 'Phone Number *',
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                    counterText: '', // Hides the length indicator
+                  ),
+                  initialCountryCode: 'ID',
+                  onChanged: (phone) {
+                    // You can handle phone number changes here
                   },
                 ),
                 const SizedBox(height: 20.0),
-                _buildRequiredDropdownButtonFormField(
-                  value: _selectedGender,
-                  hintText: 'Gender',
-                  onChanged: (value) {
+                ToggleButtons(
+                  isSelected: _selectedGenderToggle,
+                  fillColor: AppStyleConfig.accentColor,
+                  selectedColor: Colors.white,
+                  color: Colors.black,
+                  onPressed: (int index) {
                     setState(() {
-                      _selectedGender = value;
+                      for (int i = 0; i < _selectedGenderToggle.length; i++) {
+                        _selectedGenderToggle[i] = i == index;
+                      }
                     });
                   },
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'MALE',
-                      child: Text('Male'),
+                  children: <Widget>[
+                    Container(
+                      width: (MediaQuery.of(context).size.width - 36) / 3,
+                      alignment: Alignment.center,
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Text('Male'),
+                      ),
                     ),
-                    DropdownMenuItem(
-                      value: 'FEMALE',
-                      child: Text('Female'),
+                    Container(
+                      width: (MediaQuery.of(context).size.width - 36) / 3,
+                      alignment: Alignment.center,
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Text('Female'),
+                      ),
                     ),
-                    DropdownMenuItem(
-                      value: 'OTHER',
-                      child: Text('Other'),
-                    ),
+                    Container(
+                      width: (MediaQuery.of(context).size.width - 36) / 3,
+                      alignment: Alignment.center,
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Text('Other'),
+                      ),
+                    )
                   ],
                 ),
                 const SizedBox(height: 20.0),
