@@ -12,7 +12,7 @@ class CaretakerDetails extends StatelessWidget {
     return const Scaffold(
       backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: CustomAppBar(
-        title: "Detail Inventory",
+        title: "Detail Pengasuh",
         automaticallyImplyLeading: true,
         foregroundColor: Colors.white,
       ),

@@ -12,7 +12,7 @@ class BedroomDetails extends StatelessWidget {
     return const Scaffold(
       backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: CustomAppBar(
-        title: "Detail Inventory",
+        title: "Detail Kamar",
         automaticallyImplyLeading: true,
         foregroundColor: Colors.white,
       ),

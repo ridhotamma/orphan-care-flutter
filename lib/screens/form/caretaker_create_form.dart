@@ -10,7 +10,7 @@ class CaretakerCreateForm extends StatelessWidget {
     return const Scaffold(
       backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: CustomAppBar(
-        title: "Detail Inventory",
+        title: "Create User Form",
         automaticallyImplyLeading: true,
         foregroundColor: Colors.white,
       ),

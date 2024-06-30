@@ -36,6 +36,7 @@ class _MainScreenState extends State<MainScreen> {
       if (result == ConnectivityResult.none) {
         _showSnackBar('No internet connection', 'error');
       } else {
+        _refreshData();
         _showSnackBar('Connected to the internet', 'connect');
       }
     });

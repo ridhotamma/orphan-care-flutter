@@ -4,6 +4,7 @@ import 'package:frontend_flutter/screens/details/caretaker_details.dart';
 import 'package:frontend_flutter/screens/details/inventory_details.dart';
 import 'package:frontend_flutter/screens/details/orphan_details.dart';
 import 'package:frontend_flutter/screens/form/bedroom_create_form.dart';
+import 'package:frontend_flutter/screens/form/caretaker_create_form.dart';
 import 'package:frontend_flutter/screens/form/inventory_create_form.dart';
 import 'package:frontend_flutter/screens/form/orphan_create_form.dart';
 import 'package:frontend_flutter/screens/list/bedroom_list.dart';
@@ -60,7 +61,7 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => CaretakerDetails(id: id));
 
       case RoutePaths.caretakerCreateForm:
-        return MaterialPageRoute(builder: (_) => const CaretakerList());
+        return MaterialPageRoute(builder: (_) => const CaretakerCreateForm());
 
       case RoutePaths.bedroomList:
         return MaterialPageRoute(builder: (_) => const BedroomList());

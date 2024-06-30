@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/routes/routes.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 
 class CaretakerList extends StatefulWidget {
@@ -63,7 +64,7 @@ class CaretakerListState extends State<CaretakerList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Implement caretaker create form navigation
+          Navigator.pushNamed(context, RoutePaths.caretakerCreateForm);
         },
         backgroundColor: AppStyleConfig.secondaryColor,
         foregroundColor: Colors.white,
@@ -92,7 +93,8 @@ class CaretakerListState extends State<CaretakerList> {
   Widget _buildCaretakerGridItem(Map<String, dynamic> caretaker) {
     return GestureDetector(
       onTap: () {
-        // Implement caretaker details navigation
+        Navigator.pushNamed(context, RoutePaths.caretakerDetails,
+            arguments: 'id');
       },
       child: Card(
         shape:

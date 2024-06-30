@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/routes/routes.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 
 class InventoryList extends StatelessWidget {
@@ -80,14 +81,18 @@ class InventoryList extends StatelessWidget {
               ),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                // Handle tap event
+                print('pressed inventory details');
+                Navigator.pushNamed(context, RoutePaths.inventoryDetails,
+                    arguments: 'id');
               },
             ),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, RoutePaths.inventoryCreateForm);
+        },
         backgroundColor: AppStyleConfig.secondaryColor,
         foregroundColor: Colors.white,
         shape: const CircleBorder(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/routes/routes.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 
 class BedroomList extends StatelessWidget {
@@ -53,14 +54,17 @@ class BedroomList extends StatelessWidget {
               subtitle: Text(bedroom['type']!),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                // Handle tap event
+                Navigator.pushNamed(context, RoutePaths.bedroomDetails,
+                    arguments: 'id');
               },
             ),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, RoutePaths.bedroomCreateForm);
+        },
         backgroundColor: AppStyleConfig.secondaryColor,
         foregroundColor: Colors.white,
         shape: const CircleBorder(),

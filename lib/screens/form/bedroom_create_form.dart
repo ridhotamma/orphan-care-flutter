@@ -10,7 +10,7 @@ class BedroomCreateForm extends StatelessWidget {
     return const Scaffold(
       backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: CustomAppBar(
-        title: "Detail Inventory",
+        title: "Create Bedroom Form",
         automaticallyImplyLeading: true,
         foregroundColor: Colors.white,
       ),
