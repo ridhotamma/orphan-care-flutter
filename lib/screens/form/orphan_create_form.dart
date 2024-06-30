@@ -8,8 +8,6 @@ import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 import 'package:intl/intl.dart';
 
 class OrphanCreateForm extends StatefulWidget {
-  static const routeName = '/main/home/orphan_details/create';
-
   const OrphanCreateForm({super.key});
 
   @override

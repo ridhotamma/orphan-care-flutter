@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
-import 'package:frontend_flutter/screens/details/orphan_details.dart';
-import 'package:frontend_flutter/screens/form/orphan_create_form.dart';
+import 'package:frontend_flutter/routes/routes.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 
 class OrphanList extends StatefulWidget {
-  static const String routeName = '/main/home/orphan_list';
-
   const OrphanList({super.key});
 
   @override
@@ -68,7 +65,7 @@ class OrphanListState extends State<OrphanList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, OrphanCreateForm.routeName);
+          Navigator.pushNamed(context, RoutePaths.orphanCreateForm);
         },
         backgroundColor: AppStyleConfig.secondaryColor,
         foregroundColor: Colors.white,
@@ -99,7 +96,7 @@ class OrphanListState extends State<OrphanList> {
       onTap: () {
         Navigator.pushNamed(
           context,
-          OrphanDetails.routeName,
+          RoutePaths.orphanDetails,
           arguments: orphan['id'],
         );
       },

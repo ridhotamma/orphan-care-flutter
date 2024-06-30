@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:frontend_flutter/routes/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend_flutter/providers/localization_provider.dart';
-import 'package:frontend_flutter/screens/login_screen.dart';
-import 'package:frontend_flutter/screens/main_screen.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
 
 void main() async {
@@ -48,11 +47,8 @@ class OrphanCareApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      initialRoute: authProvider.hasToken ? '/main' : '/',
-      routes: {
-        '/': (context) => const LoginScreen(),
-        '/main': (context) => const MainScreen(),
-      },
+      initialRoute: authProvider.hasToken ? RoutePaths.main : RoutePaths.login,
+      onGenerateRoute: AppRouter.generateRoute,
     );
   }
 }

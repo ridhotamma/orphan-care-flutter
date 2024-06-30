@@ -3,8 +3,6 @@ import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 
 class OrphanDetails extends StatelessWidget {
-  static const String routeName = '/main/home/orphan_details';
-
   final String id;
 
   const OrphanDetails({super.key, required this.id});

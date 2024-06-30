@@ -3,8 +3,6 @@ import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 
 class InventoryList extends StatelessWidget {
-  static const String routeName = '/main/home/inventory_list';
-
   const InventoryList({super.key});
 
   @override
@@ -58,7 +56,7 @@ class InventoryList extends StatelessWidget {
                   const Chip(
                     label: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.stacked_bar_chart,
@@ -66,7 +64,7 @@ class InventoryList extends StatelessWidget {
                           color: Colors.white,
                         ),
                         SizedBox(
-                          width: 10,
+                          width: 5.0,
                         ),
                         Text(
                           'Jumlah: 10',

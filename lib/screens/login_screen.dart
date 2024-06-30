@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/models/auth_model.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
+import 'package:frontend_flutter/routes/routes.dart';
 import 'package:frontend_flutter/services/api_service.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void onLoginSuccess(String? jwtToken) {
     Provider.of<AuthProvider>(context, listen: false).setToken(jwtToken);
-    Navigator.pushReplacementNamed(context, '/main');
+    Navigator.pushReplacementNamed(context, RoutePaths.main);
   }
 
   void onLoginFailed(String errorMessage) {

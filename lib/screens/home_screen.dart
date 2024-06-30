@@ -41,9 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: AppStyleConfig.secondaryBackgroundColor,
       body: RefreshIndicator(
         onRefresh: _refreshData,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
                 WelcomeBannerWidget(currentUserFuture: _currentUser),
