@@ -62,7 +62,7 @@ class _MainScreenState extends State<MainScreen> {
   void _showSnackBar(String message, String type) {
     Map<String, dynamic> backgroundStylesMap = {
       'error': AppStyleConfig.errorColor,
-      'connect': Colors.blue
+      'connect': AppStyleConfig.successColor
     };
 
     ScaffoldMessenger.of(context).showSnackBar(

@@ -30,6 +30,30 @@ class BedRoom {
   }
 }
 
+class BedRoomInput {
+  final String name;
+  final String? bedRoomTypeId;
+
+  BedRoomInput({
+    required this.name,
+    required this.bedRoomTypeId,
+  });
+
+  factory BedRoomInput.fromJson(Map<String, dynamic> json) {
+    return BedRoomInput(
+      name: json['name'],
+      bedRoomTypeId: json['bedRoomTypeId'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'bedRoomTypeId': bedRoomTypeId,
+    };
+  }
+}
+
 class BedRoomType {
   final String id;
   final String name;

@@ -10,6 +10,7 @@ class AppStyleConfig {
   static const Color secondaryColor = Color(0xFF088395);
   static const Color accentColor = Color(0xFF37B7C3);
   static const Color errorColor = Color(0xFFFF5630);
+  static const Color successColor = Colors.green;
   static const Color primaryBackgroundColor = Color(0xFFEBF4F6);
   static const Color secondaryBackgroundColor = Color(0xFFFFFFFF);
 

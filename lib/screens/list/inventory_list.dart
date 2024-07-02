@@ -183,27 +183,24 @@ class _InventoryListState extends State<InventoryList> {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Chip(
-                  label: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.stacked_bar_chart,
-                        size: 20,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(
-                        width: 5.0,
-                      ),
-                      Text(
-                        'Jumlah: ${inventory.quantity}',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ],
+                const SizedBox(
+                  height: 5.0,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10.0, vertical: 2.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.blue),
+                    borderRadius: BorderRadius.circular(5.0),
                   ),
-                  backgroundColor: AppStyleConfig.accentColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                  child: Text(
+                    'Jumlah: ${inventory.quantity}',
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                ),
+                const SizedBox(
+                  height: 5.0,
                 ),
                 Text(inventory.inventoryType.name),
               ],
