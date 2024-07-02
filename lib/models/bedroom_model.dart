@@ -2,7 +2,7 @@ class BedRoom {
   final String id;
   final String name;
   final String? bedRoomTypeId;
-  final BedRoomType bedRoomType;
+  final Map<String, dynamic> bedRoomType;
 
   BedRoom({
     required this.id,
@@ -16,7 +16,7 @@ class BedRoom {
       id: json['id'],
       name: json['name'],
       bedRoomTypeId: json['bedRoomTypeId'],
-      bedRoomType: BedRoomType.fromJson(json['bedRoomType']),
+      bedRoomType: json['bedRoomType'],
     );
   }
 
@@ -25,7 +25,7 @@ class BedRoom {
       'id': id,
       'name': name,
       'bedRoomTypeId': bedRoomTypeId,
-      'bedRoomType': bedRoomType.toJson(),
+      'bedRoomType': bedRoomType,
     };
   }
 }

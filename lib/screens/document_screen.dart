@@ -41,7 +41,7 @@ class DocumentScreenState extends State<DocumentScreen> {
         ),
         const SizedBox(height: 20),
         SizedBox(
-          width: MediaQuery.of(context).size.width / 3,
+          width: 160,
           child: ElevatedButton(
             onPressed: _uploadDocument,
             style: AppStyleConfig.secondaryButtonStyle,

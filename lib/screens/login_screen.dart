@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       controller: _emailController,
                       decoration: AppStyleConfig.inputDecoration.copyWith(
-                        hintText: 'Email',
+                        hintText: 'Email atau username',
                       ),
                     ),
                     const SizedBox(height: 20),
