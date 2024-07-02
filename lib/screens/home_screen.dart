@@ -4,7 +4,6 @@ import 'package:frontend_flutter/models/analytic_model.dart';
 import 'package:frontend_flutter/widgets/home/home_analytics.dart';
 import 'package:frontend_flutter/widgets/home/home_list.dart';
 import 'package:frontend_flutter/widgets/home/welcome_banner.dart';
-import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/widgets/skeleton/home_analytics_skeleton.dart';
 import 'package:frontend_flutter/widgets/skeleton/welcome_banner_skeleton.dart';
 
@@ -21,7 +20,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppStyleConfig.secondaryBackgroundColor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),

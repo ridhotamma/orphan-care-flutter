@@ -38,7 +38,6 @@ class OrphanCareApp extends StatelessWidget {
 
     return MaterialApp(
       title: "Orphan Care",
-      theme: ThemeData(primarySwatch: Colors.blue),
       locale: localizationProvider.locale,
       supportedLocales: L10n.supportedLocales,
       localizationsDelegates: const [

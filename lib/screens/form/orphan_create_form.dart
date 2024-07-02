@@ -211,7 +211,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
             width: 100.0,
             child: ElevatedButton(
               onPressed: _onStepCancel,
-              style: AppStyleConfig.primaryTextButtonStyle,
+              style: AppStyleConfig.defaultButtonStyle,
               child: Text(
                 _currentStep == 0 ? 'Cancel' : 'Back',
               ),
