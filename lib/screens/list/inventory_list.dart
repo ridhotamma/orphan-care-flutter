@@ -81,7 +81,6 @@ class InventoryList extends StatelessWidget {
               ),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
-                print('pressed inventory details');
                 Navigator.pushNamed(context, RoutePaths.inventoryDetails,
                     arguments: 'id');
               },

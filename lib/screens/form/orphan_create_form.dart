@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+
+import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
+import 'package:frontend_flutter/widgets/input/optional_text_form_field.dart';
+import 'package:frontend_flutter/widgets/input/required_dropdown_button_form_field.dart';
+import 'package:frontend_flutter/widgets/input/toggle_button.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/widgets/document/document_item.dart';
 import 'package:frontend_flutter/widgets/document/upload_card.dart';
 import 'package:frontend_flutter/models/document_model.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
+import 'package:frontend_flutter/widgets/shared/section_title.dart';
+
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -231,7 +238,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
         key: _formKey,
         child: ListView(
           children: [
-            _buildRequiredTextFormField(
+            RequiredTextFormField(
               controller: _emailController,
               hintText: 'Email',
               validator: (value) {
@@ -247,7 +254,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
               },
             ),
             const SizedBox(height: 20.0),
-            _buildRequiredTextFormField(
+            RequiredTextFormField(
               controller: _usernameController,
               hintText: 'Username',
               validator: (value) {
@@ -258,7 +265,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
               },
             ),
             const SizedBox(height: 20.0),
-            _buildRequiredTextFormField(
+            RequiredTextFormField(
               controller: _passwordController,
               hintText: 'Password',
               obscureText: true,
@@ -294,8 +301,8 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSectionTitle('Profile Information'),
-                _buildRequiredTextFormField(
+                const SectionTitle(title: 'Profile Information'),
+                RequiredTextFormField(
                   controller: _fullNameController,
                   hintText: 'Full Name',
                   validator: (value) {
@@ -306,7 +313,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   },
                 ),
                 const SizedBox(height: 20.0),
-                _buildRequiredTextFormField(
+                RequiredTextFormField(
                   controller: _birthdayController,
                   hintText: 'Birthday',
                   validator: (value) {
@@ -322,7 +329,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   suffixIcon: const Icon(Icons.calendar_today),
                 ),
                 const SizedBox(height: 20.0),
-                _buildRequiredTextFormField(
+                RequiredTextFormField(
                   controller: _birthPlaceController,
                   hintText: 'Birth Place',
                   validator: (value) {
@@ -333,7 +340,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   },
                 ),
                 const SizedBox(height: 20.0),
-                _buildRequiredTextFormField(
+                RequiredTextFormField(
                   controller: _joinDateController,
                   hintText: 'Join Date',
                   validator: (value) {
@@ -356,55 +363,25 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                     labelText: 'Phone Number *',
                     contentPadding:
                         const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
-                    counterText: '', // Hides the length indicator
+                    counterText: '',
                   ),
                   initialCountryCode: 'ID',
-                  onChanged: (phone) {
-                    // You can handle phone number changes here
-                  },
+                  onChanged: (phone) {},
                 ),
                 const SizedBox(height: 20.0),
-                ToggleButtons(
+                ToggleButton(
                   isSelected: _selectedGenderToggle,
-                  fillColor: AppStyleConfig.accentColor,
-                  selectedColor: Colors.white,
-                  color: Colors.black,
-                  onPressed: (int index) {
+                  labels: const ['Male', 'Female', 'Other'],
+                  onPressed: (index) {
                     setState(() {
                       for (int i = 0; i < _selectedGenderToggle.length; i++) {
                         _selectedGenderToggle[i] = i == index;
                       }
                     });
                   },
-                  children: <Widget>[
-                    Container(
-                      width: (MediaQuery.of(context).size.width - 36) / 3,
-                      alignment: Alignment.center,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Text('Male'),
-                      ),
-                    ),
-                    Container(
-                      width: (MediaQuery.of(context).size.width - 36) / 3,
-                      alignment: Alignment.center,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Text('Female'),
-                      ),
-                    ),
-                    Container(
-                      width: (MediaQuery.of(context).size.width - 36) / 3,
-                      alignment: Alignment.center,
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Text('Other'),
-                      ),
-                    )
-                  ],
                 ),
                 const SizedBox(height: 20.0),
-                _buildRequiredDropdownButtonFormField(
+                RequiredDropdownButtonFormField(
                   value: _selectedBedRoom,
                   hintText: 'Bed Room',
                   onChanged: (value) {
@@ -424,7 +401,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   ],
                 ),
                 const SizedBox(height: 20.0),
-                _buildRequiredTextFormField(
+                RequiredTextFormField(
                   controller: _guardianFullNameController,
                   hintText: 'Guardian Full Name',
                   validator: (value) {
@@ -435,7 +412,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   },
                 ),
                 const SizedBox(height: 20.0),
-                _buildRequiredDropdownButtonFormField(
+                RequiredDropdownButtonFormField(
                   value: _selectedFamilyRelation,
                   hintText: 'Family Relation',
                   onChanged: (value) {
@@ -462,38 +439,38 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
             ),
           ),
           const SizedBox(height: 20.0),
-          _buildSectionTitle('Address Information'),
+          const SectionTitle(title: 'Address Information'),
           Form(
             key: _addressFormKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildOptionalTextFormField(
+                OptionalTextFormField(
                   controller: _streetController,
                   hintText: 'Street',
                 ),
                 const SizedBox(height: 20.0),
-                _buildOptionalTextFormField(
+                OptionalTextFormField(
                   controller: _urbanVillageController,
                   hintText: 'Urban Village',
                 ),
                 const SizedBox(height: 20.0),
-                _buildOptionalTextFormField(
+                OptionalTextFormField(
                   controller: _subdistrictController,
                   hintText: 'Subdistrict',
                 ),
                 const SizedBox(height: 20.0),
-                _buildOptionalTextFormField(
+                OptionalTextFormField(
                   controller: _cityController,
                   hintText: 'City',
                 ),
                 const SizedBox(height: 20.0),
-                _buildOptionalTextFormField(
+                OptionalTextFormField(
                   controller: _provinceController,
                   hintText: 'Province',
                 ),
                 const SizedBox(height: 20.0),
-                _buildOptionalTextFormField(
+                OptionalTextFormField(
                   controller: _postalCodeController,
                   hintText: 'Postal Code',
                   keyboardType: TextInputType.number,
@@ -560,87 +537,5 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
         url: 'https://example.com/example2.pdf',
       ));
     });
-  }
-
-  Widget _buildRequiredTextFormField({
-    required TextEditingController controller,
-    required String hintText,
-    required FormFieldValidator<String>? validator,
-    bool readOnly = false,
-    VoidCallback? onTap,
-    TextInputType? keyboardType,
-    bool obscureText = false,
-    Widget? suffixIcon,
-  }) {
-    return TextFormField(
-      controller: controller,
-      decoration: AppStyleConfig.inputDecoration.copyWith(
-        hintText: hintText,
-        labelText: '$hintText *',
-        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
-        suffixIcon: suffixIcon,
-      ),
-      validator: validator,
-      readOnly: readOnly,
-      onTap: onTap,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-    );
-  }
-
-  Widget _buildOptionalTextFormField({
-    required TextEditingController controller,
-    required String hintText,
-    TextInputType? keyboardType,
-  }) {
-    return TextFormField(
-      controller: controller,
-      decoration: AppStyleConfig.inputDecoration.copyWith(
-        hintText: hintText,
-        labelText: hintText,
-        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
-      ),
-      keyboardType: keyboardType,
-    );
-  }
-
-  Widget _buildRequiredDropdownButtonFormField({
-    required String? value,
-    required String hintText,
-    required ValueChanged<String?> onChanged,
-    required List<DropdownMenuItem<String>> items,
-    FormFieldValidator<String>? validator,
-  }) {
-    return DropdownButtonFormField<String>(
-      decoration: AppStyleConfig.inputDecoration.copyWith(
-        hintText: hintText,
-        labelText: '$hintText *',
-        contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
-      ),
-      value: value,
-      onChanged: onChanged,
-      validator: validator ??
-          (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please select $hintText';
-            }
-            return null;
-          },
-      items: items,
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 18.0,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
-      ),
-    );
   }
 }
