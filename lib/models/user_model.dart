@@ -5,13 +5,12 @@ class UserRequest {
   final String password;
   final bool active;
 
-  UserRequest({
-    required this.email,
-    required this.username,
-    required this.roles,
-    required this.password,
-    required this.active,
-  });
+  UserRequest(
+      {required this.email,
+      required this.username,
+      required this.roles,
+      required this.password,
+      required this.active});
 
   Map<String, dynamic> toJson() {
     return {
@@ -19,7 +18,7 @@ class UserRequest {
       'username': username,
       'roles': roles,
       'password': password,
-      'active': active,
+      'active': active
     };
   }
 }

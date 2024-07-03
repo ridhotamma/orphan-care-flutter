@@ -19,7 +19,8 @@ class InventoryService {
 
   Future<List<Inventory>> fetchInventories() async {
     final http.Response response = await _apiService.get('/admin/inventories');
-    final List<dynamic> data = jsonDecode(response.body);
+    final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+    final List<dynamic> data = decodedResponse['data'];
     return data.map((json) => Inventory.fromJson(json)).toList();
   }
 

@@ -95,41 +95,58 @@ class OrphanListState extends State<OrphanList> {
           highlightColor: Colors.grey.shade100,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: double.infinity,
-                  height: 80.0,
-                  decoration: BoxDecoration(
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 80.0,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: -40.0,
+                      left: 0,
+                      right: 0,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: 60.0,
+                          height: 60.0,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 50.0),
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
                     color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(10.0),
+                    height: 20.0,
+                    width: 100.0,
                   ),
                 ),
                 const SizedBox(height: 8.0),
-                Container(
-                  width: 60.0,
-                  height: 60.0,
-                  decoration: BoxDecoration(
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
                     color: Colors.grey.shade300,
-                    shape: BoxShape.circle,
+                    height: 20.0,
+                    width: 150.0,
                   ),
-                ),
-                const SizedBox(height: 8.0),
-                Container(
-                  color: Colors.grey.shade300,
-                  height: 20.0,
-                  width: 100.0,
-                ),
-                const SizedBox(height: 8.0),
-                Container(
-                  color: Colors.grey.shade300,
-                  height: 20.0,
-                  width: 150.0,
                 ),
               ],
             ),

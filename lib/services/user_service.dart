@@ -28,7 +28,8 @@ class UserService {
 
     final http.Response response =
         await _apiService.get('/admin/users', queryParams);
-    final List<dynamic> data = jsonDecode(response.body);
+    final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+    final List<dynamic> data = decodedResponse['data'];
     return data.map((json) => UserResponse.fromJson(json)).toList();
   }
 }

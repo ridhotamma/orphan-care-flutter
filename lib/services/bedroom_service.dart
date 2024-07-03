@@ -19,7 +19,8 @@ class BedroomService {
 
   Future<List<BedRoom>> fetchBedRooms() async {
     final http.Response response = await _apiService.get('/admin/bedrooms');
-    final List<dynamic> data = jsonDecode(response.body);
+    final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+    final List<dynamic> data = decodedResponse['data'];
     return data.map((json) => BedRoom.fromJson(json)).toList();
   }
 
