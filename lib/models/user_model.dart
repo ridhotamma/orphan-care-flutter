@@ -1,5 +1,3 @@
-import 'package:frontend_flutter/models/profile_model.dart';
-
 class UserRequest {
   final String email;
   final String username;
@@ -7,12 +5,13 @@ class UserRequest {
   final String password;
   final bool active;
 
-  UserRequest(
-      {required this.email,
-      required this.username,
-      required this.roles,
-      required this.password,
-      required this.active});
+  UserRequest({
+    required this.email,
+    required this.username,
+    required this.roles,
+    required this.password,
+    required this.active,
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -20,7 +19,7 @@ class UserRequest {
       'username': username,
       'roles': roles,
       'password': password,
-      'active': active
+      'active': active,
     };
   }
 }
@@ -31,7 +30,7 @@ class UserResponse {
   final String username;
   final List<String> roles;
   final bool active;
-  ProfileShortResponse? profile;
+  Map<String, dynamic>? profile;
 
   UserResponse(
       {required this.id,
@@ -43,12 +42,13 @@ class UserResponse {
 
   factory UserResponse.fromJson(Map<String, dynamic> json) {
     return UserResponse(
-        id: json['id'],
-        email: json['email'],
-        username: json['username'],
-        roles: List<String>.from(json['roles']),
-        active: json['active'],
-        profile: json['profile']);
+      id: json['id'],
+      email: json['email'],
+      username: json['username'],
+      roles: List<String>.from(json['roles']),
+      active: json['active'],
+      profile: json['profile'],
+    );
   }
 }
 

@@ -59,11 +59,7 @@ class _BedroomListState extends State<BedroomList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final result =
-              await Navigator.pushNamed(context, RoutePaths.bedroomCreateForm);
-          if (result == true) {
-            _fetchData();
-          }
+          await Navigator.pushNamed(context, RoutePaths.bedroomCreateForm);
         },
         backgroundColor: AppStyleConfig.secondaryColor,
         foregroundColor: Colors.white,

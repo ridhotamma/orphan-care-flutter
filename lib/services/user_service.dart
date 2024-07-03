@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/services/api_service.dart';
@@ -15,5 +14,21 @@ class UserService {
         await _apiService.get('/public/profiles/current-user');
     final Map<String, dynamic> data = jsonDecode(response.body);
     return CurrentUser.fromJson(data);
+  }
+
+  Future<List<UserResponse>> fetchUserProfiles({
+    String? roles,
+    String? gender,
+    String? search,
+  }) async {
+    final queryParams = <String, dynamic>{};
+    if (roles != null) queryParams['roles'] = roles;
+    if (gender != null) queryParams['gender'] = gender;
+    if (search != null) queryParams['search'] = search;
+
+    final http.Response response =
+        await _apiService.get('/admin/users', queryParams);
+    final List<dynamic> data = jsonDecode(response.body);
+    return data.map((json) => UserResponse.fromJson(json)).toList();
   }
 }

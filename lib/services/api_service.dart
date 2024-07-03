@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:frontend_flutter/config/app_api_config.dart';
 import 'package:provider/provider.dart';
@@ -10,8 +11,13 @@ class ApiService {
 
   ApiService(this.context);
 
-  Uri _buildUri(String endpoint) =>
-      Uri.parse('${AppApiConfig.baseUrl}$endpoint');
+  Uri _buildUri(String endpoint, [Map<String, dynamic>? queryParams]) {
+    final uri = Uri.parse('${AppApiConfig.baseUrl}$endpoint');
+    if (queryParams != null) {
+      return uri.replace(queryParameters: queryParams);
+    }
+    return uri;
+  }
 
   Future<String?> _getToken() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -31,8 +37,8 @@ class ApiService {
   }
 
   Future<http.Response> _sendRequest(String method, String endpoint,
-      {Map<String, dynamic>? body}) async {
-    final uri = _buildUri(endpoint);
+      {Map<String, dynamic>? body, Map<String, dynamic>? queryParams}) async {
+    final uri = _buildUri(endpoint, queryParams);
     final token = await _getToken();
     final headers = <String, String>{'Content-Type': 'application/json'};
 
@@ -47,11 +53,11 @@ class ApiService {
         break;
       case 'POST':
         response =
-            await http.post(uri, headers: headers, body: json.encode(body));
+            await http.post(uri, headers: headers, body: jsonEncode(body));
         break;
       case 'PUT':
         response =
-            await http.put(uri, headers: headers, body: json.encode(body));
+            await http.put(uri, headers: headers, body: jsonEncode(body));
         break;
       case 'DELETE':
         response = await http.delete(uri, headers: headers);
@@ -63,7 +69,9 @@ class ApiService {
     return await _handleResponse(response);
   }
 
-  Future<http.Response> get(String endpoint) => _sendRequest('GET', endpoint);
+  Future<http.Response> get(String endpoint,
+          [Map<String, dynamic>? queryParams]) =>
+      _sendRequest('GET', endpoint, queryParams: queryParams);
 
   Future<http.Response> post(String endpoint, Map<String, dynamic> body) =>
       _sendRequest('POST', endpoint, body: body);

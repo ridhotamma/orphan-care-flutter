@@ -1,3 +1,6 @@
+import 'package:frontend_flutter/models/address_model.dart';
+import 'package:frontend_flutter/models/bedroom_model.dart';
+
 class Profile {
   final String? profilePicture;
   final String? birthday;
@@ -7,9 +10,9 @@ class Profile {
   final String? bio;
   final String? bedRoomId;
   final String? fullName;
-  final Map<String, dynamic>? address;
+  final Address? address;
   final Map<String, dynamic>? guardian;
-  final Map<String, dynamic>? bedRoom;
+  final BedRoom? bedRoom;
   final String? phoneNumber;
   final String? gender;
 
@@ -31,19 +34,19 @@ class Profile {
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
-      profilePicture: json['profilePicture'] ?? '',
-      birthday: json['birthday'] ?? '',
-      birthPlace: json['birthPlace'] ?? '',
-      joinDate: json['joinDate'] ?? '',
-      leaveDate: json['leaveDate'] ?? '',
-      bio: json['bio'] ?? '',
-      bedRoomId: json['bedRoomId'] ?? '',
-      fullName: json['fullName'] ?? '',
-      address: json['address'],
-      guardian: json['guardian'],
-      bedRoom: json['bedRoom'],
-      phoneNumber: json['phoneNumber'] ?? '',
-      gender: json['gender'] ?? '',
+      profilePicture: json['profilePicture'] as String?,
+      birthday: json['birthday'] as String?,
+      birthPlace: json['birthPlace'] as String?,
+      joinDate: json['joinDate'] as String?,
+      leaveDate: json['leaveDate'] as String?,
+      bio: json['bio'] as String?,
+      bedRoomId: json['bedRoomId'] as String?,
+      fullName: json['fullName'] as String?,
+      address: Address.fromJson(json['address'] as Map<String, dynamic>),
+      guardian: json['guardian'] as Map<String, dynamic>?,
+      bedRoom: BedRoom.fromJson(json['bedRoom'] as Map<String, dynamic>),
+      phoneNumber: json['phoneNumber'] as String?,
+      gender: json['gender'] as String?,
     );
   }
 
@@ -64,22 +67,4 @@ class Profile {
       'gender': gender,
     };
   }
-}
-
-class ProfileShortResponse {
-  String? fullName;
-  String? profilePicture;
-  String? phoneNumber;
-
-  ProfileShortResponse({
-    this.fullName,
-    this.profilePicture,
-    this.phoneNumber,
-  });
-
-  Map<String, dynamic> toJson() => {
-        'fullName': fullName,
-        'profilePicture': profilePicture,
-        'phoneNumber': phoneNumber,
-      };
 }

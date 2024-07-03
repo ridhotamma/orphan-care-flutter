@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/routes/routes.dart';
+import 'package:frontend_flutter/services/user_service.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
+import 'package:shimmer/shimmer.dart';
 
 class OrphanList extends StatefulWidget {
   const OrphanList({super.key});
@@ -12,30 +15,20 @@ class OrphanList extends StatefulWidget {
 }
 
 class OrphanListState extends State<OrphanList> {
-  TextEditingController searchController = TextEditingController();
+  late Future<List<UserResponse>> orphanFuture;
 
-  final List<Map<String, dynamic>> orphans = [
-    {
-      'id': '1',
-      'name': 'John Doe',
-      'age': 12,
-      'bedroom': 'Bedroom A',
-      'profilePicture':
-          'https://image.cnbcfm.com/api/v1/image/107203114-1677872178166-GettyImages-1382525205.jpg?v=1677940236',
-    },
-    {
-      'id': '2',
-      'name': 'Jane Smith',
-      'age': 10,
-      'bedroom': 'Bedroom B',
-      'profilePicture':
-          'https://image.cnbcfm.com/api/v1/image/107203114-1677872178166-GettyImages-1382525205.jpg?v=1677940236',
-    },
-  ];
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    setState(() {
+      orphanFuture = UserService(context).fetchUserProfiles();
+    });
   }
 
   @override
@@ -47,21 +40,36 @@ class OrphanListState extends State<OrphanList> {
         automaticallyImplyLeading: true,
         foregroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: searchController,
-              onChanged: (string) {},
-              decoration: AppStyleConfig.inputDecoration.copyWith(
-                hintText: 'Search',
-                suffixIcon: const Icon(Icons.search),
-              ),
-            ),
-          ),
-          Expanded(child: _buildOrphanMasonryGridView()),
-        ],
+      body: FutureBuilder<List<UserResponse>>(
+        future: orphanFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return _buildOrphanSkeletons();
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return _buildOrphanEmptyState();
+          } else {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: (string) {},
+                    decoration: AppStyleConfig.inputDecoration.copyWith(
+                      hintText: 'Search',
+                      suffixIcon: const Icon(Icons.search),
+                    ),
+                  ),
+                ),
+                Expanded(child: _buildOrphanMasonryGridView(snapshot.data!)),
+              ],
+            );
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -75,7 +83,93 @@ class OrphanListState extends State<OrphanList> {
     );
   }
 
-  Widget _buildOrphanMasonryGridView() {
+  Widget _buildOrphanSkeletons() {
+    return MasonryGridView.count(
+      crossAxisCount: 2,
+      crossAxisSpacing: 8.0,
+      mainAxisSpacing: 8.0,
+      itemCount: 6,
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 80.0,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                Container(
+                  width: 60.0,
+                  height: 60.0,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                Container(
+                  color: Colors.grey.shade300,
+                  height: 20.0,
+                  width: 100.0,
+                ),
+                const SizedBox(height: 8.0),
+                Container(
+                  color: Colors.grey.shade300,
+                  height: 20.0,
+                  width: 150.0,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildOrphanEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.blue.shade100,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            padding: const EdgeInsets.all(8),
+            child: Icon(
+              Icons.person_outline,
+              color: Colors.blue.shade900,
+              size: 60.0,
+            ),
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
+          const Text(
+            'No orphans found',
+            style: AppStyleConfig.headlineMediumTextStyle,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOrphanMasonryGridView(List<UserResponse> orphans) {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
       child: MasonryGridView.count(
@@ -91,18 +185,19 @@ class OrphanListState extends State<OrphanList> {
     );
   }
 
-  Widget _buildOrphanGridItem(Map<String, dynamic> orphan) {
+  Widget _buildOrphanGridItem(UserResponse orphan) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(
           context,
           RoutePaths.orphanDetails,
-          arguments: orphan['id'],
+          arguments: orphan.id,
         );
       },
       child: Card(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
         elevation: 2.0,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -128,7 +223,8 @@ class OrphanListState extends State<OrphanList> {
                       alignment: Alignment.center,
                       child: CircleAvatar(
                         radius: 40.0,
-                        backgroundImage: NetworkImage(orphan['profilePicture']),
+                        backgroundImage: NetworkImage(
+                            orphan.profile?['profilePicture'] ?? ''),
                       ),
                     ),
                   ),
@@ -137,41 +233,17 @@ class OrphanListState extends State<OrphanList> {
               const SizedBox(height: 50.0),
               Center(
                 child: Text(
-                  orphan['name'],
+                  orphan.profile?['fullName'] ?? '',
                   style: const TextStyle(
-                      fontSize: 16.0, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 8.0),
-              const Center(
-                child: Chip(
-                  label: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Female',
-                        style: TextStyle(fontSize: 14.0, color: Colors.white),
-                      ),
-                      SizedBox(
-                        width: 5.0,
-                      ),
-                      Icon(
-                        Icons.female_outlined,
-                        color: Colors.white,
-                        size: 18,
-                      )
-                    ],
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
                   ),
-                  backgroundColor: Colors.blueGrey,
-                  padding: EdgeInsets.symmetric(horizontal: 1.0),
                 ),
               ),
               const SizedBox(height: 8.0),
               Center(
                 child: Text(
-                  orphan['bedroom'],
+                  orphan.profile?['bedRoom']?['name'] ?? '',
                   style: const TextStyle(fontSize: 14.0),
                 ),
               ),
