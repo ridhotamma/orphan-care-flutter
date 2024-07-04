@@ -32,16 +32,19 @@ class _BedroomCreateFormState extends State<BedroomCreateForm> {
 
   Future<void> _fetchBedRoomTypes() async {
     final bedRoomTypes = await _bedroomService.fetchBedRoomTypes();
-    setState(() {
-      _bedRoomTypeItems = bedRoomTypes
-          .map(
-            (bedRoomType) => DropdownMenuItem(
-              value: bedRoomType.id,
-              child: Text(bedRoomType.name!),
-            ),
-          )
-          .toList();
-    });
+
+    if (mounted) {
+      setState(() {
+        _bedRoomTypeItems = bedRoomTypes
+            .map(
+              (bedRoomType) => DropdownMenuItem(
+                value: bedRoomType.id,
+                child: Text(bedRoomType.name!),
+              ),
+            )
+            .toList();
+      });
+    }
   }
 
   void _onSubmit() async {
@@ -95,12 +98,6 @@ class _BedroomCreateFormState extends State<BedroomCreateForm> {
           style: const TextStyle(color: Colors.white),
         ),
         duration: const Duration(seconds: 3),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
       ),
     );
     Navigator.pop(context, true);

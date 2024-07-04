@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/routes/routes.dart';
+import 'package:frontend_flutter/services/user_service.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -13,29 +15,20 @@ class CaretakerList extends StatefulWidget {
 }
 
 class CaretakerListState extends State<CaretakerList> {
-  TextEditingController searchController = TextEditingController();
+  late Future<List<UserResponse>> caretakerFuture;
 
-  final List<Map<String, dynamic>> caretakers = [
-    {
-      'id': '1',
-      'name': 'Alice Johnson',
-      'profilePicture':
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjPtBPtOIj16drcpc4Ht93MyJgtRH89ikp_Q&s',
-      'specialty': 'Child Psychology',
-    },
-    {
-      'id': '2',
-      'name': 'Bob Williams',
-      'profilePicture':
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjPtBPtOIj16drcpc4Ht93MyJgtRH89ikp_Q&s',
-      'specialty': 'Education',
-    },
-    // Add more caretakers as needed
-  ];
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    setState(() {
+      caretakerFuture = UserService(context).fetchUserProfiles();
+    });
   }
 
   @override
@@ -47,21 +40,36 @@ class CaretakerListState extends State<CaretakerList> {
         automaticallyImplyLeading: true,
         foregroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: searchController,
-              onChanged: (string) {},
-              decoration: AppStyleConfig.inputDecoration.copyWith(
-                hintText: 'Search',
-                suffixIcon: const Icon(Icons.search),
-              ),
-            ),
-          ),
-          Expanded(child: _buildCaretakerMasonryGridView()),
-        ],
+      body: FutureBuilder<List<UserResponse>>(
+        future: caretakerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return _buildCaretakerSkeletons();
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return _buildCaretakerEmptyState();
+          } else {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: (string) {},
+                    decoration: AppStyleConfig.inputDecoration.copyWith(
+                      hintText: 'Search',
+                      suffixIcon: const Icon(Icons.search),
+                    ),
+                  ),
+                ),
+                Expanded(child: _buildCaretakerMasonryGridView(snapshot.data!)),
+              ],
+            );
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -178,11 +186,7 @@ class CaretakerListState extends State<CaretakerList> {
     );
   }
 
-  Widget _buildCaretakerMasonryGridView() {
-    if (caretakers.isEmpty) {
-      return _buildCaretakerEmptyState();
-    }
-
+  Widget _buildCaretakerMasonryGridView(List<UserResponse> caretakers) {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
       child: MasonryGridView.count(
@@ -198,11 +202,11 @@ class CaretakerListState extends State<CaretakerList> {
     );
   }
 
-  Widget _buildCaretakerGridItem(Map<String, dynamic> caretaker) {
+  Widget _buildCaretakerGridItem(UserResponse caretaker) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, RoutePaths.caretakerDetails,
-            arguments: caretaker['id']);
+            arguments: caretaker.id);
       },
       child: Card(
         shape:
@@ -232,8 +236,8 @@ class CaretakerListState extends State<CaretakerList> {
                       alignment: Alignment.center,
                       child: CircleAvatar(
                         radius: 40.0,
-                        backgroundImage:
-                            NetworkImage(caretaker['profilePicture']),
+                        backgroundImage: NetworkImage(
+                            caretaker.profile.profilePicture ?? ''),
                       ),
                     ),
                   ),
@@ -242,7 +246,7 @@ class CaretakerListState extends State<CaretakerList> {
               const SizedBox(height: 50.0),
               Center(
                 child: Text(
-                  caretaker['name'],
+                  caretaker.profile.fullName ?? '',
                   style: const TextStyle(
                       fontSize: 16.0, fontWeight: FontWeight.bold),
                 ),
@@ -250,7 +254,7 @@ class CaretakerListState extends State<CaretakerList> {
               const SizedBox(height: 8.0),
               Center(
                 child: Text(
-                  caretaker['specialty'],
+                  caretaker.profile.gender ?? '',
                   style: const TextStyle(fontSize: 14.0),
                 ),
               ),
