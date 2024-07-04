@@ -67,8 +67,8 @@ class DocumentScreenState extends State<DocumentScreen> {
       padding: const EdgeInsets.all(16.0),
       child: MasonryGridView.count(
         crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
+        mainAxisSpacing: 5,
+        crossAxisSpacing: 5,
         itemCount: documents.length + 1,
         itemBuilder: (BuildContext context, int index) {
           if (index < documents.length) {

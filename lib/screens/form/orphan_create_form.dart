@@ -490,8 +490,8 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
           ? _buildUploadSection()
           : MasonryGridView.count(
               crossAxisCount: 2,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
+              mainAxisSpacing: 5,
+              crossAxisSpacing: 5,
               itemCount: _documents.length + 1,
               itemBuilder: (BuildContext context, int index) {
                 if (index < _documents.length) {
