@@ -37,7 +37,7 @@ class _BedroomCreateFormState extends State<BedroomCreateForm> {
           .map(
             (bedRoomType) => DropdownMenuItem(
               value: bedRoomType.id,
-              child: Text(bedRoomType.name),
+              child: Text(bedRoomType.name!),
             ),
           )
           .toList();
@@ -52,7 +52,7 @@ class _BedroomCreateFormState extends State<BedroomCreateForm> {
       try {
         BedRoomInput bedRoomInput = BedRoomInput(
           name: _nameController.text,
-          bedRoomTypeId: _selectedBedRoomTypeId,
+          bedRoomTypeId: _selectedBedRoomTypeId!,
         );
 
         await _bedroomService.createBedRoom(bedRoomInput.toJson());

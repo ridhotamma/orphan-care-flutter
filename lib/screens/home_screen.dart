@@ -56,7 +56,9 @@ class WelcomeBannerWidget extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SkeletonWelcomeBanner();
         } else if (snapshot.hasError) {
-          return const SkeletonWelcomeBanner();
+          return Center(
+            child: Text(snapshot.error.toString()),
+          );
         } else if (snapshot.hasData) {
           return WelcomeBanner(currentUser: snapshot.data!);
         } else {
@@ -80,7 +82,9 @@ class AnalyticsDataWidget extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const SkeletonHomeAnalytics();
         } else if (snapshot.hasError) {
-          return const SkeletonHomeAnalytics();
+          return Center(
+            child: Text(snapshot.error.toString()),
+          );
         } else if (snapshot.hasData) {
           return HomeAnalytics(data: snapshot.data!);
         } else {

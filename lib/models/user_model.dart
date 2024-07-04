@@ -1,3 +1,5 @@
+import 'package:frontend_flutter/models/profile_model.dart';
+
 class UserRequest {
   final String email;
   final String username;
@@ -5,12 +7,13 @@ class UserRequest {
   final String password;
   final bool active;
 
-  UserRequest(
-      {required this.email,
-      required this.username,
-      required this.roles,
-      required this.password,
-      required this.active});
+  UserRequest({
+    required this.email,
+    required this.username,
+    required this.roles,
+    required this.password,
+    required this.active,
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -29,15 +32,16 @@ class UserResponse {
   final String username;
   final List<String> roles;
   final bool active;
-  Map<String, dynamic>? profile;
+  final Profile profile;
 
-  UserResponse(
-      {required this.id,
-      required this.email,
-      required this.username,
-      required this.roles,
-      required this.active,
-      this.profile});
+  UserResponse({
+    required this.id,
+    required this.email,
+    required this.username,
+    required this.roles,
+    required this.active,
+    required this.profile,
+  });
 
   factory UserResponse.fromJson(Map<String, dynamic> json) {
     return UserResponse(
@@ -46,7 +50,7 @@ class UserResponse {
       username: json['username'],
       roles: List<String>.from(json['roles']),
       active: json['active'],
-      profile: json['profile'],
+      profile: Profile.fromJson(json['profile']),
     );
   }
 }
@@ -57,7 +61,7 @@ class CurrentUser {
   final String username;
   final List<String> roles;
   final bool active;
-  final Map<String, dynamic> profile;
+  final Profile profile;
 
   CurrentUser({
     required this.id,
@@ -75,7 +79,7 @@ class CurrentUser {
       username: json['username'],
       roles: List<String>.from(json['roles']),
       active: json['active'],
-      profile: json['profile'],
+      profile: Profile.fromJson(json['profile']),
     );
   }
 
@@ -86,7 +90,7 @@ class CurrentUser {
       'username': username,
       'roles': roles,
       'active': active,
-      'profile': profile,
+      'profile': profile
     };
   }
 }

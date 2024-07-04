@@ -1,14 +1,14 @@
 class BedRoom {
-  final String id;
-  final String name;
+  final String? id;
+  final String? name;
   final String? bedRoomTypeId;
-  final Map<String, dynamic> bedRoomType;
+  final BedRoomType? bedRoomType;
 
   BedRoom({
-    required this.id,
-    required this.name,
-    required this.bedRoomTypeId,
-    required this.bedRoomType,
+    this.id,
+    this.name,
+    this.bedRoomTypeId,
+    this.bedRoomType,
   });
 
   factory BedRoom.fromJson(Map<String, dynamic> json) {
@@ -16,7 +16,7 @@ class BedRoom {
       id: json['id'],
       name: json['name'],
       bedRoomTypeId: json['bedRoomTypeId'],
-      bedRoomType: json['bedRoomType'],
+      bedRoomType: BedRoomType.fromJson(json['bedRoomType']),
     );
   }
 
@@ -32,7 +32,7 @@ class BedRoom {
 
 class BedRoomInput {
   final String name;
-  final String? bedRoomTypeId;
+  final String bedRoomTypeId;
 
   BedRoomInput({
     required this.name,
@@ -55,9 +55,9 @@ class BedRoomInput {
 }
 
 class BedRoomType {
-  final String id;
-  final String name;
-  final String type;
+  final String? id;
+  final String? name;
+  final String? type;
 
   BedRoomType({
     required this.id,

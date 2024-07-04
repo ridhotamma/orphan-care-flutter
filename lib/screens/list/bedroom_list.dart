@@ -178,13 +178,13 @@ class _BedroomListState extends State<BedroomList> {
               ),
             ),
             title: Text(
-              bedroom.name,
+              bedroom.name!,
               style: const TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            subtitle: Text(bedroom.bedRoomType['name']),
+            subtitle: Text(bedroom.bedRoomType!.name!),
             trailing: const Icon(Icons.arrow_forward_ios),
             onTap: () {
               Navigator.pushNamed(

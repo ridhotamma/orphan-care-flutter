@@ -240,8 +240,8 @@ class OrphanListState extends State<OrphanList> {
                       alignment: Alignment.center,
                       child: CircleAvatar(
                         radius: 40.0,
-                        backgroundImage: NetworkImage(
-                            orphan.profile?['profilePicture'] ?? ''),
+                        backgroundImage:
+                            NetworkImage(orphan.profile.profilePicture ?? ''),
                       ),
                     ),
                   ),
@@ -250,7 +250,7 @@ class OrphanListState extends State<OrphanList> {
               const SizedBox(height: 50.0),
               Center(
                 child: Text(
-                  orphan.profile?['fullName'] ?? '',
+                  orphan.profile.fullName ?? '',
                   style: const TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
@@ -260,7 +260,7 @@ class OrphanListState extends State<OrphanList> {
               const SizedBox(height: 8.0),
               Center(
                 child: Text(
-                  orphan.profile?['bedRoom']?['name'] ?? '',
+                  orphan.profile.bedRoom?.name ?? '',
                   style: const TextStyle(fontSize: 14.0),
                 ),
               ),

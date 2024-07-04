@@ -1,18 +1,18 @@
 class Address {
-  final String street;
-  final String urbanVillage;
-  final String subdistrict;
-  final String city;
-  final String province;
-  final String postalCode;
+  final String? street;
+  final String? urbanVillage;
+  final String? subdistrict;
+  final String? city;
+  final String? province;
+  final String? postalCode;
 
   Address({
-    required this.street,
-    required this.urbanVillage,
-    required this.subdistrict,
-    required this.city,
-    required this.province,
-    required this.postalCode,
+    this.street,
+    this.urbanVillage,
+    this.subdistrict,
+    this.city,
+    this.province,
+    this.postalCode,
   });
 
   factory Address.fromJson(Map<String, dynamic> json) {

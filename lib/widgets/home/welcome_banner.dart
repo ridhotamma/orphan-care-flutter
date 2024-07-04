@@ -9,7 +9,7 @@ class WelcomeBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String profileName = currentUser.username;
+    String profileName = currentUser.profile.fullName ?? 'Anonymous';
 
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -36,19 +36,16 @@ class WelcomeBanner extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 180),
-                    child: Text(
-                      profileName,
-                      textAlign: TextAlign.left,
-                      style: AppStyleConfig.bodyTextStyle.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 18.0,
-                        color: Colors.white,
-                      ),
-                      softWrap: true,
-                      overflow: TextOverflow.visible,
+                  Text(
+                    profileName,
+                    textAlign: TextAlign.left,
+                    style: AppStyleConfig.bodyTextStyle.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18.0,
+                      color: Colors.white,
                     ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   )
                 ],
               ),

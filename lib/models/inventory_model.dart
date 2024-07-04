@@ -31,10 +31,11 @@ class InventoryInput {
   final int quantity;
   final String inventoryTypeId;
 
-  InventoryInput(
-      {required this.name,
-      required this.quantity,
-      required this.inventoryTypeId});
+  InventoryInput({
+    required this.name,
+    required this.quantity,
+    required this.inventoryTypeId,
+  });
 
   factory InventoryInput.fromJson(Map<String, dynamic> json) {
     return InventoryInput(

@@ -1,14 +1,14 @@
 class AnalyticData {
-  final int bedRoomCount;
-  final int userCount;
-  final int adminCount;
-  final int inventoryCount;
+  final int? bedRoomCount;
+  final int? userCount;
+  final int? adminCount;
+  final int? inventoryCount;
 
   AnalyticData({
-    required this.bedRoomCount,
-    required this.userCount,
-    required this.adminCount,
-    required this.inventoryCount,
+    this.bedRoomCount,
+    this.userCount,
+    this.adminCount,
+    this.inventoryCount,
   });
 
   factory AnalyticData.fromJson(Map<String, dynamic> json) {
