@@ -48,7 +48,10 @@ class HomeScreen extends StatelessWidget {
 class WelcomeBannerWidget extends StatelessWidget {
   final Future<UserResponse> currentUserFuture;
 
-  const WelcomeBannerWidget({super.key, required this.currentUserFuture});
+  const WelcomeBannerWidget({
+    super.key,
+    required this.currentUserFuture,
+  });
 
   @override
   Widget build(BuildContext context) {

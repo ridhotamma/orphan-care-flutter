@@ -5,16 +5,14 @@ import 'package:frontend_flutter/widgets/document/upload_card.dart';
 import 'package:frontend_flutter/models/document_model.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
+import 'package:frontend_flutter/widgets/skeleton/document_grid_skeleton.dart';
 
-class DocumentScreen extends StatefulWidget {
-  const DocumentScreen({super.key});
+class DocumentScreen extends StatelessWidget {
+  final Future<List<Document>> documentsFuture;
 
-  @override
-  DocumentScreenState createState() => DocumentScreenState();
-}
+  const DocumentScreen({required this.documentsFuture, super.key});
 
-class DocumentScreenState extends State<DocumentScreen> {
-  final List<Document> documents = [];
+  void _uploadDocument() {}
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +20,20 @@ class DocumentScreenState extends State<DocumentScreen> {
       backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: const CustomAppBar(title: 'Documents'),
       body: Center(
-        child: documents.isEmpty
-            ? _buildUploadSection(context)
-            : _buildDocumentsMasonryGrid(),
+        child: FutureBuilder<List<Document>>(
+          future: documentsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const DocumentGridSkeleton();
+            } else if (snapshot.hasError) {
+              return const Text('Error');
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return _buildUploadSection(context);
+            } else {
+              return _buildDocumentsMasonryGrid(snapshot.data!);
+            }
+          },
+        ),
       ),
     );
   }
@@ -52,28 +61,17 @@ class DocumentScreenState extends State<DocumentScreen> {
     );
   }
 
-  void _uploadDocument() {
-    setState(() {
-      documents.add(Document(
-        id: 'random-id',
-        name: "example2.pdf",
-        documentType: DocumentType(id: 'random-id', name: 'PDF', type: 'pdf'),
-        url: 'https://example.com/example2.pdf',
-      ));
-    });
-  }
-
-  Widget _buildDocumentsMasonryGrid() {
+  Widget _buildDocumentsMasonryGrid(List<Document> data) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: MasonryGridView.count(
         crossAxisCount: 2,
         mainAxisSpacing: 5,
         crossAxisSpacing: 5,
-        itemCount: documents.length + 1,
+        itemCount: data.length + 1,
         itemBuilder: (BuildContext context, int index) {
-          if (index < documents.length) {
-            return DocumentItem(document: documents[index]);
+          if (index < data.length) {
+            return DocumentItem(document: data[index]);
           } else {
             return const UploadCard();
           }

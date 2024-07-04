@@ -17,17 +17,17 @@ class DocumentService {
     return data.map((json) => DocumentType.fromJson(json)).toList();
   }
 
-  Future<List<DocumentType>> fetchCurrentUserDocuments() async {
+  Future<List<Document>> fetchCurrentUserDocuments() async {
     final http.Response response =
-        await _apiService.get('/admin/users/documents');
+        await _apiService.get('/public/users/documents');
     final List<dynamic> data = jsonDecode(response.body);
-    return data.map((json) => DocumentType.fromJson(json)).toList();
+    return data.map((json) => Document.fromJson(json)).toList();
   }
 
-  Future<List<DocumentType>> fetchUserDocuments(String userId) async {
+  Future<List<Document>> fetchUserDocuments(String userId) async {
     final http.Response response =
-        await _apiService.get('/admin/users/$userId/documents');
+        await _apiService.get('/public/users/$userId/documents');
     final List<dynamic> data = jsonDecode(response.body);
-    return data.map((json) => DocumentType.fromJson(json)).toList();
+    return data.map((json) => Document.fromJson(json)).toList();
   }
 }

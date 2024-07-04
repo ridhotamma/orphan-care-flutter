@@ -6,8 +6,10 @@ import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/services/connectivity_service.dart';
 import 'package:frontend_flutter/services/analytics_service.dart';
 import 'package:frontend_flutter/services/user_service.dart';
+import 'package:frontend_flutter/services/document_service.dart';
 import 'package:frontend_flutter/models/analytic_model.dart';
 import 'package:frontend_flutter/models/user_model.dart';
+import 'package:frontend_flutter/models/document_model.dart';
 import 'home_screen.dart';
 import 'document_screen.dart';
 import 'settings_screen.dart';
@@ -26,6 +28,7 @@ class _MainScreenState extends State<MainScreen> {
 
   late Future<AnalyticData> _analyticsData;
   late Future<UserResponse> _currentUser;
+  late Future<List<Document>> _documentsFuture;
 
   @override
   void initState() {
@@ -46,6 +49,7 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _analyticsData = AnalyticsService(context).fetchHomePageAnalytics();
       _currentUser = UserService(context).fetchCurrentUser();
+      _documentsFuture = DocumentService(context).fetchCurrentUserDocuments();
     });
   }
 
@@ -96,7 +100,7 @@ class _MainScreenState extends State<MainScreen> {
         analyticsDataFuture: _analyticsData,
         currentUserFuture: _currentUser,
       ),
-      const DocumentScreen(),
+      DocumentScreen(documentsFuture: _documentsFuture),
       SettingsScreen(
         currentUserFuture: _currentUser,
       ),
