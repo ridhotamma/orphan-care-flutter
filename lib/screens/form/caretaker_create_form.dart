@@ -532,8 +532,9 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
   void _uploadDocument() {
     setState(() {
       _documents.add(Document(
+        id: 'random-id',
         name: "example2.pdf",
-        type: 'pdf',
+        documentType: DocumentType(id: 'random-id', name: 'PDF', type: 'pdf'),
         url: 'https://example.com/example2.pdf',
       ));
     });

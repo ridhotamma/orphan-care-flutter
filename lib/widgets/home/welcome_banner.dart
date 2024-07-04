@@ -3,7 +3,7 @@ import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/models/user_model.dart';
 
 class WelcomeBanner extends StatelessWidget {
-  final CurrentUser currentUser;
+  final UserResponse currentUser;
 
   const WelcomeBanner({super.key, required this.currentUser});
 

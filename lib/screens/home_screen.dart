@@ -10,7 +10,7 @@ import 'package:frontend_flutter/widgets/skeleton/welcome_banner_skeleton.dart';
 
 class HomeScreen extends StatelessWidget {
   final Future<AnalyticData> analyticsDataFuture;
-  final Future<CurrentUser> currentUserFuture;
+  final Future<UserResponse> currentUserFuture;
 
   const HomeScreen({
     super.key,
@@ -46,13 +46,13 @@ class HomeScreen extends StatelessWidget {
 }
 
 class WelcomeBannerWidget extends StatelessWidget {
-  final Future<CurrentUser> currentUserFuture;
+  final Future<UserResponse> currentUserFuture;
 
   const WelcomeBannerWidget({super.key, required this.currentUserFuture});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<CurrentUser>(
+    return FutureBuilder<UserResponse>(
       future: currentUserFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   late Future<AnalyticData> _analyticsData;
-  late Future<CurrentUser> _currentUser;
+  late Future<UserResponse> _currentUser;
 
   @override
   void initState() {

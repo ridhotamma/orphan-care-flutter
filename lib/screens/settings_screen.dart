@@ -8,7 +8,7 @@ import 'package:frontend_flutter/providers/localization_provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SettingsScreen extends StatelessWidget {
-  final Future<CurrentUser> currentUserFuture;
+  final Future<UserResponse> currentUserFuture;
 
   const SettingsScreen({
     super.key,
@@ -47,7 +47,7 @@ class SettingsScreen extends StatelessWidget {
 
   Widget _buildProfileListItem(
       BuildContext context, AppLocalizations localization) {
-    return FutureBuilder<CurrentUser>(
+    return FutureBuilder<UserResponse>(
       future: currentUserFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

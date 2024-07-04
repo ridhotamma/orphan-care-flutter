@@ -8,8 +8,9 @@ class DocumentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    IconData iconData =
-        document.type == 'pdf' ? Icons.picture_as_pdf : Icons.image;
+    IconData iconData = document.documentType.type == 'pdf'
+        ? Icons.picture_as_pdf
+        : Icons.image;
 
     return Card(
       color: Colors.white,
