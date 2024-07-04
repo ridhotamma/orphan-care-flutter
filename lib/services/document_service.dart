@@ -12,7 +12,21 @@ class DocumentService {
 
   Future<List<DocumentType>> fetchDocumentTypes() async {
     final http.Response response =
-        await _apiService.get('/admin/inventory-types');
+        await _apiService.get('/admin/document-types');
+    final List<dynamic> data = jsonDecode(response.body);
+    return data.map((json) => DocumentType.fromJson(json)).toList();
+  }
+
+  Future<List<DocumentType>> fetchCurrentUserDocuments() async {
+    final http.Response response =
+        await _apiService.get('/admin/users/documents');
+    final List<dynamic> data = jsonDecode(response.body);
+    return data.map((json) => DocumentType.fromJson(json)).toList();
+  }
+
+  Future<List<DocumentType>> fetchUserDocuments(String userId) async {
+    final http.Response response =
+        await _apiService.get('/admin/users/$userId/documents');
     final List<dynamic> data = jsonDecode(response.body);
     return data.map((json) => DocumentType.fromJson(json)).toList();
   }

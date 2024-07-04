@@ -81,4 +81,25 @@ class ApiService {
 
   Future<http.Response> delete(String endpoint) =>
       _sendRequest('DELETE', endpoint);
+
+  Future<http.Response> uploadFile(
+      String endpoint, String filePath, String fileName) async {
+    final uri = _buildUri(endpoint);
+    final token = await _getToken();
+    final headers = <String, String>{};
+
+    if (token != null) {
+      headers.addAll(AppApiConfig.getHeaders(token));
+    }
+
+    final request = http.MultipartRequest('POST', uri);
+    request.headers.addAll(headers);
+    request.files.add(await http.MultipartFile.fromPath('file', filePath,
+        filename: fileName));
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    return await _handleResponse(response);
+  }
 }
