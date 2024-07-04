@@ -97,7 +97,9 @@ class _MainScreenState extends State<MainScreen> {
         currentUserFuture: _currentUser,
       ),
       const DocumentScreen(),
-      const SettingsScreen(),
+      SettingsScreen(
+        currentUserFuture: _currentUser,
+      ),
     ];
 
     return SafeArea(

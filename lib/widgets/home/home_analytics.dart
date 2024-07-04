@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/models/analytic_model.dart';
 import 'package:frontend_flutter/providers/localization_provider.dart';
 
@@ -14,13 +13,13 @@ class HomeAnalytics extends StatelessWidget {
     var localization = AppLocalizations.of(context);
 
     return Container(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: MasonryGridView.count(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
+        mainAxisSpacing: 5,
+        crossAxisSpacing: 5,
         itemCount: 4,
         itemBuilder: (context, index) {
           switch (index) {
@@ -63,7 +62,7 @@ class HomeAnalytics extends StatelessWidget {
   }) {
     return SizedBox(
       child: Card(
-        color: AppStyleConfig.primaryBackgroundColor,
+        color: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
           side: const BorderSide(

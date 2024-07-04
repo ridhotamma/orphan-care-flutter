@@ -1,12 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
 import 'package:frontend_flutter/providers/localization_provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  final Future<CurrentUser> currentUserFuture;
+
+  const SettingsScreen({
+    super.key,
+    required this.currentUserFuture,
+  });
+
+  String getRoleText(List<String> roles) {
+    if (roles.contains('ROLE_USER') && roles.contains('ROLE_ADMIN')) {
+      return 'Administrator';
+    } else if (roles.contains('ROLE_ADMIN')) {
+      return 'Pengasuh';
+    } else if (roles.contains('ROLE_USER')) {
+      return 'Anak Asuh';
+    } else {
+      return 'Unknown Role';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +36,93 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          _buildProfileListItem(context, localization),
           _buildLanguageListItem(context, localization),
           _buildAboutAppListItem(context, localization),
           _buildLogoutListItem(context, localization),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProfileListItem(
+      BuildContext context, AppLocalizations localization) {
+    return FutureBuilder<CurrentUser>(
+      future: currentUserFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildShimmerEffect();
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              snapshot.error.toString(),
+            ),
+          );
+        } else if (snapshot.hasData) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            margin: const EdgeInsets.symmetric(vertical: 8),
+            child: ListTile(
+              title: Text(
+                snapshot.data!.username,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(getRoleText(snapshot.data!.roles.toList())),
+              leading: const CircleAvatar(
+                radius: 20.0,
+                backgroundColor: AppStyleConfig.accentColor,
+                backgroundImage: NetworkImage(
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjPtBPtOIj16drcpc4Ht93MyJgtRH89ikp_Q&s'),
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios),
+            ),
+          );
+        } else {
+          return const Center(
+            child: Text('No Data Available'),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildShimmerEffect() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        child: ListTile(
+          tileColor: Colors.white,
+          title: Container(
+            height: 16,
+            color: Colors.grey,
+          ),
+          subtitle: Container(
+            height: 14,
+            color: Colors.grey,
+            margin: const EdgeInsets.only(top: 4),
+          ),
+          leading: const CircleAvatar(
+            radius: 20.0,
+            backgroundColor: Colors.grey,
+          ),
+          trailing: const Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.grey,
+          ),
+        ),
       ),
     );
   }

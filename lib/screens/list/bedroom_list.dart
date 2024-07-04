@@ -83,6 +83,7 @@ class _BedroomListState extends State<BedroomList> {
             ),
             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             child: ListTile(
+              tileColor: Colors.white,
               leading: Container(
                 width: 40.0,
                 height: 40.0,
