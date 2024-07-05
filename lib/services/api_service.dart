@@ -36,8 +36,12 @@ class ApiService {
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
 
-  Future<http.Response> _sendRequest(String method, String endpoint,
-      {Map<String, dynamic>? body, Map<String, dynamic>? queryParams}) async {
+  Future<http.Response> _sendRequest(
+    String method,
+    String endpoint, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? queryParams,
+  }) async {
     final uri = _buildUri(endpoint, queryParams);
     final token = await _getToken();
     final headers = <String, String>{'Content-Type': 'application/json'};
@@ -47,6 +51,7 @@ class ApiService {
     }
 
     http.Response response;
+
     switch (method) {
       case 'GET':
         response = await http.get(uri, headers: headers);

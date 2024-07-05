@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:frontend_flutter/models/bedroom_model.dart';
+import 'package:frontend_flutter/models/guardian_model.dart';
+import 'package:frontend_flutter/services/bedroom_service.dart';
+import 'package:frontend_flutter/services/location_service.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:frontend_flutter/services/user_service.dart';
 import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
 import 'package:frontend_flutter/widgets/input/optional_text_form_field.dart';
 import 'package:frontend_flutter/widgets/input/required_dropdown_button_form_field.dart';
@@ -36,8 +41,14 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   final _phoneNumberController = TextEditingController();
 
   final _guardianFullNameController = TextEditingController();
+
   String? _selectedBedRoom;
   String? _selectedFamilyRelation;
+
+  Map<String, dynamic>? _selectedProvince;
+  Map<String, dynamic>? _selectedDistrict;
+  Map<String, dynamic>? _selectedRegency;
+  Map<String, dynamic>? _selectedVillage;
 
   final _addressFormKey = GlobalKey<FormState>();
   final _streetController = TextEditingController();
@@ -59,7 +70,22 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
 
   final List<Document> _documents = [];
 
+  List<Map<String, dynamic>> _provinces = [];
+  List<Map<String, dynamic>> _cities = [];
+  List<Map<String, dynamic>> _subDistricts = [];
+  List<Map<String, dynamic>> _urbanVillages = [];
+
+  List<GuardianType> _guardianTypes = [];
+  List<BedRoom> _bedrooms = [];
+
   final List<bool> _selectedGenderToggle = [true, false, false];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProvinces();
+    _fetchGuardianTypes();
+  }
 
   @override
   void dispose() {
@@ -79,6 +105,61 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     _provinceController.dispose();
     _postalCodeController.dispose();
     super.dispose();
+  }
+
+  void _fetchBedrooms() async {
+    final bedrooms = await BedroomService(context).fetchBedRooms();
+
+    setState(() {
+      _bedrooms = bedrooms;
+    });
+  }
+
+  void _fetchGuardianTypes() async {
+    final guardianTypes = await UserService(context).fetchGuardianTypes();
+
+    setState(() {
+      _guardianTypes = guardianTypes;
+    });
+  }
+
+  void _fetchProvinces() async {
+    final provinces = await LocationService().fetchProvinces();
+
+    setState(() {
+      _provinces = provinces;
+      _cities = [];
+      _subDistricts = [];
+      _urbanVillages = [];
+    });
+  }
+
+  void _fetchCities(String provinceId) async {
+    final cities = await LocationService().fetchCities(provinceId);
+
+    setState(() {
+      _cities = cities;
+      _subDistricts = [];
+      _urbanVillages = [];
+    });
+  }
+
+  void _fetchSubDistricts(String regencyId) async {
+    final subDistricts = await LocationService().fetchSubDistricts(regencyId);
+
+    setState(() {
+      _subDistricts = subDistricts;
+      _urbanVillages = [];
+    });
+  }
+
+  void _fetchUrbanVillages(String districtId) async {
+    final urbanVillages =
+        await LocationService().fetchUrbanVillages(districtId);
+
+    setState(() {
+      _urbanVillages = urbanVillages;
+    });
   }
 
   void _onStepContinue() {
@@ -119,7 +200,9 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   }
 
   Future<void> _selectDate(
-      BuildContext context, TextEditingController controller) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -445,29 +528,89 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                DropdownSearch<Map<String, dynamic>>(
+                  items: _provinces,
+                  itemAsString: (item) {
+                    return item['name'];
+                  },
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration:
+                          AppStyleConfig.inputDecoration.copyWith(
+                    labelText: 'Province',
+                    hintText: 'Select a province',
+                  )),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedProvince = value;
+                      _fetchCities(value?['id']);
+                    });
+                  },
+                  selectedItem: _selectedProvince,
+                  enabled: true,
+                ),
+                const SizedBox(height: 20.0),
+                DropdownSearch<Map<String, dynamic>>(
+                  items: _cities,
+                  itemAsString: (item) {
+                    return item['name'];
+                  },
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration:
+                          AppStyleConfig.inputDecoration.copyWith(
+                    labelText: 'City',
+                    hintText: 'Select a city',
+                  )),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedRegency = value;
+                      _fetchSubDistricts(value?['id']);
+                    });
+                  },
+                  selectedItem: _selectedRegency,
+                ),
+                const SizedBox(height: 20.0),
+                DropdownSearch<Map<String, dynamic>>(
+                  items: _subDistricts,
+                  itemAsString: (item) {
+                    return item['name'];
+                  },
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration:
+                          AppStyleConfig.inputDecoration.copyWith(
+                    labelText: 'Subdistrict',
+                    hintText: 'Select a subdistrict',
+                  )),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedDistrict = value;
+                      _fetchUrbanVillages(value?['id']);
+                    });
+                  },
+                  selectedItem: _selectedDistrict,
+                ),
+                const SizedBox(height: 20.0),
+                DropdownSearch<Map<String, dynamic>>(
+                  items: _urbanVillages,
+                  itemAsString: (item) {
+                    return item['name'];
+                  },
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration:
+                          AppStyleConfig.inputDecoration.copyWith(
+                    labelText: 'Urban Village',
+                    hintText: 'Select an urban village',
+                  )),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedVillage = value;
+                    });
+                  },
+                  selectedItem: _selectedVillage,
+                ),
+                const SizedBox(height: 20.0),
                 OptionalTextFormField(
                   controller: _streetController,
                   hintText: 'Street',
-                ),
-                const SizedBox(height: 20.0),
-                OptionalTextFormField(
-                  controller: _urbanVillageController,
-                  hintText: 'Urban Village',
-                ),
-                const SizedBox(height: 20.0),
-                OptionalTextFormField(
-                  controller: _subdistrictController,
-                  hintText: 'Subdistrict',
-                ),
-                const SizedBox(height: 20.0),
-                OptionalTextFormField(
-                  controller: _cityController,
-                  hintText: 'City',
-                ),
-                const SizedBox(height: 20.0),
-                OptionalTextFormField(
-                  controller: _provinceController,
-                  hintText: 'Province',
                 ),
                 const SizedBox(height: 20.0),
                 OptionalTextFormField(

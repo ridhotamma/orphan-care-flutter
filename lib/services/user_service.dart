@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/models/guardian_model.dart';
 import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/services/api_service.dart';
 import 'package:http/http.dart' as http;
@@ -14,6 +15,13 @@ class UserService {
         await _apiService.get('/public/profiles/current-user');
     final Map<String, dynamic> data = jsonDecode(response.body);
     return UserResponse.fromJson(data);
+  }
+
+  Future<List<GuardianType>> fetchGuardianTypes() async {
+    final http.Response response =
+        await _apiService.get('/admin/guardian-types');
+    final List<dynamic> data = jsonDecode(response.body);
+    return data.map((json) => GuardianType.fromJson(json)).toList();
   }
 
   Future<List<UserResponse>> fetchUserProfiles({

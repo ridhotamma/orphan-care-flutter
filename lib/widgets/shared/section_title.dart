@@ -22,13 +22,7 @@ class SectionTitle extends StatelessWidget {
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width - 30,
-            child: const Align(
-              child: Divider(),
-            ),
-          ),
+          )
         ],
       ),
     );
