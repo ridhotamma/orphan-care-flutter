@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/events/event_bus.dart';
+import 'package:frontend_flutter/events/events.dart';
 import 'package:frontend_flutter/models/inventory_model.dart';
 import 'package:frontend_flutter/routes/routes.dart';
 import 'package:frontend_flutter/services/inventory_service.dart';
@@ -15,11 +19,24 @@ class InventoryList extends StatefulWidget {
 
 class _InventoryListState extends State<InventoryList> {
   late Future<List<Inventory>> _inventoryFuture;
+  late StreamSubscription _eventBusSubscription;
 
   @override
   void initState() {
     super.initState();
     _fetchData();
+
+    _eventBusSubscription = eventBus.on<DataMasterCreatedEvent>().listen(
+      (event) {
+        _fetchData();
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _eventBusSubscription.cancel();
+    super.dispose();
   }
 
   Future<void> _fetchData() async {

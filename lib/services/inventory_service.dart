@@ -27,7 +27,7 @@ class InventoryService {
   Future<Inventory> createInventory(Map<String, dynamic> requestData) async {
     final http.Response response =
         await _apiService.post('/admin/inventories', requestData);
-    final Map<String, dynamic> responseData = jsonDecode(response.body);
-    return Inventory.fromJson(responseData);
+    final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+    return Inventory.fromJson(decodedResponse);
   }
 }
