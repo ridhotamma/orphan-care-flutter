@@ -21,8 +21,6 @@ class _InventoryCreateFormState extends State<InventoryCreateForm> {
   final _nameController = TextEditingController();
   final _quantityController = TextEditingController(text: '1');
 
-  late InventoryService _inventoryService;
-
   List<DropdownMenuItem<String>> _inventoryTypeItems = [];
   String? _selectedInventoryTypeId;
   bool isSubmitting = false;
@@ -30,12 +28,12 @@ class _InventoryCreateFormState extends State<InventoryCreateForm> {
   @override
   void initState() {
     super.initState();
-    _inventoryService = InventoryService(context);
     _fetchInventoryTypes();
   }
 
   Future<void> _fetchInventoryTypes() async {
-    final inventoryTypes = await _inventoryService.fetchInventoryTypes();
+    final inventoryTypes =
+        await InventoryService(context).fetchInventoryTypes();
 
     if (mounted) {
       setState(() {
@@ -63,8 +61,15 @@ class _InventoryCreateFormState extends State<InventoryCreateForm> {
           inventoryTypeId: _selectedInventoryTypeId!,
           quantity: quantity,
         );
-        await _inventoryService.createInventory(inventoryInput.toJson());
-        onSubmitSuccess('inventory created successfully');
+
+        await InventoryService(context)
+            .createInventory(inventoryInput.toJson())
+            .then(
+          (data) {
+            onSubmitSuccess('Inventory created successfully');
+            eventBus.fire(DataMasterCreatedEvent());
+          },
+        );
       } catch (e) {
         onSubmitFailed(e.toString());
       } finally {
@@ -105,7 +110,6 @@ class _InventoryCreateFormState extends State<InventoryCreateForm> {
         duration: const Duration(seconds: 3),
       ),
     );
-    eventBus.fire(DataMasterCreatedEvent());
     Navigator.pop(context, true);
   }
 

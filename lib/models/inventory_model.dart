@@ -55,18 +55,18 @@ class InventoryInput {
 }
 
 class Inventory {
-  final String id;
+  final String? id;
   final String name;
   final int quantity;
-  final String inventoryTypeId;
-  final InventoryType inventoryType;
+  final String? inventoryTypeId;
+  final InventoryType? inventoryType;
 
   Inventory({
-    required this.id,
     required this.name,
     required this.quantity,
-    required this.inventoryTypeId,
-    required this.inventoryType,
+    this.id,
+    this.inventoryTypeId,
+    this.inventoryType,
   });
 
   factory Inventory.fromJson(Map<String, dynamic> json) {
@@ -85,7 +85,7 @@ class Inventory {
       'name': name,
       'quantity': quantity,
       'inventoryTypeId': inventoryTypeId,
-      'inventoryType': inventoryType.toJson(),
+      'inventoryType': inventoryType?.toJson(),
     };
   }
 }

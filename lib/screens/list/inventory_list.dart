@@ -33,16 +33,80 @@ class _InventoryListState extends State<InventoryList> {
     );
   }
 
-  @override
-  void dispose() {
-    _eventBusSubscription.cancel();
-    super.dispose();
-  }
-
   Future<void> _fetchData() async {
     setState(() {
       _inventoryFuture = InventoryService(context).fetchInventories();
     });
+  }
+
+  void onDeleteSuccess(inventoryName) {
+    Navigator.of(context).pop();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppStyleConfig.successColor,
+        content: Text(
+          'Inventory $inventoryName deleted',
+          style: const TextStyle(color: Colors.white),
+        ),
+        duration: const Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'OK',
+          textColor: Colors.white,
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<bool?> _showDeleteConfirmationDialog(
+      BuildContext context, String itemName) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Confirmation'),
+          content: Text('Are you sure you want to delete $itemName?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showLoadingDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible:
+          false, // Prevents closing the dialog by tapping outside
+      builder: (context) {
+        return const AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text('Deleting...'),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _eventBusSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -70,8 +134,8 @@ class _InventoryListState extends State<InventoryList> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, RoutePaths.inventoryCreateForm);
+        onPressed: () async {
+          await Navigator.pushNamed(context, RoutePaths.inventoryCreateForm);
         },
         backgroundColor: AppStyleConfig.secondaryColor,
         foregroundColor: Colors.white,
@@ -118,8 +182,7 @@ class _InventoryListState extends State<InventoryList> {
                     width: 100.0,
                   ),
                   const SizedBox(
-                    height: 8.0,
-                  ),
+                      height: 8.0), // Spacing between title and subtitle
                   Container(
                     color: Colors.grey.shade300,
                     height: 20.0,
@@ -154,9 +217,7 @@ class _InventoryListState extends State<InventoryList> {
               size: 60.0,
             ),
           ),
-          const SizedBox(
-            height: 20.0,
-          ),
+          const SizedBox(height: 20.0),
           const Text(
             'There is no inventory',
             style: AppStyleConfig.headlineMediumTextStyle,
@@ -172,65 +233,90 @@ class _InventoryListState extends State<InventoryList> {
       itemCount: data.length,
       itemBuilder: (context, index) {
         final inventory = data[index];
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(10),
+        return Dismissible(
+          key: Key(inventory.id.toString()),
+          direction: DismissDirection.endToStart,
+          background: Container(
+            color: Colors.red,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: const Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
           ),
-          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: ListTile(
-            leading: Container(
-              decoration: BoxDecoration(
-                color: Colors.blue.shade100,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: const EdgeInsets.all(8),
-              child: Icon(
-                Icons.inventory_2_outlined,
-                color: Colors.blue.shade900,
-              ),
+          confirmDismiss: (direction) async {
+            return await _showDeleteConfirmationDialog(context, inventory.name);
+          },
+          onDismissed: (direction) async {
+            _showLoadingDialog(context);
+
+            try {
+              await InventoryService(context)
+                  .deleteInventoryById(inventory.id!);
+              setState(() {
+                data.removeAt(index);
+              });
+            } finally {
+              onDeleteSuccess(inventory.name);
+            }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(10),
             ),
-            title: Text(
-              inventory.name,
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 5.0,
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: ListTile(
+              leading: Container(
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 2.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.blue),
-                    borderRadius: BorderRadius.circular(5.0),
+                padding: const EdgeInsets.all(8),
+                child: Icon(
+                  Icons.inventory_2_outlined,
+                  color: Colors.blue.shade900,
+                ),
+              ),
+              title: Text(
+                inventory.name,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 5.0),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 2.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.blue),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    child: Text(
+                      'Jumlah: ${inventory.quantity}',
+                      style: const TextStyle(color: Colors.blue),
+                    ),
                   ),
-                  child: Text(
-                    'Jumlah: ${inventory.quantity}',
-                    style: const TextStyle(color: Colors.blue),
-                  ),
-                ),
-                const SizedBox(
-                  height: 5.0,
-                ),
-                Text(inventory.inventoryType.name),
-              ],
+                  const SizedBox(height: 5.0),
+                  Text(inventory.inventoryType!.name),
+                ],
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  RoutePaths.inventoryDetails,
+                  arguments: inventory.id,
+                );
+              },
             ),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                RoutePaths.inventoryDetails,
-                arguments: inventory.id,
-              );
-            },
           ),
         );
       },
