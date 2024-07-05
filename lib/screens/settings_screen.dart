@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/models/user_model.dart';
+import 'package:frontend_flutter/routes/routes.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
@@ -82,6 +83,14 @@ class SettingsScreen extends StatelessWidget {
                     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjPtBPtOIj16drcpc4Ht93MyJgtRH89ikp_Q&s'),
               ),
               trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                String id = snapshot.data!.id;
+                Navigator.pushNamed(
+                  context,
+                  RoutePaths.currentUserDetails,
+                  arguments: id,
+                );
+              },
             ),
           );
         } else {

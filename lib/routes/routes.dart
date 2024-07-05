@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/screens/details/bedroom_details.dart';
-import 'package:frontend_flutter/screens/details/caretaker_details.dart';
 import 'package:frontend_flutter/screens/details/inventory_details.dart';
-import 'package:frontend_flutter/screens/details/orphan_details.dart';
+import 'package:frontend_flutter/screens/details/user_details.dart';
 import 'package:frontend_flutter/screens/form/bedroom_create_form.dart';
 import 'package:frontend_flutter/screens/form/caretaker_create_form.dart';
 import 'package:frontend_flutter/screens/form/inventory_create_form.dart';
@@ -13,6 +12,11 @@ import 'package:frontend_flutter/screens/list/inventory_list.dart';
 import 'package:frontend_flutter/screens/list/orphan_list.dart';
 import 'package:frontend_flutter/screens/login_screen.dart';
 import 'package:frontend_flutter/screens/main_screen.dart';
+import 'package:frontend_flutter/screens/shared/user_address_details.dart';
+import 'package:frontend_flutter/screens/shared/user_basic_information.dart';
+import 'package:frontend_flutter/screens/shared/user_personal_settings.dart';
+import 'package:frontend_flutter/screens/shared/user_profile_details.dart';
+import 'package:frontend_flutter/screens/shared/user_upload_documents.dart';
 
 class RoutePaths {
   static const String login = '/';
@@ -32,6 +36,13 @@ class RoutePaths {
   static const String inventoryList = '/main/inventory_list';
   static const String inventoryDetails = '/main/inventory_details';
   static const String inventoryCreateForm = '/main/inventory_create';
+
+  static const String currentUserDetails = '/main/settings/profile';
+  static const String userBasicInformation = '/main/users/basic_information';
+  static const String userPersonalSettings = '/main/users/personal_settings';
+  static const String userProfileDetails = '/main/users/profile_details';
+  static const String userUploadDocuments = '/main/users/documents';
+  static const String userAddressDetails = '/main/users/address';
 }
 
 class AppRouter {
@@ -48,7 +59,7 @@ class AppRouter {
 
       case RoutePaths.orphanDetails:
         final id = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => OrphanDetails(id: id));
+        return MaterialPageRoute(builder: (_) => UserDetails(id: id));
 
       case RoutePaths.orphanCreateForm:
         return MaterialPageRoute(builder: (_) => const OrphanCreateForm());
@@ -58,7 +69,7 @@ class AppRouter {
 
       case RoutePaths.caretakerDetails:
         final id = settings.arguments as String;
-        return MaterialPageRoute(builder: (_) => CaretakerDetails(id: id));
+        return MaterialPageRoute(builder: (_) => UserDetails(id: id));
 
       case RoutePaths.caretakerCreateForm:
         return MaterialPageRoute(builder: (_) => const CaretakerCreateForm());
@@ -82,6 +93,30 @@ class AppRouter {
 
       case RoutePaths.inventoryCreateForm:
         return MaterialPageRoute(builder: (_) => const InventoryCreateForm());
+
+      case RoutePaths.currentUserDetails:
+        final id = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => UserDetails(id: id));
+
+      case RoutePaths.userBasicInformation:
+        final id = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => UserBasicInformation(id: id));
+
+      case RoutePaths.userPersonalSettings:
+        final id = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => UserPersonalSettings(id: id));
+
+      case RoutePaths.userProfileDetails:
+        final id = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => UserProfileDetails(id: id));
+
+      case RoutePaths.userUploadDocuments:
+        final id = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => UserUploadDocuments(id: id));
+
+      case RoutePaths.userAddressDetails:
+        final id = settings.arguments as String;
+        return MaterialPageRoute(builder: (_) => UserAddressDetails(id: id));
 
       default:
         return MaterialPageRoute(builder: (_) => const LoginScreen());

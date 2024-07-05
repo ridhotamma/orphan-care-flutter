@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 
-class OrphanDetails extends StatelessWidget {
+class UserDetails extends StatelessWidget {
   final String id;
 
-  const OrphanDetails({super.key, required this.id});
+  const UserDetails({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
