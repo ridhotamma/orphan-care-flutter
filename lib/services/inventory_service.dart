@@ -30,4 +30,25 @@ class InventoryService {
     final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
     return Inventory.fromJson(decodedResponse);
   }
+
+  Future<Inventory> updateInventory(
+      String id, Map<String, dynamic> requestData) async {
+    final http.Response response =
+        await _apiService.put('/admin/inventories/$id', requestData);
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    return Inventory.fromJson(data);
+  }
+
+  Future<Inventory> fetchInventoryById(String id) async {
+    final http.Response response =
+        await _apiService.get('/admin/inventories/$id');
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    return Inventory.fromJson(data);
+  }
+
+  Future<bool> deleteInventoryById(String id) async {
+    final http.Response response =
+        await _apiService.delete('/admin/inventories/$id');
+    return response.statusCode == 204 ? true : false;
+  }
 }

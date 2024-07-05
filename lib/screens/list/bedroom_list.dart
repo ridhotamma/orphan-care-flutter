@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/events/event_bus.dart';
+import 'package:frontend_flutter/events/events.dart';
 import 'package:frontend_flutter/models/bedroom_model.dart';
 import 'package:frontend_flutter/routes/routes.dart';
 import 'package:frontend_flutter/services/bedroom_service.dart';
@@ -15,11 +19,18 @@ class BedroomList extends StatefulWidget {
 
 class _BedroomListState extends State<BedroomList> {
   late Future<List<BedRoom>> _bedroomFuture;
+  late StreamSubscription _eventBusSubscription;
 
   @override
   void initState() {
     super.initState();
     _fetchData();
+
+    _eventBusSubscription = eventBus.on<DataMasterCreatedEvent>().listen(
+      (event) {
+        _fetchData();
+      },
+    );
   }
 
   Future<void> _fetchData() async {
@@ -28,8 +39,73 @@ class _BedroomListState extends State<BedroomList> {
     });
   }
 
+  void onDeleteSuccess(bedRoomName) {
+    Navigator.of(context).pop();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppStyleConfig.successColor,
+        content: Text(
+          'Bedroom $bedRoomName deleted',
+          style: const TextStyle(color: Colors.white),
+        ),
+        duration: const Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'OK',
+          textColor: Colors.white,
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<bool?> _showDeleteConfirmationDialog(
+      BuildContext context, String itemName) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Confirmation'),
+          content: Text('Are you sure you want to delete $itemName?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showLoadingDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible:
+          false, // Prevents closing the dialog by tapping outside
+      builder: (context) {
+        return const AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text('Deleting...'),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
+    _eventBusSubscription.cancel();
     super.dispose();
   }
 
@@ -141,9 +217,7 @@ class _BedroomListState extends State<BedroomList> {
               size: 60.0,
             ),
           ),
-          const SizedBox(
-            height: 20.0,
-          ),
+          const SizedBox(height: 20.0),
           const Text(
             'There is no bedroom',
             style: AppStyleConfig.headlineMediumTextStyle,
@@ -159,41 +233,69 @@ class _BedroomListState extends State<BedroomList> {
       itemCount: data.length,
       itemBuilder: (context, index) {
         final bedroom = data[index];
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(10),
+        return Dismissible(
+          key: Key(bedroom.id.toString()),
+          direction: DismissDirection.endToStart,
+          background: Container(
+            color: Colors.red,
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: const Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
           ),
-          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          child: ListTile(
-            leading: Container(
-              decoration: BoxDecoration(
-                color: Colors.blue.shade100,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: const EdgeInsets.all(8),
-              child: Icon(
-                Icons.bedroom_parent,
-                color: Colors.blue.shade900,
-              ),
+          confirmDismiss: (direction) async {
+            return await _showDeleteConfirmationDialog(context, bedroom.name!);
+          },
+          onDismissed: (direction) async {
+            _showLoadingDialog(context);
+
+            try {
+              await BedroomService(context).deleteBedRoomById(bedroom.id!);
+              setState(() {
+                data.removeAt(index);
+              });
+            } finally {
+              onDeleteSuccess(bedroom.name);
+            }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(10),
             ),
-            title: Text(
-              bedroom.name!,
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: ListTile(
+              leading: Container(
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.all(8),
+                child: Icon(
+                  Icons.bedroom_parent,
+                  color: Colors.blue.shade900,
+                ),
               ),
+              title: Text(
+                bedroom.name!,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              subtitle: Text(bedroom.bedRoomType!.name!),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  RoutePaths.bedroomDetails,
+                  arguments: bedroom.id,
+                );
+              },
             ),
-            subtitle: Text(bedroom.bedRoomType!.name!),
-            trailing: const Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                RoutePaths.bedroomDetails,
-                arguments: bedroom.id,
-              );
-            },
           ),
         );
       },

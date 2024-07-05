@@ -90,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
         duration: const Duration(seconds: 3),
         action: SnackBarAction(
           label: 'OK',
+          textColor: Colors.white,
           onPressed: () {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
           },

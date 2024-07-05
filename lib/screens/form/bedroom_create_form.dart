@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/events/event_bus.dart';
+import 'package:frontend_flutter/events/events.dart';
 import 'package:frontend_flutter/models/bedroom_model.dart';
 import 'package:frontend_flutter/services/bedroom_service.dart';
 import 'package:frontend_flutter/widgets/input/required_dropdown_button_form_field.dart';
@@ -17,8 +19,6 @@ class _BedroomCreateFormState extends State<BedroomCreateForm> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
 
-  late BedroomService _bedroomService;
-
   List<DropdownMenuItem<String>> _bedRoomTypeItems = [];
   String? _selectedBedRoomTypeId;
   bool isSubmitting = false;
@@ -26,12 +26,11 @@ class _BedroomCreateFormState extends State<BedroomCreateForm> {
   @override
   void initState() {
     super.initState();
-    _bedroomService = BedroomService(context);
     _fetchBedRoomTypes();
   }
 
   Future<void> _fetchBedRoomTypes() async {
-    final bedRoomTypes = await _bedroomService.fetchBedRoomTypes();
+    final bedRoomTypes = await BedroomService(context).fetchBedRoomTypes();
 
     if (mounted) {
       setState(() {
@@ -58,8 +57,12 @@ class _BedroomCreateFormState extends State<BedroomCreateForm> {
           bedRoomTypeId: _selectedBedRoomTypeId!,
         );
 
-        await _bedroomService.createBedRoom(bedRoomInput.toJson());
-        onSubmitSuccess('Bedroom created successfully');
+        await BedroomService(context).createBedRoom(bedRoomInput.toJson()).then(
+          (data) {
+            onSubmitSuccess('Bedroom created successfully');
+            eventBus.fire(DataMasterCreatedEvent());
+          },
+        );
       } catch (e) {
         onSubmitFailed(e.toString());
       } finally {
