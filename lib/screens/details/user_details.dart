@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/routes/routes.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 
 class UserDetails extends StatelessWidget {
@@ -12,22 +13,22 @@ class UserDetails extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: const CustomAppBar(
-        title: "Detail Anak Asuh",
+        title: "User Details",
         automaticallyImplyLeading: true,
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildProfileCard(),
-            _buildDetailList(),
+            _buildProfileCard(context),
+            _buildDetailList(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProfileCard() {
+  Widget _buildProfileCard(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 1.0,
@@ -141,7 +142,7 @@ class UserDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailList() {
+  Widget _buildDetailList(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       physics: const NeverScrollableScrollPhysics(),
@@ -150,22 +151,46 @@ class UserDetails extends StatelessWidget {
         _buildListTile(
           leadingIcon: Icons.info,
           title: 'Basic Information',
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              RoutePaths.userBasicInformation,
+              arguments: id,
+            );
+          },
         ),
         _buildListTile(
           leadingIcon: Icons.person,
           title: 'Profile',
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              RoutePaths.userProfileDetails,
+              arguments: id,
+            );
+          },
         ),
         _buildListTile(
           leadingIcon: Icons.location_on,
           title: 'Address',
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              RoutePaths.userAddressDetails,
+              arguments: id,
+            );
+          },
         ),
         _buildListTile(
           leadingIcon: Icons.settings,
           title: 'Personal Settings',
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              RoutePaths.userPersonalSettings,
+              arguments: id,
+            );
+          },
         ),
       ],
     );

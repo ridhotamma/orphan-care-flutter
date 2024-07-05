@@ -151,7 +151,7 @@ class _InventoryListState extends State<InventoryList> {
 
   Widget _buildInventoryListView(List<Inventory> data) {
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 12.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
       itemCount: data.length,
       itemBuilder: (context, index) {
         final inventory = data[index];

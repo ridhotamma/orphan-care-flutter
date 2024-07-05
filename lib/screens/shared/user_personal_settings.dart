@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
-import 'package:frontend_flutter/routes/routes.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 
 class UserPersonalSettings extends StatefulWidget {
@@ -27,9 +26,7 @@ class _UserPersonalSettingsState extends State<UserPersonalSettings> {
         child: Text('Personal Details'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, RoutePaths.orphanCreateForm);
-        },
+        onPressed: () {},
         backgroundColor: AppStyleConfig.secondaryColor,
         foregroundColor: Colors.white,
         shape: const CircleBorder(),

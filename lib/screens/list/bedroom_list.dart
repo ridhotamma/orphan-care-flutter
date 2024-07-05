@@ -155,7 +155,7 @@ class _BedroomListState extends State<BedroomList> {
 
   Widget _buildBedRoomListView(List<BedRoom> data) {
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 12.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
       itemCount: data.length,
       itemBuilder: (context, index) {
         final bedroom = data[index];
