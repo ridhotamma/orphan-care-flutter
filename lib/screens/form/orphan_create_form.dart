@@ -131,7 +131,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   }
 
   void _fetchProvinces() async {
-    final provinces = await LocationService().fetchProvinces();
+    final provinces = await LocationService(context: context).fetchProvinces();
 
     setState(() {
       _provinces = provinces;
@@ -142,7 +142,8 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   }
 
   void _fetchCities(String provinceId) async {
-    final cities = await LocationService().fetchCities(provinceId);
+    final cities =
+        await LocationService(context: context).fetchCities(provinceId);
 
     setState(() {
       _cities = cities;
@@ -152,7 +153,8 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   }
 
   void _fetchSubDistricts(String regencyId) async {
-    final subDistricts = await LocationService().fetchSubDistricts(regencyId);
+    final subDistricts =
+        await LocationService(context: context).fetchSubDistricts(regencyId);
 
     setState(() {
       _subDistricts = subDistricts;
@@ -162,7 +164,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
 
   void _fetchUrbanVillages(String districtId) async {
     final urbanVillages =
-        await LocationService().fetchUrbanVillages(districtId);
+        await LocationService(context: context).fetchUrbanVillages(districtId);
 
     setState(() {
       _urbanVillages = urbanVillages;

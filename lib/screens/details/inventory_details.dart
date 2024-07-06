@@ -46,7 +46,7 @@ class _InventoryDetailsState extends State<InventoryDetails> {
     });
 
     _inventoryFuture.then((data) {
-      _nameController.text = data.name;
+      _nameController.text = data.name!;
       _quantityController.text = data.quantity.toString();
       _selectedInventoryTypeId = data.inventoryType!.id;
     });
@@ -238,7 +238,7 @@ class _InventoryDetailsState extends State<InventoryDetails> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildDetailItem('Inventory Name', data.name),
+          _buildDetailItem('Inventory Name', data.name!),
           const SizedBox(height: 16.0),
           _buildDetailItem('Inventory Type', data.inventoryType!.name),
           const SizedBox(height: 16.0),

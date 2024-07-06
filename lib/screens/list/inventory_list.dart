@@ -246,7 +246,8 @@ class _InventoryListState extends State<InventoryList> {
             ),
           ),
           confirmDismiss: (direction) async {
-            return await _showDeleteConfirmationDialog(context, inventory.name);
+            return await _showDeleteConfirmationDialog(
+                context, inventory.name!);
           },
           onDismissed: (direction) async {
             _showLoadingDialog(context);
@@ -281,7 +282,7 @@ class _InventoryListState extends State<InventoryList> {
                 ),
               ),
               title: Text(
-                inventory.name,
+                inventory.name!,
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,

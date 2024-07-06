@@ -56,14 +56,14 @@ class InventoryInput {
 
 class Inventory {
   final String? id;
-  final String name;
-  final int quantity;
+  final String? name;
+  final int? quantity;
   final String? inventoryTypeId;
   final InventoryType? inventoryType;
 
   Inventory({
-    required this.name,
-    required this.quantity,
+    this.name,
+    this.quantity,
     this.id,
     this.inventoryTypeId,
     this.inventoryType,
