@@ -27,6 +27,17 @@ class UserRequest {
       'profile': profile.toJson(),
     };
   }
+
+  static UserRequest empty() {
+    return UserRequest(
+      email: '',
+      username: '',
+      roles: [],
+      password: '',
+      active: false,
+      profile: Profile.empty(),
+    );
+  }
 }
 
 class UserResponse {
@@ -54,6 +65,17 @@ class UserResponse {
       roles: List<String>.from(json['roles']),
       active: json['active'],
       profile: Profile.fromJson(json['profile']),
+    );
+  }
+
+  static UserResponse empty() {
+    return UserResponse(
+      id: '',
+      email: '',
+      username: '',
+      roles: [],
+      active: false,
+      profile: Profile.empty(),
     );
   }
 }

@@ -28,6 +28,15 @@ class BedRoom {
       'bedRoomType': bedRoomType,
     };
   }
+
+  static BedRoom empty() {
+    return BedRoom(
+      id: '',
+      name: '',
+      bedRoomTypeId: '',
+      bedRoomType: BedRoomType.empty(),
+    );
+  }
 }
 
 class BedRoomInput {
@@ -79,5 +88,13 @@ class BedRoomType {
       'name': name,
       'type': type,
     };
+  }
+
+  static BedRoomType empty() {
+    return BedRoomType(
+      id: '',
+      name: '',
+      type: '',
+    );
   }
 }

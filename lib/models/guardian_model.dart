@@ -22,8 +22,9 @@ class Guardian {
         id: json['id'],
         fullName: json['fullName'],
         phoneNumber: json['phoneNumber'],
-        address:
-            json['address'] == null ? null : Address.fromJson(json['address']),
+        address: json['address'] == null
+            ? Address.empty()
+            : Address.fromJson(json['address']),
         guardianType: GuardianType.fromJson(json['guardianType']),
         guardianTypeId: json['guardianTypeId']);
   }
@@ -37,6 +38,17 @@ class Guardian {
       'guardianType': guardianType,
       'guardianTypeId': guardianTypeId
     };
+  }
+
+  static Guardian empty() {
+    return Guardian(
+      id: '',
+      fullName: '',
+      phoneNumber: '',
+      address: Address.empty(),
+      guardianType: GuardianType.empty(),
+      guardianTypeId: '',
+    );
   }
 }
 
@@ -65,5 +77,13 @@ class GuardianType {
       'name': name,
       'type': type,
     };
+  }
+
+  static GuardianType empty() {
+    return GuardianType(
+      id: '',
+      name: '',
+      type: '',
+    );
   }
 }

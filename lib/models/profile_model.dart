@@ -43,12 +43,15 @@ class Profile {
       bio: json['bio'],
       bedRoomId: json['bedRoomId'],
       fullName: json['fullName'],
-      address:
-          json['address'] == null ? null : Address.fromJson(json['address']),
-      guardian:
-          json['guardian'] == null ? null : Guardian.fromJson(json['guardian']),
-      bedRoom:
-          json['bedroom'] == null ? null : BedRoom.fromJson(json['bedroom']),
+      address: json['address'] == null
+          ? Address.empty()
+          : Address.fromJson(json['address']),
+      guardian: json['guardian'] == null
+          ? Guardian.empty()
+          : Guardian.fromJson(json['guardian']),
+      bedRoom: json['bedroom'] == null
+          ? BedRoom.empty()
+          : BedRoom.fromJson(json['bedroom']),
       phoneNumber: json['phoneNumber'],
       gender: json['gender'],
     );
@@ -70,5 +73,23 @@ class Profile {
       'phoneNumber': phoneNumber,
       'gender': gender,
     };
+  }
+
+  static Profile empty() {
+    return Profile(
+      profilePicture: '',
+      birthday: '',
+      birthPlace: '',
+      joinDate: '',
+      leaveDate: '',
+      bio: '',
+      bedRoomId: '',
+      fullName: '',
+      phoneNumber: '',
+      gender: '',
+      address: Address.empty(),
+      guardian: Guardian.empty(),
+      bedRoom: BedRoom.empty(),
+    );
   }
 }

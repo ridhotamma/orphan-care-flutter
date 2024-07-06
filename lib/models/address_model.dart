@@ -36,4 +36,15 @@ class Address {
       'postalCode': postalCode,
     };
   }
+
+  static Address empty() {
+    return Address(
+      street: '',
+      urbanVillage: '',
+      subdistrict: '',
+      city: '',
+      province: '',
+      postalCode: '',
+    );
+  }
 }
