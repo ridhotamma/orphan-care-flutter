@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/models/address_model.dart';
 import 'package:frontend_flutter/models/bedroom_model.dart';
 import 'package:frontend_flutter/models/guardian_model.dart';
+import 'package:frontend_flutter/models/profile_model.dart';
+import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/services/bedroom_service.dart';
 import 'package:frontend_flutter/services/location_service.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:frontend_flutter/services/user_service.dart';
 import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
 import 'package:frontend_flutter/widgets/input/optional_text_form_field.dart';
-import 'package:frontend_flutter/widgets/input/required_dropdown_button_form_field.dart';
 import 'package:frontend_flutter/widgets/input/toggle_button.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/widgets/document/document_item.dart';
@@ -42,13 +44,13 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
 
   final _guardianFullNameController = TextEditingController();
 
-  String? _selectedBedRoom;
-  String? _selectedFamilyRelation;
-
   Map<String, dynamic>? _selectedProvince;
   Map<String, dynamic>? _selectedDistrict;
   Map<String, dynamic>? _selectedRegency;
   Map<String, dynamic>? _selectedVillage;
+
+  GuardianType? _selectedGuardianType;
+  BedRoom? _selectedBedRoom;
 
   final _addressFormKey = GlobalKey<FormState>();
   final _streetController = TextEditingController();
@@ -78,13 +80,16 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   List<GuardianType> _guardianTypes = [];
   List<BedRoom> _bedrooms = [];
 
+  final List<String> _genders = ['Male', 'Female', 'Other'];
   final List<bool> _selectedGenderToggle = [true, false, false];
+  String? _selectedGender;
 
   @override
   void initState() {
     super.initState();
     _fetchProvinces();
     _fetchGuardianTypes();
+    _fetchBedrooms();
   }
 
   @override
@@ -162,7 +167,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     });
   }
 
-  void _onStepContinue() {
+  void _onStepContinue() async {
     if (_currentStep == 0) {
       if (_formKey.currentState?.validate() == true) {
         setState(() {
@@ -182,11 +187,85 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
           _currentStep += 1;
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Form Submitted')),
+        Guardian guardian = Guardian(
+          fullName: _guardianFullNameController.text,
+          guardianType: _selectedGuardianType,
+          guardianTypeId: _selectedGuardianType?.id,
         );
+
+        Address address = Address(
+          city: _selectedRegency?['name'],
+          province: _selectedProvince?['name'],
+          street: _streetController.text,
+          subdistrict: _selectedDistrict?['name'],
+          urbanVillage: _selectedVillage?['name'],
+          postalCode: _postalCodeController.text,
+        );
+
+        Profile profile = Profile(
+          fullName: _fullNameController.text,
+          bedRoomId: _selectedBedRoom?.id,
+          bedRoom: _selectedBedRoom,
+          address: address,
+          birthPlace: _birthPlaceController.text,
+          joinDate: _joinDateController.text,
+          birthday: _birthPlaceController.text,
+          phoneNumber: _phoneNumberController.text,
+          guardian: guardian,
+          gender: _selectedGender,
+        );
+
+        UserRequest userRequest = UserRequest(
+          profile: profile,
+          email: _emailController.text,
+          username: _usernameController.text,
+          roles: ['ROLE_USER'],
+          password: _passwordController.text,
+          active: true,
+        );
+
+        try {
+          UserService(context).createUser(userRequest.toJson()).then((data) {
+            onSubmitSuccess("Succesfully Create User");
+          });
+        } catch (e) {
+          onSubmitFailed(e.toString());
+        }
       }
     }
+  }
+
+  void onSubmitFailed(String errorMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppStyleConfig.errorColor,
+        content: Text(
+          errorMessage,
+          style: const TextStyle(color: Colors.white),
+        ),
+        duration: const Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+
+  void onSubmitSuccess(String successMessage) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppStyleConfig.successColor,
+        content: Text(
+          successMessage,
+          style: const TextStyle(color: Colors.white),
+        ),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+    Navigator.pop(context, true);
   }
 
   void _onStepCancel() {
@@ -454,34 +533,35 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                 const SizedBox(height: 20.0),
                 ToggleButton(
                   isSelected: _selectedGenderToggle,
-                  labels: const ['Male', 'Female', 'Other'],
+                  labels: _genders,
                   onPressed: (index) {
                     setState(() {
                       for (int i = 0; i < _selectedGenderToggle.length; i++) {
                         _selectedGenderToggle[i] = i == index;
+                        _selectedGender = _genders[i].toUpperCase();
                       }
                     });
                   },
                 ),
                 const SizedBox(height: 20.0),
-                RequiredDropdownButtonFormField(
-                  value: _selectedBedRoom,
-                  hintText: 'Bed Room',
+                DropdownSearch<BedRoom>(
+                  items: _bedrooms,
+                  itemAsString: (item) {
+                    return item.name!;
+                  },
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration:
+                          AppStyleConfig.inputDecoration.copyWith(
+                    labelText: 'Bed Room',
+                    hintText: 'Select Bed Room',
+                  )),
                   onChanged: (value) {
                     setState(() {
                       _selectedBedRoom = value;
                     });
                   },
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'bedroom-uuid-1',
-                      child: Text('Bedroom 1'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'bedroom-uuid-2',
-                      child: Text('Bedroom 2'),
-                    ),
-                  ],
+                  selectedItem: _selectedBedRoom,
+                  enabled: true,
                 ),
                 const SizedBox(height: 20.0),
                 RequiredTextFormField(
@@ -495,28 +575,24 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   },
                 ),
                 const SizedBox(height: 20.0),
-                RequiredDropdownButtonFormField(
-                  value: _selectedFamilyRelation,
-                  hintText: 'Family Relation',
+                DropdownSearch<GuardianType>(
+                  items: _guardianTypes,
+                  itemAsString: (item) {
+                    return item.name;
+                  },
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration:
+                          AppStyleConfig.inputDecoration.copyWith(
+                    labelText: 'Family Relation',
+                    hintText: 'Select family relation',
+                  )),
                   onChanged: (value) {
                     setState(() {
-                      _selectedFamilyRelation = value;
+                      _selectedGuardianType = value;
                     });
                   },
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'guardian-type-uuid-1',
-                      child: Text('Ibu kandung'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'guardian-type-uuid-2',
-                      child: Text('Ayah Kandung'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'guardian-type-uuid-3',
-                      child: Text('Paman'),
-                    ),
-                  ],
+                  selectedItem: _selectedGuardianType,
+                  enabled: true,
                 ),
               ],
             ),

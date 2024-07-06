@@ -6,6 +6,7 @@ class Guardian {
   final String? phoneNumber;
   final Address? address;
   final GuardianType? guardianType;
+  final String? guardianTypeId;
 
   Guardian({
     this.id,
@@ -13,16 +14,17 @@ class Guardian {
     this.phoneNumber,
     this.guardianType,
     this.address,
+    this.guardianTypeId,
   });
 
   factory Guardian.fromJson(Map<String, dynamic> json) {
     return Guardian(
-      id: json['id'],
-      fullName: json['fullName'],
-      phoneNumber: json['phoneNumber'],
-      address: Address.fromJson(json['address']),
-      guardianType: GuardianType.fromJson(json['guardianType']),
-    );
+        id: json['id'],
+        fullName: json['fullName'],
+        phoneNumber: json['phoneNumber'],
+        address: Address.fromJson(json['address']),
+        guardianType: GuardianType.fromJson(json['guardianType']),
+        guardianTypeId: json['guardianTypeId']);
   }
 
   Map<String, dynamic> toJson() {
@@ -31,7 +33,8 @@ class Guardian {
       'fullName': fullName,
       'phoneNumber': phoneNumber,
       'address': address,
-      'guardianType': guardianType
+      'guardianType': guardianType,
+      'guardianTypeId': guardianTypeId
     };
   }
 }

@@ -6,14 +6,15 @@ class UserRequest {
   final List<String> roles;
   final String password;
   final bool active;
+  final Profile profile;
 
-  UserRequest({
-    required this.email,
-    required this.username,
-    required this.roles,
-    required this.password,
-    required this.active,
-  });
+  UserRequest(
+      {required this.email,
+      required this.username,
+      required this.roles,
+      required this.password,
+      required this.active,
+      required this.profile});
 
   Map<String, dynamic> toJson() {
     return {
@@ -21,7 +22,8 @@ class UserRequest {
       'username': username,
       'roles': roles,
       'password': password,
-      'active': active
+      'active': active,
+      'profile': profile
     };
   }
 }

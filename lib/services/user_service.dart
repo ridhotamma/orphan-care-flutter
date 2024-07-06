@@ -24,6 +24,17 @@ class UserService {
     return data.map((json) => GuardianType.fromJson(json)).toList();
   }
 
+  Future<Map<String, dynamic>> createUser(
+    Map<String, dynamic> userRequest,
+  ) async {
+    final http.Response response = await _apiService.post(
+      '/admin/users',
+      userRequest,
+    );
+    final Map<String, dynamic> data = jsonDecode(response.body);
+    return data;
+  }
+
   Future<List<UserResponse>> fetchUserProfiles({
     String? roles,
     String? gender,
