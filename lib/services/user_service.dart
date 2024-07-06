@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/models/guardian_model.dart';
 import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/services/api_service.dart';
+import 'package:frontend_flutter/utils/response_handler_utils.dart';
 import 'package:http/http.dart' as http;
 
 class UserService {
   final ApiService _apiService;
+  final BuildContext context;
 
-  UserService(BuildContext context) : _apiService = ApiService(context);
+  UserService({required this.context}) : _apiService = ApiService(context);
 
   Future<UserResponse> fetchCurrentUser() async {
     final http.Response response =
@@ -27,12 +29,28 @@ class UserService {
   Future<Map<String, dynamic>> createUser(
     Map<String, dynamic> userRequest,
   ) async {
-    final http.Response response = await _apiService.post(
-      '/admin/users',
-      userRequest,
-    );
-    final Map<String, dynamic> data = jsonDecode(response.body);
-    return data;
+    try {
+      final http.Response response = await _apiService.post(
+        '/admin/users',
+        userRequest,
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return data;
+      } else {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        if (context.mounted) {
+          ResponseHandlerUtils.onSubmitFailed(context, data['message']);
+        }
+        return {};
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ResponseHandlerUtils.onSubmitFailed(context, e.toString());
+      }
+      return {};
+    }
   }
 
   Future<List<UserResponse>> fetchUserProfiles({

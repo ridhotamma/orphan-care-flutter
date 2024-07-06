@@ -27,7 +27,7 @@ class CaretakerListState extends State<CaretakerList> {
 
   Future<void> _fetchData() async {
     setState(() {
-      caretakerFuture = UserService(context).fetchUserProfiles();
+      caretakerFuture = UserService(context: context).fetchUserProfiles();
     });
   }
 

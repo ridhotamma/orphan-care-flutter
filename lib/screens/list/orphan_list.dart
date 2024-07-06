@@ -27,7 +27,7 @@ class OrphanListState extends State<OrphanList> {
 
   Future<void> _fetchData() async {
     setState(() {
-      orphanFuture = UserService(context).fetchUserProfiles();
+      orphanFuture = UserService(context: context).fetchUserProfiles();
     });
   }
 

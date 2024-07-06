@@ -8,6 +8,7 @@ import 'package:frontend_flutter/services/bedroom_service.dart';
 import 'package:frontend_flutter/services/location_service.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:frontend_flutter/services/user_service.dart';
+import 'package:frontend_flutter/utils/response_handler_utils.dart';
 import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
 import 'package:frontend_flutter/widgets/input/optional_text_form_field.dart';
 import 'package:frontend_flutter/widgets/input/toggle_button.dart';
@@ -121,7 +122,8 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   }
 
   void _fetchGuardianTypes() async {
-    final guardianTypes = await UserService(context).fetchGuardianTypes();
+    final guardianTypes =
+        await UserService(context: context).fetchGuardianTypes();
 
     setState(() {
       _guardianTypes = guardianTypes;
@@ -225,47 +227,18 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
         );
 
         try {
-          UserService(context).createUser(userRequest.toJson()).then((data) {
-            onSubmitSuccess("Succesfully Create User");
+          UserService(context: context)
+              .createUser(userRequest.toJson())
+              .then((data) {
+            ResponseHandlerUtils.onSubmitSuccess(
+                context, "Succesfully Create User");
           });
         } catch (e) {
-          onSubmitFailed(e.toString());
+          ResponseHandlerUtils.onSubmitFailed(
+              context, "Succesfully Create User");
         }
       }
     }
-  }
-
-  void onSubmitFailed(String errorMessage) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: AppStyleConfig.errorColor,
-        content: Text(
-          errorMessage,
-          style: const TextStyle(color: Colors.white),
-        ),
-        duration: const Duration(seconds: 3),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-      ),
-    );
-  }
-
-  void onSubmitSuccess(String successMessage) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: AppStyleConfig.successColor,
-        content: Text(
-          successMessage,
-          style: const TextStyle(color: Colors.white),
-        ),
-        duration: const Duration(seconds: 3),
-      ),
-    );
-    Navigator.pop(context, true);
   }
 
   void _onStepCancel() {
