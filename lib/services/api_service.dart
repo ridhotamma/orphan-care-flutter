@@ -1,7 +1,8 @@
 import 'dart:convert';
-
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend_flutter/config/app_api_config.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
@@ -87,8 +88,8 @@ class ApiService {
   Future<http.Response> delete(String endpoint) =>
       _sendRequest('DELETE', endpoint);
 
-  Future<http.Response> uploadFile(
-      String endpoint, String filePath, String fileName) async {
+  Future<http.Response> uploadFileBytes(String endpoint, Uint8List fileBytes,
+      String fileName, MediaType mediaType) async {
     final uri = _buildUri(endpoint);
     final token = await _getToken();
     final headers = <String, String>{};
@@ -99,11 +100,27 @@ class ApiService {
 
     final request = http.MultipartRequest('POST', uri);
     request.headers.addAll(headers);
-    request.files.add(await http.MultipartFile.fromPath('file', filePath,
-        filename: fileName));
+    request.files.add(http.MultipartFile.fromBytes(
+      'file',
+      fileBytes,
+      filename: fileName,
+      contentType: mediaType,
+    ));
+
+    if (kDebugMode) {
+      print("Sending request to: $uri");
+      print("Headers: $headers");
+      print("File Name: $fileName");
+      print("File Size: ${fileBytes.length}");
+    }
 
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
+
+    if (kDebugMode) {
+      print("Response Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+    }
 
     return await _handleResponse(response);
   }

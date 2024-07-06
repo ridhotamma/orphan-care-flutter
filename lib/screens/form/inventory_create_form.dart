@@ -110,7 +110,7 @@ class _InventoryCreateFormState extends State<InventoryCreateForm> {
         duration: const Duration(seconds: 3),
       ),
     );
-    Navigator.pop(context, true);
+    Navigator.pop(context);
   }
 
   @override

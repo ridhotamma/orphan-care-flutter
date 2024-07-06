@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/widgets/document/document_item.dart';
+import 'package:frontend_flutter/widgets/document/upload_bottom_sheet.dart';
 import 'package:frontend_flutter/widgets/document/upload_card.dart';
 import 'package:frontend_flutter/models/document_model.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -11,8 +12,6 @@ class DocumentScreen extends StatelessWidget {
   final Future<List<Document>> documentsFuture;
 
   const DocumentScreen({required this.documentsFuture, super.key});
-
-  void _uploadDocument() {}
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +51,12 @@ class DocumentScreen extends StatelessWidget {
         SizedBox(
           width: 160,
           child: ElevatedButton(
-            onPressed: _uploadDocument,
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => const UploadBottomSheet(),
+              );
+            },
             style: AppStyleConfig.secondaryButtonStyle,
             child: const Text("Upload"),
           ),

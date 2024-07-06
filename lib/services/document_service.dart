@@ -43,6 +43,14 @@ class DocumentService {
     }
   }
 
+  Future<void> createUserDocument(String userId, data) async {
+    try {
+      await _apiService.post('/public, users/$userId/documents', data);
+    } catch (e) {
+      _handleError(e);
+    }
+  }
+
   List<DocumentType> _handleDocumentTypeListResponse(http.Response response) {
     final List<dynamic> data = jsonDecode(response.body);
     return data.map((json) => DocumentType.fromJson(json)).toList();

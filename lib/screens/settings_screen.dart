@@ -47,7 +47,9 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildProfileListItem(
-      BuildContext context, AppLocalizations localization) {
+    BuildContext context,
+    AppLocalizations localization,
+  ) {
     return FutureBuilder<UserResponse>(
       future: currentUserFuture,
       builder: (context, snapshot) {
@@ -80,7 +82,7 @@ class SettingsScreen extends StatelessWidget {
                 radius: 20.0,
                 backgroundColor: AppStyleConfig.accentColor,
                 backgroundImage: NetworkImage(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjPtBPtOIj16drcpc4Ht93MyJgtRH89ikp_Q&s'),
+                    'https://akagami-documents.nos.wjv-1.neo.id/965f157a-fe59-4145-85e3-9d737befdd83-flipper_orange.jpeg'),
               ),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
@@ -137,7 +139,9 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildLanguageListItem(
-      BuildContext context, AppLocalizations localization) {
+    BuildContext context,
+    AppLocalizations localization,
+  ) {
     final languages = {
       'id': 'Indonesian',
       'en': 'English',
@@ -165,7 +169,9 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildAboutAppListItem(
-      BuildContext context, AppLocalizations localization) {
+    BuildContext context,
+    AppLocalizations localization,
+  ) {
     return _buildListItem(
       leadingIcon: Icons.info_outline,
       title: localization.translate('about_app'),
@@ -174,7 +180,9 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildLogoutListItem(
-      BuildContext context, AppLocalizations localization) {
+    BuildContext context,
+    AppLocalizations localization,
+  ) {
     return _buildListItem(
       leadingIcon: Icons.logout,
       title: localization.translate('logout'),
@@ -215,7 +223,9 @@ class SettingsScreen extends StatelessWidget {
   }
 
   void _showLogoutBottomSheet(
-      BuildContext context, AppLocalizations localization) {
+    BuildContext context,
+    AppLocalizations localization,
+  ) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) =>
@@ -224,7 +234,9 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Widget _buildLogoutBottomSheetContent(
-      BuildContext context, AppLocalizations localization) {
+    BuildContext context,
+    AppLocalizations localization,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(

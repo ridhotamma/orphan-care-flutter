@@ -106,7 +106,7 @@ class _BedroomCreateFormState extends State<BedroomCreateForm> {
         duration: const Duration(seconds: 3),
       ),
     );
-    Navigator.pop(context, true);
+    Navigator.pop(context);
   }
 
   @override
