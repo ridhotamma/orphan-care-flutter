@@ -36,12 +36,11 @@ class UserService {
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        return data;
+        return jsonDecode(response.body);
       } else {
-        final Map<String, dynamic> data = jsonDecode(response.body);
         if (context.mounted) {
-          ResponseHandlerUtils.onSubmitFailed(context, data['message']);
+          ResponseHandlerUtils.onSubmitFailed(
+              context, jsonDecode(response.body).toString());
         }
         return {};
       }

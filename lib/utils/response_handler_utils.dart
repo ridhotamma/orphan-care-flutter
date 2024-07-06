@@ -13,8 +13,11 @@ class ResponseHandlerUtils {
         duration: const Duration(seconds: 3),
         action: SnackBarAction(
           label: 'OK',
+          textColor: Colors.white,
           onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            }
           },
         ),
       ),
@@ -30,8 +33,16 @@ class ResponseHandlerUtils {
           style: const TextStyle(color: Colors.white),
         ),
         duration: const Duration(seconds: 3),
+        action: SnackBarAction(
+          label: 'OK',
+          textColor: Colors.white,
+          onPressed: () {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            }
+          },
+        ),
       ),
     );
-    Navigator.pop(context, true);
   }
 }

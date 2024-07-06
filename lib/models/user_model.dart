@@ -8,13 +8,14 @@ class UserRequest {
   final bool active;
   final Profile profile;
 
-  UserRequest(
-      {required this.email,
-      required this.username,
-      required this.roles,
-      required this.password,
-      required this.active,
-      required this.profile});
+  UserRequest({
+    required this.email,
+    required this.username,
+    required this.roles,
+    required this.password,
+    required this.active,
+    required this.profile,
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -23,7 +24,7 @@ class UserRequest {
       'roles': roles,
       'password': password,
       'active': active,
-      'profile': profile
+      'profile': profile.toJson(),
     };
   }
 }

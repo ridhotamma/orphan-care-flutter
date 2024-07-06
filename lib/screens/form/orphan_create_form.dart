@@ -83,7 +83,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
 
   final List<String> _genders = ['Male', 'Female', 'Other'];
   final List<bool> _selectedGenderToggle = [true, false, false];
-  String? _selectedGender;
+  String _selectedGender = 'Male';
 
   @override
   void initState() {
@@ -169,7 +169,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     });
   }
 
-  void _onStepContinue() async {
+  void _onStepContinue() {
     if (_currentStep == 0) {
       if (_formKey.currentState?.validate() == true) {
         setState(() {
@@ -189,12 +189,6 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
           _currentStep += 1;
         });
       } else {
-        Guardian guardian = Guardian(
-          fullName: _guardianFullNameController.text,
-          guardianType: _selectedGuardianType,
-          guardianTypeId: _selectedGuardianType?.id,
-        );
-
         Address address = Address(
           city: _selectedRegency?['name'],
           province: _selectedProvince?['name'],
@@ -204,7 +198,19 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
           postalCode: _postalCodeController.text,
         );
 
+        Guardian guardian = Guardian(
+          id: '',
+          phoneNumber: '',
+          address: address,
+          fullName: _guardianFullNameController.text,
+          guardianType: _selectedGuardianType,
+          guardianTypeId: _selectedGuardianType?.id,
+        );
+
         Profile profile = Profile(
+          profilePicture: '',
+          bio: '',
+          leaveDate: '',
           fullName: _fullNameController.text,
           bedRoomId: _selectedBedRoom?.id,
           bedRoom: _selectedBedRoom,
@@ -227,15 +233,9 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
         );
 
         try {
-          UserService(context: context)
-              .createUser(userRequest.toJson())
-              .then((data) {
-            ResponseHandlerUtils.onSubmitSuccess(
-                context, "Succesfully Create User");
-          });
+          UserService(context: context).createUser(userRequest.toJson());
         } catch (e) {
-          ResponseHandlerUtils.onSubmitFailed(
-              context, "Succesfully Create User");
+          ResponseHandlerUtils.onSubmitFailed(context, "Failed to Create User");
         }
       }
     }

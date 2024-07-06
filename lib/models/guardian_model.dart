@@ -22,7 +22,8 @@ class Guardian {
         id: json['id'],
         fullName: json['fullName'],
         phoneNumber: json['phoneNumber'],
-        address: Address.fromJson(json['address']),
+        address:
+            json['address'] == null ? null : Address.fromJson(json['address']),
         guardianType: GuardianType.fromJson(json['guardianType']),
         guardianTypeId: json['guardianTypeId']);
   }
