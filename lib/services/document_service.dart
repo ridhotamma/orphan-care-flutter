@@ -7,8 +7,9 @@ import 'package:http/http.dart' as http;
 
 class DocumentService {
   final ApiService _apiService;
+  final BuildContext context;
 
-  DocumentService(BuildContext context) : _apiService = ApiService(context);
+  DocumentService({required this.context}) : _apiService = ApiService(context);
 
   Future<List<DocumentType>> fetchDocumentTypes() async {
     final http.Response response =

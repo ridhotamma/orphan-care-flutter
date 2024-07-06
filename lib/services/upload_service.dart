@@ -6,8 +6,9 @@ import 'package:http/http.dart' as http;
 
 class UploadService {
   final ApiService _apiService;
+  final BuildContext context;
 
-  UploadService(BuildContext context) : _apiService = ApiService(context);
+  UploadService({required this.context}) : _apiService = ApiService(context);
 
   Future<Map<String, dynamic>> uploadFile(
       String filePath, String fileName) async {

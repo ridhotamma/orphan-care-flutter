@@ -35,7 +35,7 @@ class _BedroomListState extends State<BedroomList> {
 
   Future<void> _fetchData() async {
     setState(() {
-      _bedroomFuture = BedroomService(context).fetchBedRooms();
+      _bedroomFuture = BedroomService(context: context).fetchBedRooms();
     });
   }
 
@@ -252,7 +252,8 @@ class _BedroomListState extends State<BedroomList> {
             _showLoadingDialog(context);
 
             try {
-              await BedroomService(context).deleteBedRoomById(bedroom.id!);
+              await BedroomService(context: context)
+                  .deleteBedRoomById(bedroom.id!);
               setState(() {
                 data.removeAt(index);
               });

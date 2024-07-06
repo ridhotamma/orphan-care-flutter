@@ -47,9 +47,11 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _fetchData() async {
     setState(() {
-      _analyticsData = AnalyticsService(context).fetchHomePageAnalytics();
-      _currentUser = UserService(context).fetchCurrentUser();
-      _documentsFuture = DocumentService(context).fetchCurrentUserDocuments();
+      _analyticsData =
+          AnalyticsService(context: context).fetchHomePageAnalytics();
+      _currentUser = UserService(context: context).fetchCurrentUser();
+      _documentsFuture =
+          DocumentService(context: context).fetchCurrentUserDocuments();
     });
   }
 

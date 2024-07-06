@@ -7,8 +7,9 @@ import 'package:http/http.dart' as http;
 
 class AnalyticsService {
   final ApiService _apiService;
+  final BuildContext context;
 
-  AnalyticsService(BuildContext context) : _apiService = ApiService(context);
+  AnalyticsService({required this.context}) : _apiService = ApiService(context);
 
   Future<AnalyticData> fetchHomePageAnalytics() async {
     final http.Response response =

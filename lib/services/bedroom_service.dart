@@ -7,8 +7,9 @@ import 'package:http/http.dart' as http;
 
 class BedroomService {
   final ApiService _apiService;
+  final BuildContext context;
 
-  BedroomService(BuildContext context) : _apiService = ApiService(context);
+  BedroomService({required this.context}) : _apiService = ApiService(context);
 
   Future<List<BedRoomType>> fetchBedRoomTypes() async {
     final http.Response response =

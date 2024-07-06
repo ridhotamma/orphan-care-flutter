@@ -30,7 +30,8 @@ class _BedroomCreateFormState extends State<BedroomCreateForm> {
   }
 
   Future<void> _fetchBedRoomTypes() async {
-    final bedRoomTypes = await BedroomService(context).fetchBedRoomTypes();
+    final bedRoomTypes =
+        await BedroomService(context: context).fetchBedRoomTypes();
 
     if (mounted) {
       setState(() {
@@ -57,7 +58,9 @@ class _BedroomCreateFormState extends State<BedroomCreateForm> {
           bedRoomTypeId: _selectedBedRoomTypeId!,
         );
 
-        await BedroomService(context).createBedRoom(bedRoomInput.toJson()).then(
+        await BedroomService(context: context)
+            .createBedRoom(bedRoomInput.toJson())
+            .then(
           (data) {
             onSubmitSuccess('Bedroom created successfully');
             eventBus.fire(DataMasterCreatedEvent());

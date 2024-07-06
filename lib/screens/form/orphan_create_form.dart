@@ -114,7 +114,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   }
 
   void _fetchBedrooms() async {
-    final bedrooms = await BedroomService(context).fetchBedRooms();
+    final bedrooms = await BedroomService(context: context).fetchBedRooms();
 
     setState(() {
       _bedrooms = bedrooms;

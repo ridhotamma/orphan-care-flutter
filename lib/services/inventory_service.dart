@@ -7,8 +7,9 @@ import 'package:http/http.dart' as http;
 
 class InventoryService {
   final ApiService _apiService;
+  final BuildContext context;
 
-  InventoryService(BuildContext context) : _apiService = ApiService(context);
+  InventoryService({required this.context}) : _apiService = ApiService(context);
 
   Future<List<InventoryType>> fetchInventoryTypes() async {
     final http.Response response =

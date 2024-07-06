@@ -42,7 +42,7 @@ class _InventoryDetailsState extends State<InventoryDetails> {
   void _fetchData() async {
     setState(() {
       _inventoryFuture =
-          InventoryService(context).fetchInventoryById(widget.id);
+          InventoryService(context: context).fetchInventoryById(widget.id);
     });
 
     _inventoryFuture.then((data) {
@@ -54,7 +54,7 @@ class _InventoryDetailsState extends State<InventoryDetails> {
 
   Future<void> _fetchInventoryTypes() async {
     final inventoryTypes =
-        await InventoryService(context).fetchInventoryTypes();
+        await InventoryService(context: context).fetchInventoryTypes();
 
     if (mounted) {
       setState(() {
@@ -90,7 +90,7 @@ class _InventoryDetailsState extends State<InventoryDetails> {
           inventoryTypeId: _selectedInventoryTypeId,
         ).toJson();
 
-        await InventoryService(context)
+        await InventoryService(context: context)
             .updateInventory(widget.id, updatedInventory)
             .then((data) {
           onSubmitSuccess('${data.name} updated successfully');

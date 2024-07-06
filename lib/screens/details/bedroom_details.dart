@@ -37,7 +37,8 @@ class _BedroomDetailsState extends State<BedroomDetails> {
 
   void _fetchData() async {
     setState(() {
-      _bedroomFuture = BedroomService(context).fetchBedRoomById(widget.id);
+      _bedroomFuture =
+          BedroomService(context: context).fetchBedRoomById(widget.id);
     });
 
     _bedroomFuture.then((data) {
@@ -47,7 +48,8 @@ class _BedroomDetailsState extends State<BedroomDetails> {
   }
 
   Future<void> _fetchBedRoomTypes() async {
-    final bedRoomTypes = await BedroomService(context).fetchBedRoomTypes();
+    final bedRoomTypes =
+        await BedroomService(context: context).fetchBedRoomTypes();
 
     if (mounted) {
       setState(() {
@@ -81,7 +83,7 @@ class _BedroomDetailsState extends State<BedroomDetails> {
           bedRoomTypeId: _selectedBedRoomTypeId,
         ).toJson();
 
-        await BedroomService(context)
+        await BedroomService(context: context)
             .updateBedRoom(widget.id, updatedBedRoom)
             .then((data) {
           onSubmitSuccess('${data.name} updated succesfully');

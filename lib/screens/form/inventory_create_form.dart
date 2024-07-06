@@ -33,7 +33,7 @@ class _InventoryCreateFormState extends State<InventoryCreateForm> {
 
   Future<void> _fetchInventoryTypes() async {
     final inventoryTypes =
-        await InventoryService(context).fetchInventoryTypes();
+        await InventoryService(context: context).fetchInventoryTypes();
 
     if (mounted) {
       setState(() {
@@ -62,7 +62,7 @@ class _InventoryCreateFormState extends State<InventoryCreateForm> {
           quantity: quantity,
         );
 
-        await InventoryService(context)
+        await InventoryService(context: context)
             .createInventory(inventoryInput.toJson())
             .then(
           (data) {

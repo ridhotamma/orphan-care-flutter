@@ -35,7 +35,7 @@ class _InventoryListState extends State<InventoryList> {
 
   Future<void> _fetchData() async {
     setState(() {
-      _inventoryFuture = InventoryService(context).fetchInventories();
+      _inventoryFuture = InventoryService(context: context).fetchInventories();
     });
   }
 
@@ -252,7 +252,7 @@ class _InventoryListState extends State<InventoryList> {
             _showLoadingDialog(context);
 
             try {
-              await InventoryService(context)
+              await InventoryService(context: context)
                   .deleteInventoryById(inventory.id!);
               setState(() {
                 data.removeAt(index);
