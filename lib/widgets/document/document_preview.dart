@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
@@ -8,7 +9,6 @@ import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:saver_gallery/saver_gallery.dart';
 
 class DocumentPreview extends StatelessWidget {
   final String documentUrl;
@@ -35,28 +35,18 @@ class DocumentPreview extends StatelessWidget {
       }
 
       if (isGranted) {
-        String fileName = documentUrl.split('/').last.split('.').first;
+        final response = await Dio().get(documentUrl);
+        final bytes = Uint8List.fromList(response.data);
 
-        var appDocDir = await getTemporaryDirectory();
-        String savePath = "${appDocDir.path}/$documentUrl";
+        final directory = await getApplicationDocumentsDirectory();
+        final path = '${directory.path}/${documentUrl.split('/').last}';
 
-        final result = await SaverGallery.saveFile(
-          file: savePath,
-          name: fileName,
-          androidRelativePath: "Documents/orphancare",
-          androidExistNotSave: false,
-        );
+        final file = File(path);
+        await file.writeAsBytes(bytes);
 
-        if (result.isSuccess) {
-          if (context.mounted) {
-            ResponseHandlerUtils.onSubmitSuccess(
-                context, 'Document saved to gallery');
-          }
-        } else {
-          if (context.mounted) {
-            ResponseHandlerUtils.onSubmitFailed(
-                context, 'Failed to save document to gallery');
-          }
+        if (context.mounted) {
+          ResponseHandlerUtils.onSubmitSuccess(
+              context, 'File downloaded to $path');
         }
       } else {
         if (context.mounted) {
