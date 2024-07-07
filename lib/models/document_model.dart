@@ -28,6 +28,24 @@ class Document {
       };
 }
 
+class DocumentRequest {
+  final String name;
+  final String url;
+  final String documentTypeId;
+
+  DocumentRequest({
+    required this.name,
+    required this.documentTypeId,
+    required this.url,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'documentTypeId': documentTypeId,
+        'url': url,
+      };
+}
+
 class DocumentType {
   final String id;
   final String type;

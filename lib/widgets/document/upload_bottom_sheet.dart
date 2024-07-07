@@ -1,16 +1,24 @@
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/models/document_model.dart';
+import 'package:frontend_flutter/providers/auth_provider.dart';
 import 'package:frontend_flutter/services/document_service.dart';
 import 'package:frontend_flutter/services/upload_service.dart';
 import 'package:frontend_flutter/utils/response_handler_utils.dart';
 import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class UploadBottomSheet extends StatefulWidget {
-  const UploadBottomSheet({super.key});
+  final String userId;
+
+  const UploadBottomSheet({
+    super.key,
+    required this.userId,
+  });
 
   @override
   State<UploadBottomSheet> createState() => _UploadBottomSheetState();
@@ -51,13 +59,40 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
   }
 
   Future<void> _onSubmit() async {
-    setState(() {
-      _isSubmitting = true;
-    });
-    // Add your submit logic here
-    setState(() {
-      _isSubmitting = false;
-    });
+    if (_formKey.currentState?.validate() == true) {
+      setState(() {
+        _isSubmitting = true;
+      });
+
+      try {
+        String userId =
+            Provider.of<AuthProvider>(context, listen: false).userId ?? '';
+
+        final data = DocumentRequest(
+          name: _fileNameController.text,
+          documentTypeId: _selectedDocumentType!.id,
+          url: _fileUrl!,
+        ).toJson();
+
+        await DocumentService(context: context)
+            .createUserDocument(userId, data)
+            .then(
+          (data) {
+            if (mounted) {
+              Navigator.of(context).pop();
+            }
+          },
+        );
+      } catch (e) {
+        if (mounted) {
+          ResponseHandlerUtils.onSubmitFailed(context, e.toString());
+        }
+      } finally {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
   Future<void> _pickFile() async {
@@ -71,22 +106,40 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
 
       final result = await FilePicker.platform.pickFiles();
       if (result != null) {
-        final filePath = result.files.single.path!;
+        final fileName = result.files.single.name;
         final fileExtension = result.files.single.extension?.toLowerCase();
+        final fileBytes = result.files.single.bytes;
+
         setState(() {
-          _fileName = result.files.single.name;
-          _fileNameController.text = _fileName ?? '';
+          _fileName = fileName;
+          _fileNameController.text = fileName;
           _fileType = fileExtension;
         });
 
         if (mounted) {
-          UploadService(context: context).uploadFile(filePath).then((data) {
-            setState(() {
-              _fileUrl = data['url'];
+          if (kIsWeb && fileBytes != null) {
+            // Use file bytes for web
+            UploadService(context: context)
+                .uploadFileBytes(fileBytes, fileName)
+                .then((data) {
+              setState(() {
+                _fileUrl = data['url'];
+              });
+            }).catchError((error) {
+              ResponseHandlerUtils.onSubmitFailed(context, error.toString());
             });
-          }).catchError((error) {
-            ResponseHandlerUtils.onSubmitFailed(context, error.toString());
-          });
+          } else if (result.files.single.path != null) {
+            // Use file path for mobile
+            UploadService(context: context)
+                .uploadFile(result.files.single.path!)
+                .then((data) {
+              setState(() {
+                _fileUrl = data['url'];
+              });
+            }).catchError((error) {
+              ResponseHandlerUtils.onSubmitFailed(context, error.toString());
+            });
+          }
         }
       }
     } catch (e) {
@@ -196,6 +249,9 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                                 _selectedDocumentType = value;
                               });
                             },
+                            popupProps: const PopupProps.menu(
+                              constraints: BoxConstraints(maxHeight: 150),
+                            ),
                           ),
                         ],
                       ),
@@ -210,9 +266,19 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () =>
+                        _isSubmitting ? null : Navigator.of(context).pop(),
                     style: AppStyleConfig.defaultButtonStyle,
-                    child: const Text("Cancel"),
+                    child: _isSubmitting
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: AppStyleConfig.accentColor,
+                              strokeWidth: 2.0,
+                            ),
+                          )
+                        : const Text("Cancel"),
                   ),
                 ),
                 const SizedBox(
@@ -223,11 +289,15 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                     onPressed: () => _onSubmit(),
                     style: AppStyleConfig.secondaryButtonStyle,
                     child: _isSubmitting
-                        ? const CircularProgressIndicator(
-                            color: AppStyleConfig.accentColor,
-                            strokeWidth: 2.0,
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: AppStyleConfig.accentColor,
+                              strokeWidth: 2.0,
+                            ),
                           )
-                        : const Text("Create Document"),
+                        : const Text("Submit"),
                   ),
                 ),
               ],

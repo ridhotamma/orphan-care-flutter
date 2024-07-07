@@ -125,4 +125,41 @@ class ApiService {
 
     return await _handleResponse(response);
   }
+
+  Future<http.Response> uploadFileBytes(String endpoint, List<int> fileBytes,
+      String fileName, MediaType mediaType) async {
+    final uri = _buildUri(endpoint);
+    final token = await _getToken();
+    final headers = <String, String>{};
+
+    if (token != null) {
+      headers.addAll(AppApiConfig.getHeaders(token));
+    }
+
+    final request = http.MultipartRequest('POST', uri);
+    request.headers.addAll(headers);
+    request.files.add(http.MultipartFile.fromBytes(
+      'file',
+      fileBytes,
+      filename: fileName,
+      contentType: mediaType,
+    ));
+
+    if (kDebugMode) {
+      print("Sending request to: $uri");
+      print("Headers: $headers");
+      print("File Name: $fileName");
+      print("File Size: ${fileBytes.length}");
+    }
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    if (kDebugMode) {
+      print("Response Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+    }
+
+    return await _handleResponse(response);
+  }
 }

@@ -704,7 +704,9 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                 if (index < _documents.length) {
                   return DocumentItem(document: _documents[index]);
                 } else {
-                  return const UploadCard();
+                  return UploadCard(
+                    onTap: () {},
+                  );
                 }
               },
             ),

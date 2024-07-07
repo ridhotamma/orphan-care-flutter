@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frontend_flutter/widgets/document/upload_bottom_sheet.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class UploadCard extends StatelessWidget {
-  const UploadCard({super.key});
+  final VoidCallback onTap;
+
+  const UploadCard({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +17,7 @@ class UploadCard extends StatelessWidget {
         ),
       ),
       child: InkWell(
-        onTap: () {
-          showCupertinoModalBottomSheet(
-            context: context,
-            builder: (context) => const UploadBottomSheet(),
-            expand: true,
-          );
-        },
+        onTap: onTap,
         child: const Padding(
           padding: EdgeInsets.symmetric(vertical: 40, horizontal: 20),
           child: Column(

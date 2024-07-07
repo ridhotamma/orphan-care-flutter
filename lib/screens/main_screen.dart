@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/providers/auth_provider.dart';
 import 'package:frontend_flutter/services/connectivity_service.dart';
 import 'package:frontend_flutter/services/analytics_service.dart';
 import 'package:frontend_flutter/services/user_service.dart';
@@ -10,6 +11,7 @@ import 'package:frontend_flutter/services/document_service.dart';
 import 'package:frontend_flutter/models/analytic_model.dart';
 import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/models/document_model.dart';
+import 'package:provider/provider.dart';
 import 'home_screen.dart';
 import 'document_screen.dart';
 import 'settings_screen.dart';
@@ -60,6 +62,10 @@ class _MainScreenState extends State<MainScreen> {
       _documentsFuture = DocumentService(
         context: context,
       ).fetchCurrentUserDocuments();
+
+      _currentUser.then((data) {
+        Provider.of<AuthProvider>(context, listen: false).setUserId(data.id);
+      });
     });
   }
 

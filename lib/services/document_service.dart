@@ -45,7 +45,7 @@ class DocumentService {
 
   Future<void> createUserDocument(String userId, data) async {
     try {
-      await _apiService.post('/public, users/$userId/documents', data);
+      await _apiService.post('/public/users/$userId/documents', data);
     } catch (e) {
       _handleError(e);
     }

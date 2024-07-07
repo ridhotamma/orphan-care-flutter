@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/providers/auth_provider.dart';
 import 'package:frontend_flutter/widgets/document/document_item.dart';
 import 'package:frontend_flutter/widgets/document/upload_bottom_sheet.dart';
 import 'package:frontend_flutter/widgets/document/upload_card.dart';
@@ -8,14 +9,21 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 import 'package:frontend_flutter/widgets/skeleton/document_grid_skeleton.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 
 class DocumentScreen extends StatelessWidget {
   final Future<List<Document>> documentsFuture;
 
-  const DocumentScreen({required this.documentsFuture, super.key});
+  const DocumentScreen({
+    required this.documentsFuture,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final String userId =
+        Provider.of<AuthProvider>(context, listen: false).userId ?? '';
+
     return Scaffold(
       backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: const CustomAppBar(title: 'Documents'),
@@ -27,16 +35,16 @@ class DocumentScreen extends StatelessWidget {
           } else if (snapshot.hasError) {
             return const Text('Error');
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return _buildUploadSection(context);
+            return _buildUploadSection(context, userId);
           } else {
-            return _buildDocumentsMasonryGrid(snapshot.data!);
+            return _buildDocumentsMasonryGrid(snapshot.data!, userId);
           }
         },
       ),
     );
   }
 
-  Widget _buildUploadSection(BuildContext context) {
+  Widget _buildUploadSection(BuildContext context, String userId) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -53,7 +61,9 @@ class DocumentScreen extends StatelessWidget {
             onPressed: () {
               showCupertinoModalBottomSheet(
                 context: context,
-                builder: (context) => const UploadBottomSheet(),
+                builder: (context) => UploadBottomSheet(
+                  userId: userId,
+                ),
                 expand: true,
               );
             },
@@ -65,7 +75,7 @@ class DocumentScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDocumentsMasonryGrid(List<Document> data) {
+  Widget _buildDocumentsMasonryGrid(List<Document> data, String userId) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -80,7 +90,17 @@ class DocumentScreen extends StatelessWidget {
             if (index < data.length) {
               return DocumentItem(document: data[index]);
             } else {
-              return const UploadCard();
+              return UploadCard(
+                onTap: () {
+                  showCupertinoModalBottomSheet(
+                    context: context,
+                    builder: (context) => UploadBottomSheet(
+                      userId: userId,
+                    ),
+                    expand: true,
+                  );
+                },
+              );
             }
           },
         ),

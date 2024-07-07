@@ -33,6 +33,23 @@ class UploadService {
     }
   }
 
+  Future<Map<String, dynamic>> uploadFileBytes(
+      List<int> fileBytes, String fileName) async {
+    try {
+      final mimeTypeData = lookupMimeType(fileName)!.split('/');
+      final response = await _apiService.uploadFileBytes(
+        '/public/files/upload',
+        fileBytes,
+        fileName,
+        MediaType(mimeTypeData[0], mimeTypeData[1]),
+      );
+      return _handleResponse(response);
+    } catch (e) {
+      _handleError(e);
+      return {};
+    }
+  }
+
   Map<String, dynamic> _handleResponse(http.Response response) {
     final Map<String, dynamic> data = jsonDecode(response.body);
     return data;
