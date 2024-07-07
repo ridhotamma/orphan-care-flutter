@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
 import 'package:frontend_flutter/widgets/document/document_item.dart';
+import 'package:frontend_flutter/widgets/document/document_preview.dart';
+import 'package:frontend_flutter/widgets/document/image_preview.dart';
 import 'package:frontend_flutter/widgets/document/upload_bottom_sheet.dart';
 import 'package:frontend_flutter/widgets/document/upload_card.dart';
 import 'package:frontend_flutter/models/document_model.dart';
@@ -88,7 +90,27 @@ class DocumentScreen extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (BuildContext context, int index) {
             if (index < data.length) {
-              return DocumentItem(document: data[index]);
+              return DocumentItem(
+                document: data[index],
+                onTap: () {
+                  final fileType = data[index].url.split('.').last;
+                  final List<String> imageExtensions = ['jpg', 'jpeg', 'png'];
+                  showCupertinoModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      if (imageExtensions.contains(fileType)) {
+                        return ImagePreview(imageUrl: data[index].url);
+                      } else if (fileType == 'pdf') {
+                        return DocumentPreview(documentUrl: data[index].url);
+                      } else {
+                        return const Center(
+                          child: Text('Preview not available'),
+                        );
+                      }
+                    },
+                  );
+                },
+              );
             } else {
               return UploadCard(
                 onTap: () {

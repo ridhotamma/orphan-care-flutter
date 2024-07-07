@@ -206,7 +206,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                         onPressed: () => _pickFile(),
                         style: AppStyleConfig.primaryButtonStyle,
                         label: const Text(
-                          "Upload Image",
+                          "Upload File",
                         ),
                         icon: const Icon(Icons.upload_file),
                       ),
@@ -331,7 +331,9 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
         width: double.infinity,
         fit: BoxFit.cover,
       );
-    } else if (_fileType != null && pdfExtensions.contains(_fileType)) {
+    } else if (_fileType != null &&
+        pdfExtensions.contains(_fileType) &&
+        !kIsWeb) {
       return _buildPdfViewer();
     } else {
       return Container(

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
@@ -40,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
     _connectivitySubscription = _connectivityService.connectivityStream
         .listen((ConnectivityResult result) {
       if (result == ConnectivityResult.none) {
-        _showSnackBar('No internet connection', 'error');
+        _showSnackBar('No internet connection', 'disconnect');
       } else if (result == ConnectivityResult.wifi ||
           result == ConnectivityResult.mobile) {
         _refreshData();
@@ -81,7 +80,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _showSnackBar(String message, String type) {
     Map<String, dynamic> backgroundStylesMap = {
-      'error': AppStyleConfig.errorColor,
+      'disconnect': AppStyleConfig.errorColor,
       'connect': AppStyleConfig.successColor
     };
 
@@ -95,6 +94,7 @@ class _MainScreenState extends State<MainScreen> {
         duration: const Duration(seconds: 3),
         action: SnackBarAction(
           label: 'OK',
+          textColor: Colors.white,
           onPressed: () {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
           },

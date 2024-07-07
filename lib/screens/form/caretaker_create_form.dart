@@ -495,7 +495,10 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
               itemCount: _documents.length + 1,
               itemBuilder: (BuildContext context, int index) {
                 if (index < _documents.length) {
-                  return DocumentItem(document: _documents[index]);
+                  return DocumentItem(
+                    document: _documents[index],
+                    onTap: () {},
+                  );
                 } else {
                   return UploadCard(
                     onTap: () {},
@@ -519,7 +522,7 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
           ),
           const SizedBox(height: 20),
           SizedBox(
-            width: MediaQuery.of(context).size.width / 2,
+            width: 160,
             child: ElevatedButton(
               onPressed: _uploadDocument,
               style: AppStyleConfig.secondaryButtonStyle,

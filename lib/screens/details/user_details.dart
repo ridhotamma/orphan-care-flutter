@@ -182,6 +182,17 @@ class UserDetails extends StatelessWidget {
           },
         ),
         _buildListTile(
+          leadingIcon: Icons.file_copy,
+          title: 'Documents',
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              RoutePaths.userUploadDocuments,
+              arguments: id,
+            );
+          },
+        ),
+        _buildListTile(
           leadingIcon: Icons.settings,
           title: 'Personal Settings',
           onTap: () {
