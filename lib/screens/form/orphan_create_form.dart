@@ -520,16 +520,23 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                 ),
                 const SizedBox(height: 20.0),
                 DropdownSearch<BedRoom>(
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please enter bedroom';
+                    }
+                    return null;
+                  },
                   items: _bedrooms,
                   itemAsString: (item) {
                     return item.name!;
                   },
                   dropdownDecoratorProps: DropDownDecoratorProps(
-                      dropdownSearchDecoration:
-                          AppStyleConfig.inputDecoration.copyWith(
-                    labelText: 'Bed Room',
-                    hintText: 'Select Bed Room',
-                  )),
+                    dropdownSearchDecoration:
+                        AppStyleConfig.inputDecoration.copyWith(
+                      labelText: 'Bed Room *',
+                      hintText: 'Select Bed Room',
+                    ),
+                  ),
                   onChanged: (value) {
                     setState(() {
                       _selectedBedRoom = value;
@@ -551,6 +558,12 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                 ),
                 const SizedBox(height: 20.0),
                 DropdownSearch<GuardianType>(
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please enter family relation';
+                    }
+                    return null;
+                  },
                   items: _guardianTypes,
                   itemAsString: (item) {
                     return item.name;
@@ -558,7 +571,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                   dropdownDecoratorProps: DropDownDecoratorProps(
                       dropdownSearchDecoration:
                           AppStyleConfig.inputDecoration.copyWith(
-                    labelText: 'Family Relation',
+                    labelText: 'Family Relation *',
                     hintText: 'Select family relation',
                   )),
                   onChanged: (value) {

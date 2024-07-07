@@ -7,6 +7,7 @@ import 'package:frontend_flutter/models/document_model.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 import 'package:frontend_flutter/widgets/skeleton/document_grid_skeleton.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class DocumentScreen extends StatelessWidget {
   final Future<List<Document>> documentsFuture;
@@ -18,21 +19,19 @@ class DocumentScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: const CustomAppBar(title: 'Documents'),
-      body: Center(
-        child: FutureBuilder<List<Document>>(
-          future: documentsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const DocumentGridSkeleton();
-            } else if (snapshot.hasError) {
-              return const Text('Error');
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return _buildUploadSection(context);
-            } else {
-              return _buildDocumentsMasonryGrid(snapshot.data!);
-            }
-          },
-        ),
+      body: FutureBuilder<List<Document>>(
+        future: documentsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const DocumentGridSkeleton();
+          } else if (snapshot.hasError) {
+            return const Text('Error');
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return _buildUploadSection(context);
+          } else {
+            return _buildDocumentsMasonryGrid(snapshot.data!);
+          }
+        },
       ),
     );
   }
@@ -52,9 +51,10 @@ class DocumentScreen extends StatelessWidget {
           width: 160,
           child: ElevatedButton(
             onPressed: () {
-              showModalBottomSheet(
+              showCupertinoModalBottomSheet(
                 context: context,
                 builder: (context) => const UploadBottomSheet(),
+                expand: true,
               );
             },
             style: AppStyleConfig.secondaryButtonStyle,
@@ -66,20 +66,24 @@ class DocumentScreen extends StatelessWidget {
   }
 
   Widget _buildDocumentsMasonryGrid(List<Document> data) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: MasonryGridView.count(
-        crossAxisCount: 2,
-        mainAxisSpacing: 5,
-        crossAxisSpacing: 5,
-        itemCount: data.length + 1,
-        itemBuilder: (BuildContext context, int index) {
-          if (index < data.length) {
-            return DocumentItem(document: data[index]);
-          } else {
-            return const UploadCard();
-          }
-        },
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: MasonryGridView.count(
+          crossAxisCount: 2,
+          mainAxisSpacing: 5,
+          crossAxisSpacing: 5,
+          itemCount: data.length + 1,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) {
+            if (index < data.length) {
+              return DocumentItem(document: data[index]);
+            } else {
+              return const UploadCard();
+            }
+          },
+        ),
       ),
     );
   }
