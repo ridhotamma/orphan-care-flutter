@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:typed_data';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/services/api_service.dart';
 import 'package:frontend_flutter/utils/response_handler_utils.dart';
@@ -15,13 +15,14 @@ class UploadService {
       : _context = context,
         _apiService = ApiService(context);
 
-  Future<Map<String, dynamic>> uploadFileBytes(
-      Uint8List fileBytes, String fileName) async {
+  Future<Map<String, dynamic>> uploadFile(String filePath) async {
     try {
+      final fileName = filePath.split('/').last;
       final mimeTypeData = lookupMimeType(fileName)!.split('/');
-      final response = await _apiService.uploadFileBytes(
+      final file = File(filePath);
+      final response = await _apiService.uploadFile(
         '/public/files/upload',
-        fileBytes,
+        file,
         fileName,
         MediaType(mimeTypeData[0], mimeTypeData[1]),
       );

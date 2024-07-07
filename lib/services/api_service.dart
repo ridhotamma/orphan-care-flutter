@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend_flutter/config/app_api_config.dart';
@@ -88,8 +89,8 @@ class ApiService {
   Future<http.Response> delete(String endpoint) =>
       _sendRequest('DELETE', endpoint);
 
-  Future<http.Response> uploadFileBytes(String endpoint, Uint8List fileBytes,
-      String fileName, MediaType mediaType) async {
+  Future<http.Response> uploadFile(
+      String endpoint, File file, String fileName, MediaType mediaType) async {
     final uri = _buildUri(endpoint);
     final token = await _getToken();
     final headers = <String, String>{};
@@ -100,9 +101,9 @@ class ApiService {
 
     final request = http.MultipartRequest('POST', uri);
     request.headers.addAll(headers);
-    request.files.add(http.MultipartFile.fromBytes(
+    request.files.add(await http.MultipartFile.fromPath(
       'file',
-      fileBytes,
+      file.path,
       filename: fileName,
       contentType: mediaType,
     ));
@@ -111,7 +112,7 @@ class ApiService {
       print("Sending request to: $uri");
       print("Headers: $headers");
       print("File Name: $fileName");
-      print("File Size: ${fileBytes.length}");
+      print("File Size: ${file.lengthSync()}");
     }
 
     final streamedResponse = await request.send();

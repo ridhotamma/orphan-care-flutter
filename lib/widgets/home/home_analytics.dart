@@ -60,7 +60,8 @@ class HomeAnalytics extends StatelessWidget {
     required String title,
     required int count,
   }) {
-    return SizedBox(
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 180),
       child: Card(
         color: Colors.white,
         shape: RoundedRectangleBorder(

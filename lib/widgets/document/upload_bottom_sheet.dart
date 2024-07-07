@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
@@ -9,9 +7,8 @@ import 'package:frontend_flutter/services/document_service.dart';
 import 'package:frontend_flutter/services/upload_service.dart';
 import 'package:frontend_flutter/utils/response_handler_utils.dart';
 import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class UploadBottomSheet extends StatefulWidget {
   const UploadBottomSheet({super.key});
@@ -21,7 +18,6 @@ class UploadBottomSheet extends StatefulWidget {
 }
 
 class _UploadBottomSheetState extends State<UploadBottomSheet> {
-  Uint8List? _fileBytes;
   String? _fileUrl;
   String? _fileName;
   String? _fileType;
@@ -35,6 +31,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
 
   final TextEditingController _fileNameController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final GlobalKey<SfPdfViewerState> _pdfViewerKey = GlobalKey();
 
   @override
   void initState() {
@@ -44,7 +41,9 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
 
   Future<void> _fetchFileTypes() async {
     await DocumentService(context: context).fetchDocumentTypes().then((data) {
-      _fileTypes = data;
+      setState(() {
+        _fileTypes = data;
+      });
     }).onError(
       (error, stackTrace) {
         ResponseHandlerUtils.onSubmitFailed(context, error.toString());
@@ -56,42 +55,75 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
     setState(() {
       _isSubmitting = true;
     });
+    // Add your submit logic here
     setState(() {
       _isSubmitting = false;
     });
   }
 
   Future<void> _pickFile() async {
-    setState(() {
-      _isUploading = true;
-    });
+    if (await Permission.accessMediaLocation.request().isPermanentlyDenied) {
+      openAppSettings();
+    }
 
-    final result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      final fileExtension = result.files.single.extension?.toLowerCase();
+    if (await Permission.accessMediaLocation.request().isGranted) {
+      try {
+        setState(() {
+          _isUploading = true;
+          _fileType = null;
+          _fileUrl = null;
+          _fileName = null;
+        });
 
-      setState(() {
-        _fileBytes = result.files.single.bytes;
-        _fileName = result.files.single.name;
-        _fileNameController.text = _fileName ?? '';
-        _fileType = fileExtension;
-      });
+        final result = await FilePicker.platform.pickFiles();
+        if (result != null) {
+          final filePath = result.files.single.path!;
+          final fileExtension = result.files.single.extension?.toLowerCase();
+          setState(() {
+            _fileName = result.files.single.name;
+            _fileNameController.text = _fileName ?? '';
+            _fileType = fileExtension;
+          });
 
-      if (mounted) {
-        await UploadService(context: context)
-            .uploadFileBytes(_fileBytes!, _fileName!)
-            .then(
-          (data) {
-            _fileUrl = data['url'];
-          },
-        ).catchError((error) {
-          ResponseHandlerUtils.onSubmitFailed(context, error.toString());
+          if (mounted) {
+            UploadService(context: context).uploadFile(filePath).then((data) {
+              setState(() {
+                _fileUrl = data['url'];
+              });
+            }).catchError((error) {
+              ResponseHandlerUtils.onSubmitFailed(context, error.toString());
+            });
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          ResponseHandlerUtils.onSubmitFailed(context, e.toString());
+        }
+      } finally {
+        setState(() {
+          _isUploading = false;
         });
       }
-
-      setState(() {
-        _isUploading = false;
-      });
+    } else {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Permission Denied"),
+              content: const Text("Storage permission denied"),
+              actions: [
+                TextButton(
+                  child: const Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
     }
   }
 
@@ -115,7 +147,9 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10.0),
-                      child: _fileUrl != null
+                      child: _fileUrl != null &&
+                              _fileType != null &&
+                              _fileName != null
                           ? _buildUploadedItem()
                           : Container(
                               padding: const EdgeInsets.all(16.0),
@@ -185,7 +219,9 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                             ),
                             selectedItem: _selectedDocumentType,
                             onChanged: (value) {
-                              _selectedDocumentType = value;
+                              setState(() {
+                                _selectedDocumentType = value;
+                              });
                             },
                           ),
                         ],
@@ -211,7 +247,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                 ),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => _onSubmit,
+                    onPressed: () => _onSubmit(),
                     style: AppStyleConfig.secondaryButtonStyle,
                     child: _isSubmitting
                         ? const CircularProgressIndicator(
@@ -245,17 +281,16 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
     ];
     final List<String> pdfExtensions = ['pdf'];
 
-    if (imageExtensions.contains(_fileType)) {
+    if (_fileType != null && imageExtensions.contains(_fileType)) {
       return Image.network(
         _fileUrl!,
         height: 200,
         width: double.infinity,
         fit: BoxFit.cover,
       );
-    } else if (pdfExtensions.contains(_fileType)) {
+    } else if (_fileType != null && pdfExtensions.contains(_fileType)) {
       return _buildPdfViewer();
     } else {
-      // For other document types, simply show the file name
       return Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(16.0),
@@ -281,34 +316,12 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
 
   Widget _buildPdfViewer() {
     return SizedBox(
+      width: double.infinity,
       height: 400,
-      child: FutureBuilder<File>(
-        future: _downloadPdfFile(_fileUrl!),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(
-                  child: Text('Error loading PDF: ${snapshot.error}'));
-            }
-            return PDFView(
-              filePath: snapshot.data?.path,
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+      child: SfPdfViewer.network(
+        key: _pdfViewerKey,
+        _fileUrl!,
       ),
     );
-  }
-
-  Future<File> _downloadPdfFile(String url) async {
-    final response = await http.get(Uri.parse(url));
-    final bytes = response.bodyBytes;
-    final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/temp.pdf');
-    await file.writeAsBytes(bytes);
-    return file;
   }
 }

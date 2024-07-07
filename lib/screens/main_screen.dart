@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/services/connectivity_service.dart';
@@ -10,6 +11,7 @@ import 'package:frontend_flutter/services/document_service.dart';
 import 'package:frontend_flutter/models/analytic_model.dart';
 import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/models/document_model.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'home_screen.dart';
 import 'document_screen.dart';
 import 'settings_screen.dart';
@@ -34,13 +36,45 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _fetchData();
+    _requestPermissions();
+
     _connectivitySubscription = _connectivityService.connectivityStream
         .listen((ConnectivityResult result) {
+      if (kDebugMode) {
+        print('Connectivity Result $result');
+      }
       if (result == ConnectivityResult.none) {
         _showSnackBar('No internet connection', 'error');
-      } else {
+      } else if (result == ConnectivityResult.wifi ||
+          result == ConnectivityResult.mobile) {
         _refreshData();
         _showSnackBar('Connected to the internet', 'connect');
+      }
+    });
+  }
+
+  Future<void> _requestPermissions() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.manageExternalStorage,
+      Permission.storage,
+      Permission.notification,
+      Permission.accessMediaLocation
+    ].request();
+
+    statuses.forEach((permission, status) {
+      if (status.isGranted) {
+        if (kDebugMode) {
+          print("$permission granted");
+        }
+      } else if (status.isDenied) {
+        if (kDebugMode) {
+          print("$permission denied");
+        }
+      } else if (status.isPermanentlyDenied) {
+        if (kDebugMode) {
+          print("$permission permanently denied");
+          openAppSettings();
+        }
       }
     });
   }
