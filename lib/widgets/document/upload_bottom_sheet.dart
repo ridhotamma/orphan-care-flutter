@@ -8,7 +8,6 @@ import 'package:frontend_flutter/services/upload_service.dart';
 import 'package:frontend_flutter/utils/response_handler_utils.dart';
 import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class UploadBottomSheet extends StatefulWidget {
   const UploadBottomSheet({super.key});
@@ -62,68 +61,42 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
   }
 
   Future<void> _pickFile() async {
-    if (await Permission.accessMediaLocation.request().isPermanentlyDenied) {
-      openAppSettings();
-    }
+    try {
+      setState(() {
+        _isUploading = true;
+        _fileType = null;
+        _fileUrl = null;
+        _fileName = null;
+      });
 
-    if (await Permission.accessMediaLocation.request().isGranted) {
-      try {
+      final result = await FilePicker.platform.pickFiles();
+      if (result != null) {
+        final filePath = result.files.single.path!;
+        final fileExtension = result.files.single.extension?.toLowerCase();
         setState(() {
-          _isUploading = true;
-          _fileType = null;
-          _fileUrl = null;
-          _fileName = null;
+          _fileName = result.files.single.name;
+          _fileNameController.text = _fileName ?? '';
+          _fileType = fileExtension;
         });
 
-        final result = await FilePicker.platform.pickFiles();
-        if (result != null) {
-          final filePath = result.files.single.path!;
-          final fileExtension = result.files.single.extension?.toLowerCase();
-          setState(() {
-            _fileName = result.files.single.name;
-            _fileNameController.text = _fileName ?? '';
-            _fileType = fileExtension;
-          });
-
-          if (mounted) {
-            UploadService(context: context).uploadFile(filePath).then((data) {
-              setState(() {
-                _fileUrl = data['url'];
-              });
-            }).catchError((error) {
-              ResponseHandlerUtils.onSubmitFailed(context, error.toString());
-            });
-          }
-        }
-      } catch (e) {
         if (mounted) {
-          ResponseHandlerUtils.onSubmitFailed(context, e.toString());
+          UploadService(context: context).uploadFile(filePath).then((data) {
+            setState(() {
+              _fileUrl = data['url'];
+            });
+          }).catchError((error) {
+            ResponseHandlerUtils.onSubmitFailed(context, error.toString());
+          });
         }
-      } finally {
-        setState(() {
-          _isUploading = false;
-        });
       }
-    } else {
+    } catch (e) {
       if (mounted) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text("Permission Denied"),
-              content: const Text("Storage permission denied"),
-              actions: [
-                TextButton(
-                  child: const Text("OK"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
+        ResponseHandlerUtils.onSubmitFailed(context, e.toString());
       }
+    } finally {
+      setState(() {
+        _isUploading = false;
+      });
     }
   }
 
