@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-
+import 'package:frontend_flutter/models/address_model.dart';
+import 'package:frontend_flutter/models/bedroom_model.dart';
+import 'package:frontend_flutter/models/guardian_model.dart';
+import 'package:frontend_flutter/models/profile_model.dart';
+import 'package:frontend_flutter/models/user_model.dart';
+import 'package:frontend_flutter/services/bedroom_service.dart';
+import 'package:frontend_flutter/services/location_service.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:frontend_flutter/services/user_service.dart';
+import 'package:frontend_flutter/utils/response_handler_util.dart';
 import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
 import 'package:frontend_flutter/widgets/input/optional_text_form_field.dart';
-import 'package:frontend_flutter/widgets/input/required_dropdown_button_form_field.dart';
 import 'package:frontend_flutter/widgets/input/toggle_button.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
-import 'package:frontend_flutter/widgets/document/document_item.dart';
-import 'package:frontend_flutter/widgets/document/upload_card.dart';
-import 'package:frontend_flutter/models/document_model.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
-import 'package:frontend_flutter/widgets/shared/section_title.dart';
 
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -36,8 +39,14 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
   final _phoneNumberController = TextEditingController();
 
   final _guardianFullNameController = TextEditingController();
-  String? _selectedBedRoom;
-  String? _selectedFamilyRelation;
+
+  Map<String, dynamic>? _selectedProvince;
+  Map<String, dynamic>? _selectedDistrict;
+  Map<String, dynamic>? _selectedRegency;
+  Map<String, dynamic>? _selectedVillage;
+
+  GuardianType? _selectedGuardianType;
+  BedRoom? _selectedBedRoom;
 
   final _addressFormKey = GlobalKey<FormState>();
   final _streetController = TextEditingController();
@@ -53,13 +62,29 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
 
   final List<String> _steps = [
     'Basic Information',
-    'Profile and Address',
-    'Document',
+    'Profile Details',
+    'Address',
   ];
 
-  final List<Document> _documents = [];
+  List<Map<String, dynamic>> _provinces = [];
+  List<Map<String, dynamic>> _cities = [];
+  List<Map<String, dynamic>> _subDistricts = [];
+  List<Map<String, dynamic>> _urbanVillages = [];
 
+  List<GuardianType> _guardianTypes = [];
+  List<BedRoom> _bedrooms = [];
+
+  final List<String> _genders = ['Male', 'Female', 'Other'];
   final List<bool> _selectedGenderToggle = [true, false, false];
+  String _selectedGender = 'Male';
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProvinces();
+    _fetchGuardianTypes();
+    _fetchBedrooms();
+  }
 
   @override
   void dispose() {
@@ -79,6 +104,64 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
     _provinceController.dispose();
     _postalCodeController.dispose();
     super.dispose();
+  }
+
+  void _fetchBedrooms() async {
+    final bedrooms = await BedroomService(context: context).fetchBedRooms();
+
+    setState(() {
+      _bedrooms = bedrooms;
+    });
+  }
+
+  void _fetchGuardianTypes() async {
+    final guardianTypes =
+        await UserService(context: context).fetchGuardianTypes();
+
+    setState(() {
+      _guardianTypes = guardianTypes;
+    });
+  }
+
+  void _fetchProvinces() async {
+    final provinces = await LocationService(context: context).fetchProvinces();
+
+    setState(() {
+      _provinces = provinces;
+      _cities = [];
+      _subDistricts = [];
+      _urbanVillages = [];
+    });
+  }
+
+  void _fetchCities(String provinceId) async {
+    final cities =
+        await LocationService(context: context).fetchCities(provinceId);
+
+    setState(() {
+      _cities = cities;
+      _subDistricts = [];
+      _urbanVillages = [];
+    });
+  }
+
+  void _fetchSubDistricts(String regencyId) async {
+    final subDistricts =
+        await LocationService(context: context).fetchSubDistricts(regencyId);
+
+    setState(() {
+      _subDistricts = subDistricts;
+      _urbanVillages = [];
+    });
+  }
+
+  void _fetchUrbanVillages(String districtId) async {
+    final urbanVillages =
+        await LocationService(context: context).fetchUrbanVillages(districtId);
+
+    setState(() {
+      _urbanVillages = urbanVillages;
+    });
   }
 
   void _onStepContinue() {
@@ -101,9 +184,54 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
           _currentStep += 1;
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Form Submitted')),
+        Address address = Address(
+          city: _selectedRegency?['name'],
+          province: _selectedProvince?['name'],
+          street: _streetController.text,
+          subdistrict: _selectedDistrict?['name'],
+          urbanVillage: _selectedVillage?['name'],
+          postalCode: _postalCodeController.text,
         );
+
+        Guardian guardian = Guardian(
+          id: '',
+          phoneNumber: '',
+          address: address,
+          fullName: _guardianFullNameController.text,
+          guardianType: _selectedGuardianType,
+          guardianTypeId: _selectedGuardianType?.id,
+        );
+
+        Profile profile = Profile(
+          profilePicture: '',
+          bio: '',
+          leaveDate: '',
+          fullName: _fullNameController.text,
+          bedRoomId: _selectedBedRoom?.id,
+          bedRoom: _selectedBedRoom,
+          address: address,
+          birthPlace: _birthPlaceController.text,
+          joinDate: _joinDateController.text,
+          birthday: _birthPlaceController.text,
+          phoneNumber: _phoneNumberController.text,
+          guardian: guardian,
+          gender: _selectedGender,
+        );
+
+        UserRequest userRequest = UserRequest(
+          profile: profile,
+          email: _emailController.text,
+          username: _usernameController.text,
+          roles: ['ROLE_USER'],
+          password: _passwordController.text,
+          active: true,
+        );
+
+        try {
+          UserService(context: context).createUser(userRequest.toJson());
+        } catch (e) {
+          ResponseHandlerUtils.onSubmitFailed(context, "Failed to Create User");
+        }
       }
     }
   }
@@ -119,7 +247,9 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
   }
 
   Future<void> _selectDate(
-      BuildContext context, TextEditingController controller) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -138,7 +268,7 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
     return Scaffold(
       backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: const CustomAppBar(
-        title: 'Tambah Data Pengasuh',
+        title: 'Tambah Data Anak Asuh',
         foregroundColor: Colors.white,
         automaticallyImplyLeading: true,
       ),
@@ -151,11 +281,11 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
               children: _steps.map((step) {
                 switch (step) {
                   case 'Basic Information':
-                    return _buildAccount();
-                  case 'Profile and Address':
-                    return _buildProfileAndAddress();
-                  case 'Document':
-                    return _buildDocument();
+                    return _buildBasicInformationForm();
+                  case 'Profile Details':
+                    return _buildProfileForm();
+                  case 'Address':
+                    return _buildAddressForm();
                   default:
                     return const SizedBox.shrink();
                 }
@@ -231,7 +361,7 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
     );
   }
 
-  Widget _buildAccount() {
+  Widget _buildBasicInformationForm() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -291,7 +421,7 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
     );
   }
 
-  Widget _buildProfileAndAddress() {
+  Widget _buildProfileForm() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView(
@@ -301,7 +431,6 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SectionTitle(title: 'Profile Information'),
                 RequiredTextFormField(
                   controller: _fullNameController,
                   hintText: 'Full Name',
@@ -371,34 +500,42 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
                 const SizedBox(height: 20.0),
                 ToggleButton(
                   isSelected: _selectedGenderToggle,
-                  labels: const ['Male', 'Female', 'Other'],
+                  labels: _genders,
                   onPressed: (index) {
                     setState(() {
                       for (int i = 0; i < _selectedGenderToggle.length; i++) {
                         _selectedGenderToggle[i] = i == index;
+                        _selectedGender = _genders[i].toUpperCase();
                       }
                     });
                   },
                 ),
                 const SizedBox(height: 20.0),
-                RequiredDropdownButtonFormField(
-                  value: _selectedBedRoom,
-                  hintText: 'Bed Room',
+                DropdownSearch<BedRoom>(
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please enter bedroom';
+                    }
+                    return null;
+                  },
+                  items: _bedrooms,
+                  itemAsString: (item) {
+                    return item.name!;
+                  },
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                    dropdownSearchDecoration:
+                        AppStyleConfig.inputDecoration.copyWith(
+                      labelText: 'Bed Room *',
+                      hintText: 'Select Bed Room',
+                    ),
+                  ),
                   onChanged: (value) {
                     setState(() {
                       _selectedBedRoom = value;
                     });
                   },
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'bedroom-uuid-1',
-                      child: Text('Bedroom 1'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'bedroom-uuid-2',
-                      child: Text('Bedroom 2'),
-                    ),
-                  ],
+                  selectedItem: _selectedBedRoom,
+                  enabled: true,
                 ),
                 const SizedBox(height: 20.0),
                 RequiredTextFormField(
@@ -412,136 +549,137 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
                   },
                 ),
                 const SizedBox(height: 20.0),
-                RequiredDropdownButtonFormField(
-                  value: _selectedFamilyRelation,
-                  hintText: 'Family Relation',
+                DropdownSearch<GuardianType>(
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please enter family relation';
+                    }
+                    return null;
+                  },
+                  items: _guardianTypes,
+                  itemAsString: (item) {
+                    return item.name;
+                  },
+                  dropdownDecoratorProps: DropDownDecoratorProps(
+                      dropdownSearchDecoration:
+                          AppStyleConfig.inputDecoration.copyWith(
+                    labelText: 'Family Relation *',
+                    hintText: 'Select family relation',
+                  )),
                   onChanged: (value) {
                     setState(() {
-                      _selectedFamilyRelation = value;
+                      _selectedGuardianType = value;
                     });
                   },
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'guardian-type-uuid-1',
-                      child: Text('Ibu kandung'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'guardian-type-uuid-2',
-                      child: Text('Ayah Kandung'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'guardian-type-uuid-3',
-                      child: Text('Paman'),
-                    ),
-                  ],
+                  selectedItem: _selectedGuardianType,
+                  enabled: true,
                 ),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddressForm() {
+    return Form(
+      key: _addressFormKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DropdownSearch<Map<String, dynamic>>(
+            items: _provinces,
+            itemAsString: (item) {
+              return item['name'];
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration:
+                    AppStyleConfig.inputDecoration.copyWith(
+              labelText: 'Province',
+              hintText: 'Select a province',
+            )),
+            onChanged: (value) {
+              setState(() {
+                _selectedProvince = value;
+                _fetchCities(value?['id']);
+              });
+            },
+            selectedItem: _selectedProvince,
+            enabled: true,
           ),
           const SizedBox(height: 20.0),
-          const SectionTitle(title: 'Address Information'),
-          Form(
-            key: _addressFormKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                OptionalTextFormField(
-                  controller: _streetController,
-                  hintText: 'Street',
-                ),
-                const SizedBox(height: 20.0),
-                OptionalTextFormField(
-                  controller: _urbanVillageController,
-                  hintText: 'Urban Village',
-                ),
-                const SizedBox(height: 20.0),
-                OptionalTextFormField(
-                  controller: _subdistrictController,
-                  hintText: 'Subdistrict',
-                ),
-                const SizedBox(height: 20.0),
-                OptionalTextFormField(
-                  controller: _cityController,
-                  hintText: 'City',
-                ),
-                const SizedBox(height: 20.0),
-                OptionalTextFormField(
-                  controller: _provinceController,
-                  hintText: 'Province',
-                ),
-                const SizedBox(height: 20.0),
-                OptionalTextFormField(
-                  controller: _postalCodeController,
-                  hintText: 'Postal Code',
-                  keyboardType: TextInputType.number,
-                ),
-              ],
-            ),
+          DropdownSearch<Map<String, dynamic>>(
+            items: _cities,
+            itemAsString: (item) {
+              return item['name'];
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration:
+                    AppStyleConfig.inputDecoration.copyWith(
+              labelText: 'City',
+              hintText: 'Select a city',
+            )),
+            onChanged: (value) {
+              setState(() {
+                _selectedRegency = value;
+                _fetchSubDistricts(value?['id']);
+              });
+            },
+            selectedItem: _selectedRegency,
+          ),
+          const SizedBox(height: 20.0),
+          DropdownSearch<Map<String, dynamic>>(
+            items: _subDistricts,
+            itemAsString: (item) {
+              return item['name'];
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration:
+                    AppStyleConfig.inputDecoration.copyWith(
+              labelText: 'Subdistrict',
+              hintText: 'Select a subdistrict',
+            )),
+            onChanged: (value) {
+              setState(() {
+                _selectedDistrict = value;
+                _fetchUrbanVillages(value?['id']);
+              });
+            },
+            selectedItem: _selectedDistrict,
+          ),
+          const SizedBox(height: 20.0),
+          DropdownSearch<Map<String, dynamic>>(
+            items: _urbanVillages,
+            itemAsString: (item) {
+              return item['name'];
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration:
+                    AppStyleConfig.inputDecoration.copyWith(
+              labelText: 'Urban Village',
+              hintText: 'Select an urban village',
+            )),
+            onChanged: (value) {
+              setState(() {
+                _selectedVillage = value;
+              });
+            },
+            selectedItem: _selectedVillage,
+          ),
+          const SizedBox(height: 20.0),
+          OptionalTextFormField(
+            controller: _streetController,
+            hintText: 'Street',
+          ),
+          const SizedBox(height: 20.0),
+          OptionalTextFormField(
+            controller: _postalCodeController,
+            hintText: 'Postal Code',
+            keyboardType: TextInputType.number,
           ),
         ],
       ),
     );
-  }
-
-  Widget _buildDocument() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: _documents.isEmpty
-          ? _buildUploadSection()
-          : MasonryGridView.count(
-              crossAxisCount: 2,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              itemCount: _documents.length + 1,
-              itemBuilder: (BuildContext context, int index) {
-                if (index < _documents.length) {
-                  return DocumentItem(
-                    document: _documents[index],
-                    onTap: () {},
-                  );
-                } else {
-                  return UploadCard(
-                    onTap: () {},
-                  );
-                }
-              },
-            ),
-    );
-  }
-
-  Widget _buildUploadSection() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.cloud_upload, size: 100),
-          const SizedBox(height: 20),
-          const Text(
-            'Upload orphan documents here',
-            style: TextStyle(fontSize: 20),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: 160,
-            child: ElevatedButton(
-              onPressed: _uploadDocument,
-              style: AppStyleConfig.secondaryButtonStyle,
-              child: const Text("Upload"),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _uploadDocument() {
-    setState(() {
-      _documents.add(Document(
-        id: 'random-id',
-        name: "example2.pdf",
-        documentType: DocumentType(id: 'random-id', name: 'PDF', type: 'pdf'),
-        url: 'https://example.com/example2.pdf',
-      ));
-    });
   }
 }

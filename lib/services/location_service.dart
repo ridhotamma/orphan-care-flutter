@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:frontend_flutter/utils/response_handler_utils.dart';
+import 'package:frontend_flutter/utils/response_handler_util.dart';
 
 class LocationService {
   static const baseUrl = 'https://www.emsifa.com/api-wilayah-indonesia/api/';

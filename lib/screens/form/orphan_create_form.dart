@@ -8,18 +8,13 @@ import 'package:frontend_flutter/services/bedroom_service.dart';
 import 'package:frontend_flutter/services/location_service.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:frontend_flutter/services/user_service.dart';
-import 'package:frontend_flutter/utils/response_handler_utils.dart';
+import 'package:frontend_flutter/utils/response_handler_util.dart';
 import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
 import 'package:frontend_flutter/widgets/input/optional_text_form_field.dart';
 import 'package:frontend_flutter/widgets/input/toggle_button.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
-import 'package:frontend_flutter/widgets/document/document_item.dart';
-import 'package:frontend_flutter/widgets/document/upload_card.dart';
-import 'package:frontend_flutter/models/document_model.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
-import 'package:frontend_flutter/widgets/shared/section_title.dart';
 
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -67,11 +62,9 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
 
   final List<String> _steps = [
     'Basic Information',
-    'Profile and Address',
-    'Document',
+    'Profile Details',
+    'Address',
   ];
-
-  final List<Document> _documents = [];
 
   List<Map<String, dynamic>> _provinces = [];
   List<Map<String, dynamic>> _cities = [];
@@ -288,11 +281,11 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
               children: _steps.map((step) {
                 switch (step) {
                   case 'Basic Information':
-                    return _buildAccount();
-                  case 'Profile and Address':
-                    return _buildProfileAndAddress();
-                  case 'Document':
-                    return _buildDocument();
+                    return _buildBasicInformationForm();
+                  case 'Profile Details':
+                    return _buildProfileForm();
+                  case 'Address':
+                    return _buildAddressForm();
                   default:
                     return const SizedBox.shrink();
                 }
@@ -368,7 +361,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     );
   }
 
-  Widget _buildAccount() {
+  Widget _buildBasicInformationForm() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -428,7 +421,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     );
   }
 
-  Widget _buildProfileAndAddress() {
+  Widget _buildProfileForm() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView(
@@ -438,7 +431,6 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SectionTitle(title: 'Profile Information'),
                 RequiredTextFormField(
                   controller: _fullNameController,
                   hintText: 'Full Name',
@@ -585,170 +577,109 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
               ],
             ),
           ),
-          const SizedBox(height: 20.0),
-          const SectionTitle(title: 'Address Information'),
-          Form(
-            key: _addressFormKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                DropdownSearch<Map<String, dynamic>>(
-                  items: _provinces,
-                  itemAsString: (item) {
-                    return item['name'];
-                  },
-                  dropdownDecoratorProps: DropDownDecoratorProps(
-                      dropdownSearchDecoration:
-                          AppStyleConfig.inputDecoration.copyWith(
-                    labelText: 'Province',
-                    hintText: 'Select a province',
-                  )),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedProvince = value;
-                      _fetchCities(value?['id']);
-                    });
-                  },
-                  selectedItem: _selectedProvince,
-                  enabled: true,
-                ),
-                const SizedBox(height: 20.0),
-                DropdownSearch<Map<String, dynamic>>(
-                  items: _cities,
-                  itemAsString: (item) {
-                    return item['name'];
-                  },
-                  dropdownDecoratorProps: DropDownDecoratorProps(
-                      dropdownSearchDecoration:
-                          AppStyleConfig.inputDecoration.copyWith(
-                    labelText: 'City',
-                    hintText: 'Select a city',
-                  )),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedRegency = value;
-                      _fetchSubDistricts(value?['id']);
-                    });
-                  },
-                  selectedItem: _selectedRegency,
-                ),
-                const SizedBox(height: 20.0),
-                DropdownSearch<Map<String, dynamic>>(
-                  items: _subDistricts,
-                  itemAsString: (item) {
-                    return item['name'];
-                  },
-                  dropdownDecoratorProps: DropDownDecoratorProps(
-                      dropdownSearchDecoration:
-                          AppStyleConfig.inputDecoration.copyWith(
-                    labelText: 'Subdistrict',
-                    hintText: 'Select a subdistrict',
-                  )),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedDistrict = value;
-                      _fetchUrbanVillages(value?['id']);
-                    });
-                  },
-                  selectedItem: _selectedDistrict,
-                ),
-                const SizedBox(height: 20.0),
-                DropdownSearch<Map<String, dynamic>>(
-                  items: _urbanVillages,
-                  itemAsString: (item) {
-                    return item['name'];
-                  },
-                  dropdownDecoratorProps: DropDownDecoratorProps(
-                      dropdownSearchDecoration:
-                          AppStyleConfig.inputDecoration.copyWith(
-                    labelText: 'Urban Village',
-                    hintText: 'Select an urban village',
-                  )),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedVillage = value;
-                    });
-                  },
-                  selectedItem: _selectedVillage,
-                ),
-                const SizedBox(height: 20.0),
-                OptionalTextFormField(
-                  controller: _streetController,
-                  hintText: 'Street',
-                ),
-                const SizedBox(height: 20.0),
-                OptionalTextFormField(
-                  controller: _postalCodeController,
-                  hintText: 'Postal Code',
-                  keyboardType: TextInputType.number,
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildDocument() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: _documents.isEmpty
-          ? _buildUploadSection()
-          : MasonryGridView.count(
-              crossAxisCount: 2,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5,
-              itemCount: _documents.length + 1,
-              itemBuilder: (BuildContext context, int index) {
-                if (index < _documents.length) {
-                  return DocumentItem(
-                    document: _documents[index],
-                    onTap: () {},
-                  );
-                } else {
-                  return UploadCard(
-                    onTap: () {},
-                  );
-                }
-              },
-            ),
-    );
-  }
-
-  Widget _buildUploadSection() {
-    return Center(
+  Widget _buildAddressForm() {
+    return Form(
+      key: _addressFormKey,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.cloud_upload, size: 100),
-          const SizedBox(height: 20),
-          const Text(
-            'Upload orphan documents here',
-            style: TextStyle(fontSize: 20),
+          DropdownSearch<Map<String, dynamic>>(
+            items: _provinces,
+            itemAsString: (item) {
+              return item['name'];
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration:
+                    AppStyleConfig.inputDecoration.copyWith(
+              labelText: 'Province',
+              hintText: 'Select a province',
+            )),
+            onChanged: (value) {
+              setState(() {
+                _selectedProvince = value;
+                _fetchCities(value?['id']);
+              });
+            },
+            selectedItem: _selectedProvince,
+            enabled: true,
           ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: 160,
-            child: ElevatedButton(
-              onPressed: _uploadDocument,
-              style: AppStyleConfig.secondaryButtonStyle,
-              child: const Text("Upload"),
-            ),
+          const SizedBox(height: 20.0),
+          DropdownSearch<Map<String, dynamic>>(
+            items: _cities,
+            itemAsString: (item) {
+              return item['name'];
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration:
+                    AppStyleConfig.inputDecoration.copyWith(
+              labelText: 'City',
+              hintText: 'Select a city',
+            )),
+            onChanged: (value) {
+              setState(() {
+                _selectedRegency = value;
+                _fetchSubDistricts(value?['id']);
+              });
+            },
+            selectedItem: _selectedRegency,
+          ),
+          const SizedBox(height: 20.0),
+          DropdownSearch<Map<String, dynamic>>(
+            items: _subDistricts,
+            itemAsString: (item) {
+              return item['name'];
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration:
+                    AppStyleConfig.inputDecoration.copyWith(
+              labelText: 'Subdistrict',
+              hintText: 'Select a subdistrict',
+            )),
+            onChanged: (value) {
+              setState(() {
+                _selectedDistrict = value;
+                _fetchUrbanVillages(value?['id']);
+              });
+            },
+            selectedItem: _selectedDistrict,
+          ),
+          const SizedBox(height: 20.0),
+          DropdownSearch<Map<String, dynamic>>(
+            items: _urbanVillages,
+            itemAsString: (item) {
+              return item['name'];
+            },
+            dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration:
+                    AppStyleConfig.inputDecoration.copyWith(
+              labelText: 'Urban Village',
+              hintText: 'Select an urban village',
+            )),
+            onChanged: (value) {
+              setState(() {
+                _selectedVillage = value;
+              });
+            },
+            selectedItem: _selectedVillage,
+          ),
+          const SizedBox(height: 20.0),
+          OptionalTextFormField(
+            controller: _streetController,
+            hintText: 'Street',
+          ),
+          const SizedBox(height: 20.0),
+          OptionalTextFormField(
+            controller: _postalCodeController,
+            hintText: 'Postal Code',
+            keyboardType: TextInputType.number,
           ),
         ],
       ),
     );
-  }
-
-  void _uploadDocument() {
-    setState(() {
-      _documents.add(Document(
-        id: 'random-id',
-        name: "example2.pdf",
-        documentType: DocumentType(id: 'random-id', name: 'PDF', type: 'pdf'),
-        url: 'https://example.com/example2.pdf',
-      ));
-    });
   }
 }

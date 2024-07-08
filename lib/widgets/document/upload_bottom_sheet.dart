@@ -7,7 +7,7 @@ import 'package:frontend_flutter/models/document_model.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
 import 'package:frontend_flutter/services/document_service.dart';
 import 'package:frontend_flutter/services/upload_service.dart';
-import 'package:frontend_flutter/utils/response_handler_utils.dart';
+import 'package:frontend_flutter/utils/response_handler_util.dart';
 import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
