@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/models/guardian_model.dart';
 import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/services/api_service.dart';
-import 'package:frontend_flutter/utils/response_handler_utils.dart';
 import 'package:http/http.dart' as http;
 
 class UserService {
@@ -38,7 +37,7 @@ class UserService {
       Map<String, dynamic> userRequest) async {
     try {
       final response = await _apiService.post('/admin/users', userRequest);
-      return _handleCreateUserResponse(response);
+      return jsonDecode(response.body);
     } catch (e) {
       _handleError(e);
       return {};
@@ -78,26 +77,10 @@ class UserService {
     return data.map((json) => GuardianType.fromJson(json)).toList();
   }
 
-  Map<String, dynamic> _handleCreateUserResponse(http.Response response) {
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      _handleResponseError(response);
-      return {};
-    }
-  }
-
   List<UserResponse> _handleUserProfileListResponse(http.Response response) {
     final Map<String, dynamic> decodedResponse = jsonDecode(response.body);
     final List<dynamic> data = decodedResponse['data'];
     return data.map((json) => UserResponse.fromJson(json)).toList();
-  }
-
-  void _handleResponseError(http.Response response) {
-    if (_context.mounted) {
-      final message = jsonDecode(response.body).toString();
-      ResponseHandlerUtils.onSubmitFailed(_context, message);
-    }
   }
 
   void _handleError(dynamic error) {

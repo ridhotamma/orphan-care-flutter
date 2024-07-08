@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:frontend_flutter/utils/response_handler_utils.dart';
+import 'package:frontend_flutter/utils/exception_util.dart';
+import 'package:frontend_flutter/utils/response_handler_util.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend_flutter/config/app_api_config.dart';
 import 'package:http_parser/http_parser.dart';
@@ -28,12 +29,23 @@ class ApiService {
   }
 
   Future<http.Response> _handleResponse(http.Response response) async {
-    if (response.statusCode == 401) {
-      Provider.of<AuthProvider>(context, listen: false).clearToken();
-      _redirectToLogin();
-      throw UnauthorizedException('Unauthorized');
+    switch (response.statusCode) {
+      case 200:
+      case 201:
+        return response;
+      case 400:
+        throw BadRequestException('Bad Request: ${response.body}');
+      case 401:
+        Provider.of<AuthProvider>(context, listen: false).clearToken();
+        _redirectToLogin();
+        throw UnauthorizedException('Unauthorized');
+      case 500:
+        throw InternalServerErrorException(
+            'Internal Server Error: ${response.body}');
+      default:
+        throw UnknownException(
+            'Unknown Error: ${response.statusCode} ${response.body}');
     }
-    return response;
   }
 
   void _redirectToLogin() {
@@ -77,7 +89,29 @@ class ApiService {
       }
 
       return await _handleResponse(response);
-    } on UnauthorizedException catch (_) {
+    } on BadRequestException catch (e) {
+      if (context.mounted) {
+        ResponseHandlerUtils.onSubmitFailed(
+            context, 'BadRequestException: ${e.message}');
+      }
+      rethrow;
+    } on UnauthorizedException catch (e) {
+      if (context.mounted) {
+        ResponseHandlerUtils.onSubmitFailed(
+            context, 'UnauthorizedException: ${e.message}: ${e.message}');
+      }
+      rethrow;
+    } on InternalServerErrorException catch (e) {
+      if (context.mounted) {
+        ResponseHandlerUtils.onSubmitFailed(context,
+            'InternalServerErrorException: ${e.message}: ${e.message}: ${e.message}');
+      }
+      rethrow;
+    } on UnknownException catch (e) {
+      if (context.mounted) {
+        ResponseHandlerUtils.onSubmitFailed(
+            context, 'UnknownException: ${e.message}');
+      }
       rethrow;
     }
   }
