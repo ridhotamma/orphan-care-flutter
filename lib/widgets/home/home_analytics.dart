@@ -27,25 +27,25 @@ class HomeAnalytics extends StatelessWidget {
               return _buildAnalyticsCard(
                 icon: Icons.child_care,
                 title: localization.translate("number_of_children"),
-                count: data.userCount!,
+                count: data.userCount ?? 0,
               );
             case 1:
               return _buildAnalyticsCard(
                 icon: Icons.supervised_user_circle,
                 title: localization.translate("number_of_caregivers"),
-                count: data.adminCount!,
+                count: data.adminCount ?? 0,
               );
             case 2:
               return _buildAnalyticsCard(
                 icon: Icons.hotel,
                 title: localization.translate("number_of_rooms"),
-                count: data.bedRoomCount!,
+                count: data.bedRoomCount ?? 0,
               );
             case 3:
               return _buildAnalyticsCard(
                 icon: Icons.inventory_2_outlined,
                 title: localization.translate("number_of_inventories"),
-                count: data.inventoryCount!,
+                count: data.inventoryCount ?? 0,
               );
             default:
               return const SizedBox.shrink();

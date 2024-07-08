@@ -104,7 +104,12 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
         _fileName = null;
       });
 
-      final result = await FilePicker.platform.pickFiles();
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
+        dialogTitle: 'Pick file from directory',
+      );
+
       if (result != null) {
         final fileName = result.files.single.name;
         final fileExtension = result.files.single.extension?.toLowerCase();
@@ -314,13 +319,8 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
       'jpeg',
       'png',
       'gif',
-      'bmp',
-      'tiff',
-      'tif',
       'webp',
-      'svg',
-      'ico',
-      'heic'
+      'svg'
     ];
     final List<String> pdfExtensions = ['pdf'];
 

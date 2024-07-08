@@ -18,7 +18,7 @@ class DocumentPreview extends StatelessWidget {
 
   Future<void> _downloadDocument(BuildContext context) async {
     try {
-      bool isGranted = false;
+      bool isGranted = true;
 
       if (Platform.isAndroid) {
         final deviceInfoPlugin = DeviceInfoPlugin();
@@ -30,8 +30,6 @@ class DocumentPreview extends StatelessWidget {
         } else {
           isGranted = await Permission.storage.request().isGranted;
         }
-      } else if (Platform.isIOS) {
-        isGranted = await Permission.photos.request().isGranted;
       }
 
       if (isGranted) {

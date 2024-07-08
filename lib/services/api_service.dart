@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:frontend_flutter/utils/response_handler_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend_flutter/config/app_api_config.dart';
 import 'package:http_parser/http_parser.dart';
@@ -30,6 +31,7 @@ class ApiService {
     if (response.statusCode == 401) {
       Provider.of<AuthProvider>(context, listen: false).clearToken();
       _redirectToLogin();
+      throw UnauthorizedException('Unauthorized');
     }
     return response;
   }
@@ -44,36 +46,40 @@ class ApiService {
     Map<String, dynamic>? body,
     Map<String, dynamic>? queryParams,
   }) async {
-    final uri = _buildUri(endpoint, queryParams);
-    final token = await _getToken();
-    final headers = <String, String>{'Content-Type': 'application/json'};
+    try {
+      final uri = _buildUri(endpoint, queryParams);
+      final token = await _getToken();
+      final headers = <String, String>{'Content-Type': 'application/json'};
 
-    if (token != null) {
-      headers.addAll(AppApiConfig.getHeaders(token));
+      if (token != null) {
+        headers.addAll(AppApiConfig.getHeaders(token));
+      }
+
+      http.Response response;
+
+      switch (method) {
+        case 'GET':
+          response = await http.get(uri, headers: headers);
+          break;
+        case 'POST':
+          response =
+              await http.post(uri, headers: headers, body: jsonEncode(body));
+          break;
+        case 'PUT':
+          response =
+              await http.put(uri, headers: headers, body: jsonEncode(body));
+          break;
+        case 'DELETE':
+          response = await http.delete(uri, headers: headers);
+          break;
+        default:
+          throw UnsupportedError('Unsupported HTTP method: $method');
+      }
+
+      return await _handleResponse(response);
+    } on UnauthorizedException catch (_) {
+      rethrow;
     }
-
-    http.Response response;
-
-    switch (method) {
-      case 'GET':
-        response = await http.get(uri, headers: headers);
-        break;
-      case 'POST':
-        response =
-            await http.post(uri, headers: headers, body: jsonEncode(body));
-        break;
-      case 'PUT':
-        response =
-            await http.put(uri, headers: headers, body: jsonEncode(body));
-        break;
-      case 'DELETE':
-        response = await http.delete(uri, headers: headers);
-        break;
-      default:
-        throw UnsupportedError('Unsupported HTTP method: $method');
-    }
-
-    return await _handleResponse(response);
   }
 
   Future<http.Response> get(String endpoint,

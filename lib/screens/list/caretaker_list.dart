@@ -27,7 +27,8 @@ class CaretakerListState extends State<CaretakerList> {
 
   Future<void> _fetchData() async {
     setState(() {
-      caretakerFuture = UserService(context: context).fetchUserProfiles();
+      caretakerFuture =
+          UserService(context: context).fetchUserProfiles(roles: 'ROLE_ADMIN');
     });
   }
 
@@ -46,9 +47,7 @@ class CaretakerListState extends State<CaretakerList> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return _buildCaretakerSkeletons();
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
+            return _buildCaretakerEmptyState();
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return _buildCaretakerEmptyState();
           } else {

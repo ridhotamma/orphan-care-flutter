@@ -47,33 +47,35 @@ class DocumentScreen extends StatelessWidget {
   }
 
   Widget _buildUploadSection(BuildContext context, String userId) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(Icons.cloud_upload, size: 100),
-        const SizedBox(height: 20),
-        const Text(
-          'Upload your documents here',
-          style: TextStyle(fontSize: 18),
-        ),
-        const SizedBox(height: 20),
-        SizedBox(
-          width: 160,
-          child: ElevatedButton(
-            onPressed: () {
-              showCupertinoModalBottomSheet(
-                context: context,
-                builder: (context) => UploadBottomSheet(
-                  userId: userId,
-                ),
-                expand: true,
-              );
-            },
-            style: AppStyleConfig.secondaryButtonStyle,
-            child: const Text("Upload"),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.cloud_upload, size: 100),
+          const SizedBox(height: 20),
+          const Text(
+            'Upload your documents here',
+            style: TextStyle(fontSize: 18),
           ),
-        ),
-      ],
+          const SizedBox(height: 20),
+          SizedBox(
+            width: 160,
+            child: ElevatedButton(
+              onPressed: () {
+                showCupertinoModalBottomSheet(
+                  context: context,
+                  builder: (context) => UploadBottomSheet(
+                    userId: userId,
+                  ),
+                  expand: true,
+                );
+              },
+              style: AppStyleConfig.secondaryButtonStyle,
+              child: const Text("Upload"),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

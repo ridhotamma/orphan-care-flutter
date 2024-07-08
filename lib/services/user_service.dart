@@ -15,13 +15,23 @@ class UserService {
         _apiService = ApiService(context);
 
   Future<UserResponse> fetchCurrentUser() async {
-    final response = await _apiService.get('/public/profiles/current-user');
-    return _handleUserResponse(response);
+    try {
+      final response = await _apiService.get('/public/profiles/current-user');
+      return _handleUserResponse(response);
+    } catch (e) {
+      _handleError(e);
+    }
+    return UserResponse.empty();
   }
 
   Future<List<GuardianType>> fetchGuardianTypes() async {
-    final response = await _apiService.get('/admin/guardian-types');
-    return _handleGuardianTypeListResponse(response);
+    try {
+      final response = await _apiService.get('/admin/guardian-types');
+      return _handleGuardianTypeListResponse(response);
+    } catch (e) {
+      _handleError(e);
+    }
+    return List<GuardianType>.filled(1, GuardianType.empty());
   }
 
   Future<Map<String, dynamic>> createUser(
@@ -92,7 +102,7 @@ class UserService {
 
   void _handleError(dynamic error) {
     if (_context.mounted) {
-      ResponseHandlerUtils.onSubmitFailed(_context, error.toString());
+      debugPrint(error.toString());
     }
   }
 }

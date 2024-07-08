@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/models/bedroom_model.dart';
 import 'package:frontend_flutter/services/api_service.dart';
-import 'package:frontend_flutter/utils/response_handler_utils.dart';
 import 'package:http/http.dart' as http;
 
 class BedroomService {
@@ -91,7 +90,7 @@ class BedroomService {
 
   void _handleError(dynamic error) {
     if (_context.mounted) {
-      ResponseHandlerUtils.onSubmitFailed(_context, error.toString());
+      debugPrint(error.toString());
     }
   }
 }

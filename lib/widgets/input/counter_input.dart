@@ -49,7 +49,7 @@ class _CounterInputState extends State<CounterInput> {
           child: IconButton(
             color: Colors.white,
             style: IconButton.styleFrom(
-              backgroundColor: AppStyleConfig.accentColor,
+              backgroundColor: AppStyleConfig.errorColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(0),
               ),
@@ -64,7 +64,7 @@ class _CounterInputState extends State<CounterInput> {
           child: IconButton(
             color: Colors.white,
             style: IconButton.styleFrom(
-              backgroundColor: AppStyleConfig.secondaryColor,
+              backgroundColor: AppStyleConfig.successColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(0),
               ),

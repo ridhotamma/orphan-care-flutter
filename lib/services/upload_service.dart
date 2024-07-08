@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/services/api_service.dart';
-import 'package:frontend_flutter/utils/response_handler_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
@@ -57,7 +56,7 @@ class UploadService {
 
   void _handleError(dynamic error) {
     if (_context.mounted) {
-      ResponseHandlerUtils.onSubmitFailed(_context, error.toString());
+      debugPrint(error.toString());
     }
   }
 }

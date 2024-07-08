@@ -27,7 +27,8 @@ class OrphanListState extends State<OrphanList> {
 
   Future<void> _fetchData() async {
     setState(() {
-      orphanFuture = UserService(context: context).fetchUserProfiles();
+      orphanFuture =
+          UserService(context: context).fetchUserProfiles(roles: 'ROLE_USER');
     });
   }
 
@@ -46,9 +47,7 @@ class OrphanListState extends State<OrphanList> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return _buildOrphanSkeletons();
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
+            return _buildOrphanEmptyState();
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return _buildOrphanEmptyState();
           } else {
