@@ -238,41 +238,43 @@ class SettingsScreen extends StatelessWidget {
     BuildContext context,
     AppLocalizations localization,
   ) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-            title: Text(
-              localization.translate('confirm_logout'),
-              style: const TextStyle(fontWeight: FontWeight.bold),
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              title: Text(
+                localization.translate('confirm_logout'),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(localization.translate('confirm_logout_message')),
             ),
-            subtitle: Text(localization.translate('confirm_logout_message')),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(localization.translate('cancel')),
-              ),
-              TextButton(
-                onPressed: () {
-                  Provider.of<AuthProvider>(context, listen: false)
-                      .clearToken();
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, '/', (route) => false);
-                },
-                child: Text(
-                  localization.translate('logout'),
-                  style: const TextStyle(color: AppStyleConfig.errorColor),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(localization.translate('cancel')),
                 ),
-              ),
-            ],
-          ),
-        ],
+                TextButton(
+                  onPressed: () {
+                    Provider.of<AuthProvider>(context, listen: false)
+                        .clearToken();
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, '/', (route) => false);
+                  },
+                  child: Text(
+                    localization.translate('logout'),
+                    style: const TextStyle(color: AppStyleConfig.errorColor),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
