@@ -10,19 +10,21 @@ class UserDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyleConfig.primaryBackgroundColor,
-      appBar: const CustomAppBar(
-        title: "User Details",
-        automaticallyImplyLeading: true,
-        foregroundColor: Colors.white,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildProfileCard(context),
-            _buildDetailList(context),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppStyleConfig.primaryBackgroundColor,
+        appBar: const CustomAppBar(
+          title: "User Details",
+          automaticallyImplyLeading: true,
+          foregroundColor: Colors.white,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildProfileCard(context),
+              _buildDetailList(context),
+            ],
+          ),
         ),
       ),
     );

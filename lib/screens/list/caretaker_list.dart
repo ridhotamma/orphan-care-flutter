@@ -34,50 +34,53 @@ class CaretakerListState extends State<CaretakerList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyleConfig.primaryBackgroundColor,
-      appBar: const CustomAppBar(
-        title: "Data Pengasuh",
-        automaticallyImplyLeading: true,
-        foregroundColor: Colors.white,
-      ),
-      body: FutureBuilder<List<UserResponse>>(
-        future: caretakerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildCaretakerSkeletons();
-          } else if (snapshot.hasError) {
-            return _buildCaretakerEmptyState();
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return _buildCaretakerEmptyState();
-          } else {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: searchController,
-                    onChanged: (string) {},
-                    decoration: AppStyleConfig.inputDecoration.copyWith(
-                      hintText: 'Search',
-                      suffixIcon: const Icon(Icons.search),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppStyleConfig.primaryBackgroundColor,
+        appBar: const CustomAppBar(
+          title: "Data Pengasuh",
+          automaticallyImplyLeading: true,
+          foregroundColor: Colors.white,
+        ),
+        body: FutureBuilder<List<UserResponse>>(
+          future: caretakerFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return _buildCaretakerSkeletons();
+            } else if (snapshot.hasError) {
+              return _buildCaretakerEmptyState();
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return _buildCaretakerEmptyState();
+            } else {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: searchController,
+                      onChanged: (string) {},
+                      decoration: AppStyleConfig.inputDecoration.copyWith(
+                        hintText: 'Search',
+                        suffixIcon: const Icon(Icons.search),
+                      ),
                     ),
                   ),
-                ),
-                Expanded(child: _buildCaretakerMasonryGridView(snapshot.data!)),
-              ],
-            );
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, RoutePaths.caretakerCreateForm);
-        },
-        backgroundColor: AppStyleConfig.secondaryColor,
-        foregroundColor: Colors.white,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add),
+                  Expanded(
+                      child: _buildCaretakerMasonryGridView(snapshot.data!)),
+                ],
+              );
+            }
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, RoutePaths.caretakerCreateForm);
+          },
+          backgroundColor: AppStyleConfig.secondaryColor,
+          foregroundColor: Colors.white,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

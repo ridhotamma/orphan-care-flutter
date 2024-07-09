@@ -17,20 +17,22 @@ class UserAddressDetails extends StatefulWidget {
 class _UserAddressDetailsState extends State<UserAddressDetails> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Basic Information',
-        automaticallyImplyLeading: true,
-      ),
-      body: const Center(
-        child: Text('Basic Information'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: AppStyleConfig.secondaryColor,
-        foregroundColor: Colors.white,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.edit_outlined),
+    return SafeArea(
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          title: 'Basic Information',
+          automaticallyImplyLeading: true,
+        ),
+        body: const Center(
+          child: Text('Basic Information'),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: AppStyleConfig.secondaryColor,
+          foregroundColor: Colors.white,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.edit_outlined),
+        ),
       ),
     );
   }

@@ -34,50 +34,52 @@ class OrphanListState extends State<OrphanList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyleConfig.primaryBackgroundColor,
-      appBar: const CustomAppBar(
-        title: "Data Anak Asuh",
-        automaticallyImplyLeading: true,
-        foregroundColor: Colors.white,
-      ),
-      body: FutureBuilder<List<UserResponse>>(
-        future: orphanFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildOrphanSkeletons();
-          } else if (snapshot.hasError) {
-            return _buildOrphanEmptyState();
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return _buildOrphanEmptyState();
-          } else {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: searchController,
-                    onChanged: (string) {},
-                    decoration: AppStyleConfig.inputDecoration.copyWith(
-                      hintText: 'Search',
-                      suffixIcon: const Icon(Icons.search),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppStyleConfig.primaryBackgroundColor,
+        appBar: const CustomAppBar(
+          title: "Data Anak Asuh",
+          automaticallyImplyLeading: true,
+          foregroundColor: Colors.white,
+        ),
+        body: FutureBuilder<List<UserResponse>>(
+          future: orphanFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return _buildOrphanSkeletons();
+            } else if (snapshot.hasError) {
+              return _buildOrphanEmptyState();
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return _buildOrphanEmptyState();
+            } else {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: searchController,
+                      onChanged: (string) {},
+                      decoration: AppStyleConfig.inputDecoration.copyWith(
+                        hintText: 'Search',
+                        suffixIcon: const Icon(Icons.search),
+                      ),
                     ),
                   ),
-                ),
-                Expanded(child: _buildOrphanMasonryGridView(snapshot.data!)),
-              ],
-            );
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, RoutePaths.orphanCreateForm);
-        },
-        backgroundColor: AppStyleConfig.secondaryColor,
-        foregroundColor: Colors.white,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add),
+                  Expanded(child: _buildOrphanMasonryGridView(snapshot.data!)),
+                ],
+              );
+            }
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, RoutePaths.orphanCreateForm);
+          },
+          backgroundColor: AppStyleConfig.secondaryColor,
+          foregroundColor: Colors.white,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

@@ -115,15 +115,17 @@ class _InventoryCreateFormState extends State<InventoryCreateForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyleConfig.primaryBackgroundColor,
-      appBar: const CustomAppBar(
-        title: "Create Inventory Form",
-        automaticallyImplyLeading: true,
-        foregroundColor: Colors.white,
-      ),
-      body: Column(
-        children: [Expanded(child: _buildForm()), _buildControls()],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppStyleConfig.primaryBackgroundColor,
+        appBar: const CustomAppBar(
+          title: "Create Inventory Form",
+          automaticallyImplyLeading: true,
+          foregroundColor: Colors.white,
+        ),
+        body: Column(
+          children: [Expanded(child: _buildForm()), _buildControls()],
+        ),
       ),
     );
   }

@@ -142,47 +142,49 @@ class _BedroomDetailsState extends State<BedroomDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyleConfig.primaryBackgroundColor,
-      appBar: const CustomAppBar(
-        title: "Detail Kamar",
-        automaticallyImplyLeading: true,
-        foregroundColor: Colors.white,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppStyleConfig.primaryBackgroundColor,
+        appBar: const CustomAppBar(
+          title: "Detail Kamar",
+          automaticallyImplyLeading: true,
+          foregroundColor: Colors.white,
+        ),
+        body: FutureBuilder<BedRoom>(
+          future: _bedroomFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else {
+              return _isEditing
+                  ? Column(
+                      children: [
+                        Expanded(
+                          child: _buildForm(context, snapshot.data!),
+                        ),
+                        _buildControls(context)
+                      ],
+                    )
+                  : _buildDetail(context, snapshot.data!);
+            }
+          },
+        ),
+        floatingActionButton: _isEditing
+            ? null
+            : FloatingActionButton(
+                onPressed: _toggleEditMode,
+                backgroundColor: AppStyleConfig.secondaryColor,
+                foregroundColor: Colors.white,
+                shape: const CircleBorder(),
+                child: Icon(_isEditing ? Icons.check : Icons.edit_outlined),
+              ),
       ),
-      body: FutureBuilder<BedRoom>(
-        future: _bedroomFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else {
-            return _isEditing
-                ? Column(
-                    children: [
-                      Expanded(
-                        child: _buildForm(context, snapshot.data!),
-                      ),
-                      _buildControls(context)
-                    ],
-                  )
-                : _buildDetail(context, snapshot.data!);
-          }
-        },
-      ),
-      floatingActionButton: _isEditing
-          ? null
-          : FloatingActionButton(
-              onPressed: _toggleEditMode,
-              backgroundColor: AppStyleConfig.secondaryColor,
-              foregroundColor: Colors.white,
-              shape: const CircleBorder(),
-              child: Icon(_isEditing ? Icons.check : Icons.edit_outlined),
-            ),
     );
   }
 

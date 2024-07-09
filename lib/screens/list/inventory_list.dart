@@ -111,36 +111,38 @@ class _InventoryListState extends State<InventoryList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyleConfig.primaryBackgroundColor,
-      appBar: const CustomAppBar(
-        title: 'Data Inventory',
-        automaticallyImplyLeading: true,
-      ),
-      body: FutureBuilder<List<Inventory>>(
-        future: _inventoryFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildInventorySkeletons();
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return _buildInventoryEmptyState();
-          } else {
-            return _buildInventoryListView(snapshot.data!);
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.pushNamed(context, RoutePaths.inventoryCreateForm);
-        },
-        backgroundColor: AppStyleConfig.secondaryColor,
-        foregroundColor: Colors.white,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppStyleConfig.primaryBackgroundColor,
+        appBar: const CustomAppBar(
+          title: 'Data Inventory',
+          automaticallyImplyLeading: true,
+        ),
+        body: FutureBuilder<List<Inventory>>(
+          future: _inventoryFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return _buildInventorySkeletons();
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return _buildInventoryEmptyState();
+            } else {
+              return _buildInventoryListView(snapshot.data!);
+            }
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            await Navigator.pushNamed(context, RoutePaths.inventoryCreateForm);
+          },
+          backgroundColor: AppStyleConfig.secondaryColor,
+          foregroundColor: Colors.white,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

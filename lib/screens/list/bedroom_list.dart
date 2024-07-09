@@ -111,36 +111,38 @@ class _BedroomListState extends State<BedroomList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyleConfig.primaryBackgroundColor,
-      appBar: const CustomAppBar(
-        title: 'Data Kamar',
-        automaticallyImplyLeading: true,
-      ),
-      body: FutureBuilder<List<BedRoom>>(
-        future: _bedroomFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildBedRoomSkeletons();
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return _buildBedRoomEmptyState();
-          } else {
-            return _buildBedRoomListView(snapshot.data!);
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.pushNamed(context, RoutePaths.bedroomCreateForm);
-        },
-        backgroundColor: AppStyleConfig.secondaryColor,
-        foregroundColor: Colors.white,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppStyleConfig.primaryBackgroundColor,
+        appBar: const CustomAppBar(
+          title: 'Data Kamar',
+          automaticallyImplyLeading: true,
+        ),
+        body: FutureBuilder<List<BedRoom>>(
+          future: _bedroomFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return _buildBedRoomSkeletons();
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return _buildBedRoomEmptyState();
+            } else {
+              return _buildBedRoomListView(snapshot.data!);
+            }
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            await Navigator.pushNamed(context, RoutePaths.bedroomCreateForm);
+          },
+          backgroundColor: AppStyleConfig.secondaryColor,
+          foregroundColor: Colors.white,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add),
+        ),
       ),
     );
   }

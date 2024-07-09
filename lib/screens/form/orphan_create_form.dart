@@ -265,35 +265,37 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyleConfig.primaryBackgroundColor,
-      appBar: const CustomAppBar(
-        title: 'Tambah Data Anak Asuh',
-        foregroundColor: Colors.white,
-        automaticallyImplyLeading: true,
-      ),
-      body: Column(
-        children: [
-          _buildHorizontalStepper(),
-          Expanded(
-            child: IndexedStack(
-              index: _currentStep,
-              children: _steps.map((step) {
-                switch (step) {
-                  case 'Basic Information':
-                    return _buildBasicInformationForm();
-                  case 'Profile Details':
-                    return _buildProfileForm();
-                  case 'Address':
-                    return _buildAddressForm();
-                  default:
-                    return const SizedBox.shrink();
-                }
-              }).toList(),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppStyleConfig.primaryBackgroundColor,
+        appBar: const CustomAppBar(
+          title: 'Tambah Data Anak Asuh',
+          foregroundColor: Colors.white,
+          automaticallyImplyLeading: true,
+        ),
+        body: Column(
+          children: [
+            _buildHorizontalStepper(),
+            Expanded(
+              child: IndexedStack(
+                index: _currentStep,
+                children: _steps.map((step) {
+                  switch (step) {
+                    case 'Basic Information':
+                      return _buildBasicInformationForm();
+                    case 'Profile Details':
+                      return _buildProfileForm();
+                    case 'Address':
+                      return _buildAddressForm();
+                    default:
+                      return const SizedBox.shrink();
+                  }
+                }).toList(),
+              ),
             ),
-          ),
-          _buildControls(),
-        ],
+            _buildControls(),
+          ],
+        ),
       ),
     );
   }

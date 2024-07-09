@@ -17,20 +17,22 @@ class UserUploadDocuments extends StatefulWidget {
 class _UserUploadDocumentsState extends State<UserUploadDocuments> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Upload Documents',
-        automaticallyImplyLeading: true,
-      ),
-      body: const Center(
-        child: Text('Upload Documents'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: AppStyleConfig.secondaryColor,
-        foregroundColor: Colors.white,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.edit_outlined),
+    return SafeArea(
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          title: 'Upload Documents',
+          automaticallyImplyLeading: true,
+        ),
+        body: const Center(
+          child: Text('Upload Documents'),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: AppStyleConfig.secondaryColor,
+          foregroundColor: Colors.white,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.edit_outlined),
+        ),
       ),
     );
   }

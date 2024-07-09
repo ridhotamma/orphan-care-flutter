@@ -111,15 +111,17 @@ class _BedroomCreateFormState extends State<BedroomCreateForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyleConfig.primaryBackgroundColor,
-      appBar: const CustomAppBar(
-        title: "Create Bedroom Form",
-        automaticallyImplyLeading: true,
-        foregroundColor: Colors.white,
-      ),
-      body: Column(
-        children: [Expanded(child: _buildForm()), _buildControls()],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppStyleConfig.primaryBackgroundColor,
+        appBar: const CustomAppBar(
+          title: "Create Bedroom Form",
+          automaticallyImplyLeading: true,
+          foregroundColor: Colors.white,
+        ),
+        body: Column(
+          children: [Expanded(child: _buildForm()), _buildControls()],
+        ),
       ),
     );
   }

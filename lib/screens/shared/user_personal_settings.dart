@@ -17,20 +17,22 @@ class UserPersonalSettings extends StatefulWidget {
 class _UserPersonalSettingsState extends State<UserPersonalSettings> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'Personal Details',
-        automaticallyImplyLeading: true,
-      ),
-      body: const Center(
-        child: Text('Personal Details'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: AppStyleConfig.secondaryColor,
-        foregroundColor: Colors.white,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.edit_outlined),
+    return SafeArea(
+      child: Scaffold(
+        appBar: const CustomAppBar(
+          title: 'Personal Details',
+          automaticallyImplyLeading: true,
+        ),
+        body: const Center(
+          child: Text('Personal Details'),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: AppStyleConfig.secondaryColor,
+          foregroundColor: Colors.white,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.edit_outlined),
+        ),
       ),
     );
   }
