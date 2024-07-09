@@ -206,28 +206,30 @@ class _DocumentScreenState extends State<DocumentScreen> {
         } else if (fileType == 'pdf') {
           return DocumentPreview(documentUrl: document.url);
         } else {
-          return const Scaffold(
-            appBar: CustomAppBar(
-              title: 'Preview',
-              automaticallyImplyLeading: true,
-            ),
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(Icons.error, size: 45),
-                  SizedBox(height: 10),
-                  Text(
-                    'Preview not available',
-                    style: AppStyleConfig.headlineTextStyle,
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'File not supported',
-                    style: AppStyleConfig.bodyTextStyle,
-                  ),
-                ],
+          return const SafeArea(
+            child: Scaffold(
+              appBar: CustomAppBar(
+                title: 'Preview',
+                automaticallyImplyLeading: true,
+              ),
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error, size: 45),
+                    SizedBox(height: 10),
+                    Text(
+                      'Preview not available',
+                      style: AppStyleConfig.headlineTextStyle,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'File not supported',
+                      style: AppStyleConfig.bodyTextStyle,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
