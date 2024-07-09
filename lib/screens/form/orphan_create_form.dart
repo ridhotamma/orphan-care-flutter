@@ -80,7 +80,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   final List<String> _genders = ['Male', 'Female', 'Other'];
   final List<bool> _selectedGenderToggle = [true, false, false];
 
-  String _selectedGender = 'Male';
+  String _selectedGender = 'MALE';
   bool _isSubmitting = false;
   bool _isUploading = false;
 
