@@ -6,7 +6,17 @@ class UserRequest {
   final List<String> roles;
   final String password;
   final bool active;
-  final Profile profile;
+  final String profilePicture;
+  final String birthday;
+  final String birthPlace;
+  final String joinDate;
+  final String bio;
+  final String bedRoomId;
+  final String fullName;
+  final Map<String, dynamic> address;
+  final Map<String, dynamic> guardian;
+  final String phoneNumber;
+  final String gender;
 
   UserRequest({
     required this.email,
@@ -14,7 +24,17 @@ class UserRequest {
     required this.roles,
     required this.password,
     required this.active,
-    required this.profile,
+    required this.profilePicture,
+    required this.birthday,
+    required this.birthPlace,
+    required this.joinDate,
+    required this.bio,
+    required this.bedRoomId,
+    required this.fullName,
+    required this.address,
+    required this.guardian,
+    required this.phoneNumber,
+    required this.gender,
   });
 
   Map<String, dynamic> toJson() {
@@ -24,19 +44,18 @@ class UserRequest {
       'roles': roles,
       'password': password,
       'active': active,
-      'profile': profile.toJson(),
+      'profilePicture': profilePicture,
+      'birthday': birthday,
+      'birthPlace': birthPlace,
+      'joinDate': joinDate,
+      'bio': bio,
+      'bedRoomId': bedRoomId,
+      'fullName': fullName,
+      'address': address,
+      'guardian': guardian,
+      'phoneNumber': phoneNumber,
+      'gender': gender,
     };
-  }
-
-  static UserRequest empty() {
-    return UserRequest(
-      email: '',
-      username: '',
-      roles: [],
-      password: '',
-      active: false,
-      profile: Profile.empty(),
-    );
   }
 }
 

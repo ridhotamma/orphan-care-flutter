@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/models/address_model.dart';
 import 'package:frontend_flutter/models/bedroom_model.dart';
 import 'package:frontend_flutter/models/guardian_model.dart';
-import 'package:frontend_flutter/models/profile_model.dart';
 import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/services/bedroom_service.dart';
 import 'package:frontend_flutter/services/location_service.dart';
@@ -77,6 +76,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
   final List<String> _genders = ['Male', 'Female', 'Other'];
   final List<bool> _selectedGenderToggle = [true, false, false];
   String _selectedGender = 'Male';
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -202,35 +202,37 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
           guardianTypeId: _selectedGuardianType?.id,
         );
 
-        Profile profile = Profile(
-          profilePicture: '',
-          bio: '',
-          leaveDate: '',
-          fullName: _fullNameController.text,
-          bedRoomId: _selectedBedRoom?.id,
-          bedRoom: _selectedBedRoom,
-          address: address,
-          birthPlace: _birthPlaceController.text,
-          joinDate: _joinDateController.text,
-          birthday: _birthPlaceController.text,
-          phoneNumber: _phoneNumberController.text,
-          guardian: guardian,
-          gender: _selectedGender,
-        );
-
         UserRequest userRequest = UserRequest(
-          profile: profile,
           email: _emailController.text,
           username: _usernameController.text,
           roles: ['ROLE_USER'],
           password: _passwordController.text,
+          profilePicture: '',
+          bio: '',
+          fullName: _fullNameController.text,
+          bedRoomId: _selectedBedRoom?.id ?? '',
+          address: address.toJson(),
+          birthPlace: _birthPlaceController.text,
+          joinDate: _joinDateController.text,
+          birthday: _birthPlaceController.text,
+          phoneNumber: _phoneNumberController.text,
+          guardian: guardian.toJson(),
+          gender: _selectedGender,
           active: true,
         );
+
+        setState(() {
+          _isSubmitting = true;
+        });
 
         try {
           UserService(context: context).createUser(userRequest.toJson());
         } catch (e) {
           ResponseHandlerUtils.onSubmitFailed(context, "Failed to Create User");
+        } finally {
+          setState(() {
+            _isSubmitting = false;
+          });
         }
       }
     }
@@ -352,15 +354,29 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
           SizedBox(
             width: 100.0,
             child: ElevatedButton(
-              onPressed: _onStepContinue,
+              onPressed: _isSubmitting ? null : _onStepContinue,
               style: AppStyleConfig.secondaryButtonStyle,
-              child:
-                  Text(_currentStep == _steps.length - 1 ? 'Submit' : 'Next'),
+              child: _buildLoaderButton(),
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildLoaderButton() {
+    if (_isSubmitting) {
+      return const SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator(
+          color: Colors.white,
+          strokeWidth: 2.0,
+        ),
+      );
+    } else {
+      return Text(_currentStep == _steps.length - 1 ? 'Submit' : 'Next');
+    }
   }
 
   Widget _buildBasicInformationForm() {
@@ -677,6 +693,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
                 OptionalTextFormField(
                   controller: _streetController,
                   hintText: 'Street',
+                  maxLines: null,
                 ),
                 const SizedBox(height: 20.0),
                 OptionalTextFormField(

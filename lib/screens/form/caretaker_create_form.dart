@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend_flutter/models/address_model.dart';
 import 'package:frontend_flutter/models/bedroom_model.dart';
 import 'package:frontend_flutter/models/guardian_model.dart';
-import 'package:frontend_flutter/models/profile_model.dart';
 import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/services/bedroom_service.dart';
 import 'package:frontend_flutter/services/location_service.dart';
@@ -194,36 +193,28 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
         );
 
         Guardian guardian = Guardian(
-          id: '',
-          phoneNumber: '',
           address: address,
           fullName: _guardianFullNameController.text,
           guardianType: _selectedGuardianType,
           guardianTypeId: _selectedGuardianType?.id,
         );
 
-        Profile profile = Profile(
+        UserRequest userRequest = UserRequest(
+          email: _emailController.text,
+          username: _usernameController.text,
+          roles: ['ROLE_ADMIN'],
+          password: _passwordController.text,
           profilePicture: '',
           bio: '',
-          leaveDate: '',
           fullName: _fullNameController.text,
-          bedRoomId: _selectedBedRoom?.id,
-          bedRoom: _selectedBedRoom,
-          address: address,
+          bedRoomId: _selectedBedRoom?.id ?? '',
+          address: address.toJson(),
           birthPlace: _birthPlaceController.text,
           joinDate: _joinDateController.text,
           birthday: _birthPlaceController.text,
           phoneNumber: _phoneNumberController.text,
-          guardian: guardian,
+          guardian: guardian.toJson(),
           gender: _selectedGender,
-        );
-
-        UserRequest userRequest = UserRequest(
-          profile: profile,
-          email: _emailController.text,
-          username: _usernameController.text,
-          roles: ['ROLE_USER'],
-          password: _passwordController.text,
           active: true,
         );
 
@@ -677,6 +668,7 @@ class _CaretakerCreateFormState extends State<CaretakerCreateForm> {
                 OptionalTextFormField(
                   controller: _streetController,
                   hintText: 'Street',
+                  maxLines: null,
                 ),
                 const SizedBox(height: 20.0),
                 OptionalTextFormField(

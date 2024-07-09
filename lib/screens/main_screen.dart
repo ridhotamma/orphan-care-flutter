@@ -26,6 +26,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  bool _isDisconnected = false;
+
   final ConnectivityService _connectivityService = ConnectivityService();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   late StreamSubscription _eventBusSubscription;
@@ -43,8 +45,16 @@ class _MainScreenState extends State<MainScreen> {
         .listen((ConnectivityResult result) {
       if (result == ConnectivityResult.none) {
         _showSnackBar('No internet connection', 'disconnect');
-      } else if (result == ConnectivityResult.wifi ||
-          result == ConnectivityResult.mobile) {
+
+        setState(() {
+          _isDisconnected = true;
+        });
+      } else if (_isDisconnected &&
+          (result == ConnectivityResult.wifi ||
+              result == ConnectivityResult.mobile)) {
+        setState(() {
+          _isDisconnected = false;
+        });
         _refreshData();
         _showSnackBar('Connected to the internet', 'connect');
       }

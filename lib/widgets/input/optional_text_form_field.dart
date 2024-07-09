@@ -5,12 +5,14 @@ class OptionalTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final TextInputType? keyboardType;
+  final int? maxLines;
 
   const OptionalTextFormField({
     super.key,
     required this.controller,
     required this.hintText,
     this.keyboardType,
+    this.maxLines,
   });
 
   @override
@@ -23,6 +25,7 @@ class OptionalTextFormField extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
       ),
       keyboardType: keyboardType,
+      maxLines: maxLines ?? 1,
     );
   }
 }
