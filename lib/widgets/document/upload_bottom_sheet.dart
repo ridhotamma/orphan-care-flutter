@@ -82,7 +82,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
           (data) {
             if (mounted) {
               Navigator.of(context).pop();
-              ResponseHandlerUtils.onSubmitFailed(
+              ResponseHandlerUtils.onSubmitSuccess(
                   context, 'Document created succesfuly');
             }
           },
@@ -166,154 +166,156 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Material(
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          width: double.infinity,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Upload Document',
-                style: AppStyleConfig.headlineTextStyle,
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: _fileUrl != null &&
-                                _fileType != null &&
-                                _fileName != null
-                            ? _buildUploadedItem()
-                            : Container(
-                                padding: const EdgeInsets.all(16.0),
-                                width: double.infinity,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: _isUploading
-                                    ? const Center(
-                                        child: CircularProgressIndicator(
-                                          color: AppStyleConfig.accentColor,
+      child: Scaffold(
+        body: Material(
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            width: double.infinity,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Upload Document',
+                  style: AppStyleConfig.headlineTextStyle,
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: _fileUrl != null &&
+                                  _fileType != null &&
+                                  _fileName != null
+                              ? _buildUploadedItem()
+                              : Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  width: double.infinity,
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: _isUploading
+                                      ? const Center(
+                                          child: CircularProgressIndicator(
+                                            color: AppStyleConfig.accentColor,
+                                          ),
+                                        )
+                                      : Icon(
+                                          Icons.image,
+                                          size: 100,
+                                          color: Colors.grey[400],
                                         ),
-                                      )
-                                    : Icon(
-                                        Icons.image,
-                                        size: 100,
-                                        color: Colors.grey[400],
-                                      ),
-                              ),
-                      ),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () => _pickFile(),
-                          style: AppStyleConfig.primaryButtonStyle,
-                          label: const Text(
-                            "Upload File",
-                          ),
-                          icon: const Icon(Icons.upload_file),
+                                ),
                         ),
-                      ),
-                      const SizedBox(height: 40),
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            RequiredTextFormField(
-                              controller: _fileNameController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'File name cannot be empty';
-                                }
-                                return null;
-                              },
-                              hintText: 'File name',
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () => _pickFile(),
+                            style: AppStyleConfig.primaryButtonStyle,
+                            label: const Text(
+                              "Upload File",
                             ),
-                            const SizedBox(height: 20),
-                            DropdownSearch<DocumentType>(
-                              itemAsString: (item) => item.name,
-                              items: _fileTypes,
-                              validator: (value) {
-                                if (value == null) {
-                                  return 'Please select file type';
-                                }
-                                return null;
-                              },
-                              dropdownDecoratorProps: DropDownDecoratorProps(
-                                dropdownSearchDecoration:
-                                    AppStyleConfig.inputDecoration.copyWith(
-                                  labelText: 'File Type *',
-                                  hintText: 'Select File Type',
+                            icon: const Icon(Icons.upload_file),
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              RequiredTextFormField(
+                                controller: _fileNameController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'File name cannot be empty';
+                                  }
+                                  return null;
+                                },
+                                hintText: 'File name',
+                              ),
+                              const SizedBox(height: 20),
+                              DropdownSearch<DocumentType>(
+                                itemAsString: (item) => item.name,
+                                items: _fileTypes,
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Please select file type';
+                                  }
+                                  return null;
+                                },
+                                dropdownDecoratorProps: DropDownDecoratorProps(
+                                  dropdownSearchDecoration:
+                                      AppStyleConfig.inputDecoration.copyWith(
+                                    labelText: 'File Type *',
+                                    hintText: 'Select File Type',
+                                  ),
+                                ),
+                                selectedItem: _selectedDocumentType,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedDocumentType = value;
+                                  });
+                                },
+                                popupProps: const PopupProps.menu(
+                                  constraints: BoxConstraints(maxHeight: 150),
                                 ),
                               ),
-                              selectedItem: _selectedDocumentType,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedDocumentType = value;
-                                });
-                              },
-                              popupProps: const PopupProps.menu(
-                                constraints: BoxConstraints(maxHeight: 150),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () =>
-                          _isSubmitting ? null : Navigator.of(context).pop(),
-                      style: AppStyleConfig.defaultButtonStyle,
-                      child: _isSubmitting
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: AppStyleConfig.accentColor,
-                                strokeWidth: 2.0,
-                              ),
-                            )
-                          : const Text("Cancel"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () =>
+                            _isSubmitting ? null : Navigator.of(context).pop(),
+                        style: AppStyleConfig.defaultButtonStyle,
+                        child: _isSubmitting
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: AppStyleConfig.accentColor,
+                                  strokeWidth: 2.0,
+                                ),
+                              )
+                            : const Text("Cancel"),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 8.0,
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => _onSubmit(),
-                      style: AppStyleConfig.secondaryButtonStyle,
-                      child: _isSubmitting
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                color: AppStyleConfig.accentColor,
-                                strokeWidth: 2.0,
-                              ),
-                            )
-                          : const Text("Submit"),
+                    const SizedBox(
+                      width: 8.0,
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => _onSubmit(),
+                        style: AppStyleConfig.secondaryButtonStyle,
+                        child: _isSubmitting
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: AppStyleConfig.accentColor,
+                                  strokeWidth: 2.0,
+                                ),
+                              )
+                            : const Text("Submit"),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

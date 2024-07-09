@@ -1,3 +1,5 @@
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/models/address_model.dart';
 import 'package:frontend_flutter/models/bedroom_model.dart';
@@ -6,6 +8,7 @@ import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/services/bedroom_service.dart';
 import 'package:frontend_flutter/services/location_service.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:frontend_flutter/services/upload_service.dart';
 import 'package:frontend_flutter/services/user_service.dart';
 import 'package:frontend_flutter/utils/response_handler_util.dart';
 import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
@@ -46,6 +49,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
 
   GuardianType? _selectedGuardianType;
   BedRoom? _selectedBedRoom;
+  String? _profilePictureUrl;
 
   final _addressFormKey = GlobalKey<FormState>();
   final _streetController = TextEditingController();
@@ -75,8 +79,10 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
 
   final List<String> _genders = ['Male', 'Female', 'Other'];
   final List<bool> _selectedGenderToggle = [true, false, false];
+
   String _selectedGender = 'Male';
   bool _isSubmitting = false;
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -207,14 +213,14 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
           username: _usernameController.text,
           roles: ['ROLE_USER'],
           password: _passwordController.text,
-          profilePicture: '',
+          profilePicture: _profilePictureUrl ?? '',
           bio: '',
           fullName: _fullNameController.text,
           bedRoomId: _selectedBedRoom?.id ?? '',
           address: address.toJson(),
           birthPlace: _birthPlaceController.text,
           joinDate: _joinDateController.text,
-          birthday: _birthPlaceController.text,
+          birthday: _birthdayController.text,
           phoneNumber: _phoneNumberController.text,
           guardian: guardian.toJson(),
           gender: _selectedGender,
@@ -261,6 +267,59 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
     if (picked != null) {
       setState(() {
         controller.text = _dateFormat.format(picked);
+      });
+    }
+  }
+
+  void _pickFile() async {
+    setState(() {
+      _isUploading = true;
+    });
+
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
+        dialogTitle: 'Pick file from directory',
+      );
+
+      if (result != null) {
+        final fileName = result.files.single.name;
+        final fileBytes = result.files.single.bytes;
+
+        if (mounted) {
+          if (kIsWeb && fileBytes != null) {
+            // Use file bytes for web
+            UploadService(context: context)
+                .uploadFileBytes(fileBytes, fileName)
+                .then((data) {
+              setState(() {
+                _profilePictureUrl = data['url'];
+              });
+            }).catchError((error) {
+              ResponseHandlerUtils.onSubmitFailed(context, error.toString());
+            });
+          } else if (result.files.single.path != null) {
+            // Use file path for mobile
+            UploadService(context: context)
+                .uploadFile(result.files.single.path!)
+                .then((data) {
+              setState(() {
+                _profilePictureUrl = data['url'];
+              });
+            }).catchError((error) {
+              ResponseHandlerUtils.onSubmitFailed(context, error.toString());
+            });
+          }
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ResponseHandlerUtils.onSubmitFailed(context, e.toString());
+      }
+    } finally {
+      setState(() {
+        _isUploading = false;
       });
     }
   }
@@ -444,6 +503,7 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
       padding: const EdgeInsets.all(16.0),
       child: ListView(
         children: [
+          _buildUploadProfilePicture(),
           Form(
             key: _profileFormKey,
             child: Column(
@@ -597,6 +657,56 @@ class _OrphanCreateFormState extends State<OrphanCreateForm> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildUploadProfilePicture() {
+    return Column(
+      children: [
+        _profilePictureUrl != null
+            ? CircleAvatar(
+                radius: 80.0,
+                backgroundColor: AppStyleConfig.accentColor,
+                backgroundImage: NetworkImage(_profilePictureUrl ?? ''),
+              )
+            : Container(
+                width: 160,
+                height: 160,
+                padding: const EdgeInsets.all(8.0),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppStyleConfig.accentColor,
+                ),
+                child: const Icon(
+                  size: 80,
+                  Icons.person_outline,
+                  color: Colors.white,
+                ),
+              ),
+        const SizedBox(
+          height: 20,
+        ),
+        OutlinedButton.icon(
+          onPressed: _pickFile,
+          label: _isUploading
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    color: AppStyleConfig.primaryColor,
+                    strokeWidth: 2.0,
+                  ),
+                )
+              : const Text(
+                  'Upload photo',
+                  style: TextStyle(color: Colors.black),
+                ),
+          icon: const Icon(Icons.upload_outlined),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+      ],
     );
   }
 
