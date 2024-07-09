@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/events/event_bus.dart';
+import 'package:frontend_flutter/events/events.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
 import 'package:frontend_flutter/services/connectivity_service.dart';
 import 'package:frontend_flutter/services/analytics_service.dart';
@@ -26,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   final ConnectivityService _connectivityService = ConnectivityService();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
-
+  late StreamSubscription _eventBusSubscription;
   late Future<AnalyticData> _analyticsData;
   late Future<UserResponse> _currentUser;
   late Future<List<Document>> _documentsFuture;
@@ -34,6 +36,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+
     _fetchData();
 
     _connectivitySubscription = _connectivityService.connectivityStream
@@ -46,25 +49,27 @@ class _MainScreenState extends State<MainScreen> {
         _showSnackBar('Connected to the internet', 'connect');
       }
     });
+
+    _eventBusSubscription = eventBus.on<DocumentChangedEvent>().listen((event) {
+      _refreshData();
+    });
   }
 
   Future<void> _fetchData() async {
+    final analyticDataFuture =
+        AnalyticsService(context: context).fetchHomePageAnalytics();
+    final currentUserFuture = UserService(context: context).fetchCurrentUser();
+    final documentsFuture =
+        DocumentService(context: context).fetchCurrentUserDocuments();
+
     setState(() {
-      _analyticsData = AnalyticsService(
-        context: context,
-      ).fetchHomePageAnalytics();
+      _analyticsData = analyticDataFuture;
+      _currentUser = currentUserFuture;
+      _documentsFuture = documentsFuture;
+    });
 
-      _currentUser = UserService(
-        context: context,
-      ).fetchCurrentUser();
-
-      _documentsFuture = DocumentService(
-        context: context,
-      ).fetchCurrentUserDocuments();
-
-      _currentUser.then((data) {
-        Provider.of<AuthProvider>(context, listen: false).setUserId(data.id);
-      });
+    currentUserFuture.then((data) {
+      Provider.of<AuthProvider>(context, listen: false).setUserId(data.id);
     });
   }
 
@@ -106,6 +111,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void dispose() {
     _connectivitySubscription.cancel();
+    _eventBusSubscription.cancel();
     super.dispose();
   }
 

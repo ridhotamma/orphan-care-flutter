@@ -228,6 +228,7 @@ class SettingsScreen extends StatelessWidget {
   ) {
     showModalBottomSheet(
       context: context,
+      useSafeArea: true,
       builder: (BuildContext context) =>
           _buildLogoutBottomSheetContent(context, localization),
     );

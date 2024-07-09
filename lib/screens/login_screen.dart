@@ -59,12 +59,8 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       Response response =
           await apiService.post('/auth/login', loginRequest.toJson());
-      if (response.statusCode == 200) {
-        String? jwtToken = jsonDecode(response.body)['jwt'];
-        onLoginSuccess(jwtToken);
-      } else {
-        onLoginFailed(jsonDecode(response.body)['message']);
-      }
+      String? jwtToken = jsonDecode(response.body)['jwt'];
+      onLoginSuccess(jwtToken);
     } catch (e) {
       onLoginFailed('Failed to connect');
     } finally {

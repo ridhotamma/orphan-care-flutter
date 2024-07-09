@@ -33,6 +33,8 @@ class ApiService {
       case 200:
       case 201:
         return response;
+      case 204:
+        return response;
       case 400:
         throw BadRequestException('Bad Request: ${response.body}');
       case 401:

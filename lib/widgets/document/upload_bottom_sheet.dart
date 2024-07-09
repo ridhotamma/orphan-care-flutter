@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/events/event_bus.dart';
+import 'package:frontend_flutter/events/events.dart';
 import 'package:frontend_flutter/models/document_model.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
 import 'package:frontend_flutter/services/document_service.dart';
@@ -80,6 +82,8 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
           (data) {
             if (mounted) {
               Navigator.of(context).pop();
+              ResponseHandlerUtils.onSubmitFailed(
+                  context, 'Document created succesfuly');
             }
           },
         );
@@ -91,6 +95,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
         setState(() {
           _isSubmitting = false;
         });
+        eventBus.fire(DocumentChangedEvent());
       }
     }
   }
@@ -98,7 +103,6 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
   Future<void> _pickFile() async {
     try {
       setState(() {
-        _isUploading = true;
         _fileType = null;
         _fileUrl = null;
         _fileName = null;
@@ -119,6 +123,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
           _fileName = fileName;
           _fileNameController.text = fileName;
           _fileType = fileExtension;
+          _isUploading = true;
         });
 
         if (mounted) {
@@ -224,7 +229,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
                           RequiredTextFormField(
                             controller: _fileNameController,
                             validator: (value) {
-                              if (value == null) {
+                              if (value == null || value.isEmpty) {
                                 return 'File name cannot be empty';
                               }
                               return null;

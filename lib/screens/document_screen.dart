@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/events/event_bus.dart';
+import 'package:frontend_flutter/events/events.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
+import 'package:frontend_flutter/services/document_service.dart';
+import 'package:frontend_flutter/utils/response_handler_util.dart';
 import 'package:frontend_flutter/widgets/document/document_item.dart';
 import 'package:frontend_flutter/widgets/document/document_preview.dart';
 import 'package:frontend_flutter/widgets/document/image_preview.dart';
@@ -13,13 +17,20 @@ import 'package:frontend_flutter/widgets/skeleton/document_grid_skeleton.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 
-class DocumentScreen extends StatelessWidget {
+class DocumentScreen extends StatefulWidget {
   final Future<List<Document>> documentsFuture;
 
   const DocumentScreen({
     required this.documentsFuture,
     super.key,
   });
+
+  @override
+  State<DocumentScreen> createState() => _DocumentScreenState();
+}
+
+class _DocumentScreenState extends State<DocumentScreen> {
+  bool isDeleting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +41,12 @@ class DocumentScreen extends StatelessWidget {
       backgroundColor: AppStyleConfig.primaryBackgroundColor,
       appBar: const CustomAppBar(title: 'Documents'),
       body: FutureBuilder<List<Document>>(
-        future: documentsFuture,
+        future: widget.documentsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const DocumentGridSkeleton();
           } else if (snapshot.hasError) {
-            return const Text('Error');
+            return const Center(child: Text('Error'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return _buildUploadSection(context, userId);
           } else {
@@ -61,15 +72,7 @@ class DocumentScreen extends StatelessWidget {
           SizedBox(
             width: 160,
             child: ElevatedButton(
-              onPressed: () {
-                showCupertinoModalBottomSheet(
-                  context: context,
-                  builder: (context) => UploadBottomSheet(
-                    userId: userId,
-                  ),
-                  expand: true,
-                );
-              },
+              onPressed: () => _showUploadBottomSheet(context, userId),
               style: AppStyleConfig.secondaryButtonStyle,
               child: const Text("Upload"),
             ),
@@ -79,7 +82,7 @@ class DocumentScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDocumentsMasonryGrid(List<Document> data, String userId) {
+  Widget _buildDocumentsMasonryGrid(List<Document> documents, String userId) {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -87,48 +90,149 @@ class DocumentScreen extends StatelessWidget {
           crossAxisCount: 2,
           mainAxisSpacing: 5,
           crossAxisSpacing: 5,
-          itemCount: data.length + 1,
+          itemCount: documents.length + 1,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (BuildContext context, int index) {
-            if (index < data.length) {
+          itemBuilder: (context, index) {
+            if (index < documents.length) {
               return DocumentItem(
-                document: data[index],
-                onTap: () {
-                  final fileType = data[index].url.split('.').last;
-                  final List<String> imageExtensions = ['jpg', 'jpeg', 'png'];
-                  showCupertinoModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      if (imageExtensions.contains(fileType)) {
-                        return ImagePreview(imageUrl: data[index].url);
-                      } else if (fileType == 'pdf') {
-                        return DocumentPreview(documentUrl: data[index].url);
-                      } else {
-                        return const Center(
-                          child: Text('Preview not available'),
-                        );
-                      }
-                    },
-                  );
-                },
+                document: documents[index],
+                onLongPress: () =>
+                    _showDeleteConfirmation(context, documents[index]),
+                onTap: () => _showDocumentPreview(context, documents[index]),
               );
             } else {
               return UploadCard(
-                onTap: () {
-                  showCupertinoModalBottomSheet(
-                    context: context,
-                    builder: (context) => UploadBottomSheet(
-                      userId: userId,
-                    ),
-                    expand: true,
-                  );
-                },
+                onTap: () => _showUploadBottomSheet(context, userId),
               );
             }
           },
         ),
       ),
+    );
+  }
+
+  void _showUploadBottomSheet(BuildContext context, String userId) {
+    showCupertinoModalBottomSheet(
+      context: context,
+      builder: (context) => UploadBottomSheet(userId: userId),
+      expand: true,
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, Document document) {
+    final String userId =
+        Provider.of<AuthProvider>(context, listen: false).userId ?? '';
+
+    void deleteDocument() async {
+      setState(() {
+        isDeleting = true;
+      });
+
+      try {
+        await DocumentService(context: context)
+            .deleteUserDocument(userId, document.id);
+
+        if (context.mounted) {
+          ResponseHandlerUtils.onSubmitSuccess(
+              context, 'Document deleted successfully');
+          eventBus.fire(DocumentChangedEvent());
+          Navigator.of(context).pop();
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ResponseHandlerUtils.onSubmitFailed(context, e.toString());
+        }
+      } finally {
+        setState(() {
+          isDeleting = false;
+        });
+      }
+    }
+
+    showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(
+                  'Delete ${document.name}?',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: const Text('Deleted data cannot be restored'),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      deleteDocument();
+                    },
+                    child: const Text(
+                      'Yes, delete',
+                      style: TextStyle(color: AppStyleConfig.errorColor),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDocumentPreview(BuildContext context, Document document) {
+    final fileType = document.url.split('.').last;
+    final List<String> imageExtensions = ['jpg', 'jpeg', 'png'];
+
+    showCupertinoModalBottomSheet(
+      context: context,
+      builder: (context) {
+        if (imageExtensions.contains(fileType)) {
+          return ImagePreview(imageUrl: document.url);
+        } else if (fileType == 'pdf') {
+          return DocumentPreview(documentUrl: document.url);
+        } else {
+          return const Scaffold(
+            appBar: CustomAppBar(
+              title: 'Preview',
+              automaticallyImplyLeading: true,
+            ),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(Icons.error, size: 45),
+                  SizedBox(height: 10),
+                  Text(
+                    'Preview not available',
+                    style: AppStyleConfig.headlineTextStyle,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'File not supported',
+                    style: AppStyleConfig.bodyTextStyle,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }
