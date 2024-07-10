@@ -198,7 +198,16 @@ class _DocumentScreenState extends State<DocumentScreen> {
 
   void _showDocumentPreview(BuildContext context, Document document) {
     final fileType = document.url.split('.').last;
-    final List<String> imageExtensions = ['jpg', 'jpeg', 'png'];
+    final List<String> imageExtensions = [
+      'jpg',
+      'jpeg',
+      'png',
+      'webp',
+      'gif',
+      'bmp',
+      'tiff',
+      'heic'
+    ];
 
     showCupertinoModalBottomSheet(
       context: context,

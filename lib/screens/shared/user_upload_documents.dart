@@ -121,7 +121,16 @@ class _UserUploadDocumentsState extends State<UserUploadDocuments> {
 
   void _showDocumentPreview(BuildContext context, Document document) {
     final fileType = document.url.split('.').last;
-    final List<String> imageExtensions = ['jpg', 'jpeg', 'png'];
+    final List<String> imageExtensions = [
+      'jpg',
+      'jpeg',
+      'png',
+      'webp',
+      'gif',
+      'bmp',
+      'tiff',
+      'heic'
+    ];
 
     showCupertinoModalBottomSheet(
       context: context,
@@ -270,6 +279,8 @@ class _UserUploadDocumentsState extends State<UserUploadDocuments> {
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
               subtitle: Text(document.documentType.name),
               onTap: () {
