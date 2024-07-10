@@ -87,8 +87,7 @@ class _InventoryListState extends State<InventoryList> {
   Future<void> _showLoadingDialog(BuildContext context) {
     return showDialog<void>(
       context: context,
-      barrierDismissible:
-          false, // Prevents closing the dialog by tapping outside
+      barrierDismissible: false,
       builder: (context) {
         return const AlertDialog(
           content: Row(

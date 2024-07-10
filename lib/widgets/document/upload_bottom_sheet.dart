@@ -81,7 +81,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
             .then(
           (data) {
             if (mounted) {
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(true);
               ResponseHandlerUtils.onSubmitSuccess(
                   context, 'Document created succesfuly');
             }
