@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/events/event_bus.dart';
 import 'package:frontend_flutter/events/events.dart';
@@ -119,10 +118,6 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  void _onWillPop(_) async {
-    SystemNavigator.pop();
-  }
-
   @override
   void dispose() {
     _connectivitySubscription.cancel();
@@ -143,40 +138,37 @@ class _MainScreenState extends State<MainScreen> {
       ),
     ];
 
-    return PopScope(
-      onPopInvoked: _onWillPop,
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: AppStyleConfig.primaryBackgroundColor,
-          body: RefreshIndicator(
-            onRefresh: _refreshData,
-            child: Builder(
-              builder: (BuildContext context) {
-                return screens[_currentIndex];
-              },
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: AppStyleConfig.primaryBackgroundColor,
+        body: RefreshIndicator(
+          onRefresh: _refreshData,
+          child: Builder(
+            builder: (BuildContext context) {
+              return screens[_currentIndex];
+            },
+          ),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: AppStyleConfig.primaryColor,
+          currentIndex: _currentIndex,
+          onTap: _onTabTapped,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white.withOpacity(0.6),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
             ),
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            backgroundColor: AppStyleConfig.primaryColor,
-            currentIndex: _currentIndex,
-            onTap: _onTabTapped,
-            selectedItemColor: Colors.white,
-            unselectedItemColor: Colors.white.withOpacity(0.6),
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.edit_document),
-                label: 'Documents',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                label: 'Settings',
-              ),
-            ],
-          ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.edit_document),
+              label: 'Documents',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
         ),
       ),
     );

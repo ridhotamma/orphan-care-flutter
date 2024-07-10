@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_flutter/main.dart';
+import 'package:frontend_flutter/providers/auth_provider.dart';
 import 'package:frontend_flutter/screens/details/bedroom_details.dart';
 import 'package:frontend_flutter/screens/details/inventory_details.dart';
 import 'package:frontend_flutter/screens/details/user_details.dart';
@@ -17,6 +19,7 @@ import 'package:frontend_flutter/screens/shared/user_basic_information.dart';
 import 'package:frontend_flutter/screens/shared/user_personal_settings.dart';
 import 'package:frontend_flutter/screens/shared/user_profile_details.dart';
 import 'package:frontend_flutter/screens/shared/user_upload_documents.dart';
+import 'package:provider/provider.dart';
 
 class RoutePaths {
   static const String login = '/';
@@ -47,8 +50,14 @@ class RoutePaths {
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    final authProvider =
+        Provider.of<AuthProvider>(navigatorKey.currentContext!, listen: false);
+
     switch (settings.name) {
       case RoutePaths.login:
+        if (authProvider.hasToken) {
+          return MaterialPageRoute(builder: (_) => const MainScreen());
+        }
         return MaterialPageRoute(builder: (_) => const LoginScreen());
 
       case RoutePaths.main:

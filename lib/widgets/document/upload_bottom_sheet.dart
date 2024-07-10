@@ -6,12 +6,10 @@ import 'package:frontend_flutter/config/app_style_config.dart';
 import 'package:frontend_flutter/events/event_bus.dart';
 import 'package:frontend_flutter/events/events.dart';
 import 'package:frontend_flutter/models/document_model.dart';
-import 'package:frontend_flutter/providers/auth_provider.dart';
 import 'package:frontend_flutter/services/document_service.dart';
 import 'package:frontend_flutter/services/upload_service.dart';
 import 'package:frontend_flutter/utils/response_handler_util.dart';
 import 'package:frontend_flutter/widgets/input/required_text_form_field.dart';
-import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class UploadBottomSheet extends StatefulWidget {
@@ -67,9 +65,6 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
       });
 
       try {
-        String userId =
-            Provider.of<AuthProvider>(context, listen: false).userId ?? '';
-
         final data = DocumentRequest(
           name: _fileNameController.text,
           documentTypeId: _selectedDocumentType!.id,
@@ -77,7 +72,7 @@ class _UploadBottomSheetState extends State<UploadBottomSheet> {
         ).toJson();
 
         await DocumentService(context: context)
-            .createUserDocument(userId, data)
+            .createUserDocument(widget.userId, data)
             .then(
           (data) {
             if (mounted) {

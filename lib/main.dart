@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:frontend_flutter/providers/localization_provider.dart';
 import 'package:frontend_flutter/providers/auth_provider.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
@@ -47,6 +49,7 @@ class OrphanCareApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       initialRoute: authProvider.hasToken ? RoutePaths.main : RoutePaths.login,
+      navigatorKey: navigatorKey,
       onGenerateRoute: AppRouter.generateRoute,
     );
   }
