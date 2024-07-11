@@ -94,16 +94,17 @@ class _DocumentScreenState extends State<DocumentScreen> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            if (index < documents.length) {
-              return DocumentItem(
-                document: documents[index],
-                onLongPress: () =>
-                    _showDeleteConfirmation(context, documents[index]),
-                onTap: () => _showDocumentPreview(context, documents[index]),
-              );
-            } else {
+            if (index == 0) {
               return UploadCard(
                 onTap: () => _showUploadBottomSheet(context, userId),
+              );
+            } else {
+              return DocumentItem(
+                document: documents[index - 1],
+                onLongPress: () =>
+                    _showDeleteConfirmation(context, documents[index - 1]),
+                onTap: () =>
+                    _showDocumentPreview(context, documents[index - 1]),
               );
             }
           },

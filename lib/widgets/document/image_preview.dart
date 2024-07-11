@@ -76,8 +76,7 @@ class ImagePreview extends StatelessWidget {
 
     return Align(
       alignment: AlignmentDirectional.bottomEnd,
-      child: Container(
-        decoration: const BoxDecoration(color: Colors.black),
+      child: SizedBox(
         width: double.infinity,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
