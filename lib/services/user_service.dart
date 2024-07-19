@@ -23,6 +23,16 @@ class UserService {
     return UserResponse.empty();
   }
 
+  Future<UserResponse> fetchUserDetails(String userId) async {
+    try {
+      final response = await _apiService.get('/admin/users/$userId');
+      return _handleUserResponse(response);
+    } catch (e) {
+      _handleError(e);
+    }
+    return UserResponse.empty();
+  }
+
   Future<List<GuardianType>> fetchGuardianTypes() async {
     try {
       final response = await _apiService.get('/admin/guardian-types');

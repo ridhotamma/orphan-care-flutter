@@ -1,12 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_flutter/config/app_style_config.dart';
+import 'package:frontend_flutter/models/user_model.dart';
 import 'package:frontend_flutter/routes/routes.dart';
+import 'package:frontend_flutter/services/user_service.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
 
-class UserDetails extends StatelessWidget {
+class UserDetails extends StatefulWidget {
   final String id;
 
   const UserDetails({super.key, required this.id});
+
+  @override
+  State<UserDetails> createState() => _UserDetailsState();
+}
+
+class _UserDetailsState extends State<UserDetails> {
+  UserResponse? _userDetails;
+
+  void _fetchUserDetails() {
+    UserService(context: context).fetchUserDetails(widget.id).then((data) {
+      setState(() {
+        _userDetails = data;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserDetails();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,10 +89,11 @@ class UserDetails extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 90.0),
-            const Center(
+            Center(
               child: Text(
-                'Jane Smith',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                _userDetails?.profile.fullName ?? '',
+                style: const TextStyle(
+                    fontSize: 18.0, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: 10.0),
@@ -157,7 +181,7 @@ class UserDetails extends StatelessWidget {
             Navigator.pushNamed(
               context,
               RoutePaths.userBasicInformation,
-              arguments: id,
+              arguments: widget.id,
             );
           },
         ),
@@ -168,7 +192,7 @@ class UserDetails extends StatelessWidget {
             Navigator.pushNamed(
               context,
               RoutePaths.userProfileDetails,
-              arguments: id,
+              arguments: widget.id,
             );
           },
         ),
@@ -179,7 +203,7 @@ class UserDetails extends StatelessWidget {
             Navigator.pushNamed(
               context,
               RoutePaths.userAddressDetails,
-              arguments: id,
+              arguments: widget.id,
             );
           },
         ),
@@ -190,7 +214,7 @@ class UserDetails extends StatelessWidget {
             Navigator.pushNamed(
               context,
               RoutePaths.userUploadDocuments,
-              arguments: id,
+              arguments: widget.id,
             );
           },
         ),
@@ -201,7 +225,7 @@ class UserDetails extends StatelessWidget {
             Navigator.pushNamed(
               context,
               RoutePaths.userPersonalSettings,
-              arguments: id,
+              arguments: widget.id,
             );
           },
         ),
