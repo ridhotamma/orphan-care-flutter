@@ -9,7 +9,6 @@ import 'package:frontend_flutter/widgets/document/document_item.dart';
 import 'package:frontend_flutter/widgets/document/document_preview.dart';
 import 'package:frontend_flutter/widgets/document/image_preview.dart';
 import 'package:frontend_flutter/widgets/document/upload_bottom_sheet.dart';
-import 'package:frontend_flutter/widgets/document/upload_card.dart';
 import 'package:frontend_flutter/models/document_model.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:frontend_flutter/widgets/shared/custom_app_bar.dart';
@@ -54,6 +53,15 @@ class _DocumentScreenState extends State<DocumentScreen> {
           }
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showUploadBottomSheet(context, userId);
+        },
+        backgroundColor: AppStyleConfig.secondaryColor,
+        foregroundColor: Colors.white,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
@@ -90,23 +98,16 @@ class _DocumentScreenState extends State<DocumentScreen> {
           crossAxisCount: 2,
           mainAxisSpacing: 5,
           crossAxisSpacing: 5,
-          itemCount: documents.length + 1,
+          itemCount: documents.length,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            if (index == 0) {
-              return UploadCard(
-                onTap: () => _showUploadBottomSheet(context, userId),
-              );
-            } else {
-              return DocumentItem(
-                document: documents[index - 1],
-                onLongPress: () =>
-                    _showDeleteConfirmation(context, documents[index - 1]),
-                onTap: () =>
-                    _showDocumentPreview(context, documents[index - 1]),
-              );
-            }
+            return DocumentItem(
+              document: documents[index],
+              onLongPress: () =>
+                  _showDeleteConfirmation(context, documents[index]),
+              onTap: () => _showDocumentPreview(context, documents[index]),
+            );
           },
         ),
       ),
