@@ -18,17 +18,25 @@ Orphan Care Flutter is a comprehensive management application designed to stream
 
 Here are some screenshots of the application:
 
-1. **Home Screen**
-![Home Screen](./screenshots/screenshot-1.png)
+<div style="display: flex; justify-content: space-between;">
+    <div style="text-align: center;">
+        <p>Home Screen</p>
+        <img src="./screenshots/screenshot-1.png" alt="Home Screen" width="200"/>
+    </div>
+    <div style="text-align: center;">
+        <p>Orphan Management</p>
+        <img src="./screenshots/screenshot-2.png" alt="Orphan Management" width="200"/>
+    </div>
+    <div style="text-align: center;">
+        <p>Document Screen</p>
+        <img src="./screenshots/screenshot-3.png" alt="Inventory Management" width="200"/>
+    </div>
+    <div style="text-align: center;">
+        <p>Settings Screen</p>
+        <img src="./screenshots/screenshot-4.png" alt="Bedroom Management" width="200"/>
+    </div>
+</div>
 
-2. **Orphan Management**
-![Orphan Management](./screenshots/screenshot-2.png)
-
-3. **Inventory Management**
-![Inventory Management](./screenshots/screenshot-3.png)
-
-4. **Bedroom Management**
-![Bedroom Management](./screenshots/screenshot-4.png)
 
 ## Getting Started
 
